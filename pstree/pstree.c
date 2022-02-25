@@ -4,6 +4,7 @@
 #include <getopt.h>
 bool show_pid = false;
 bool num_sort = false;
+bool version  = false;
 int parse_args(int argc, char *argv[]);
 
 int main(int argc, char *argv[]) {
@@ -26,7 +27,10 @@ int parse_args(int argc, char *argv[]){
   int opt;
   while ((opt = getopt_long(argc, argv, "-pnV", table, NULL)) != -1){
     switch (opt){
-      case 1: printf("You give wrong opt!!!"); break;
+      case 'p': show_pid = true; printf("PPP!\n"); break;
+      case 'n': num_sort = true; printf("NNN!\n"); break;
+      case 'V': version  = true; printf("VVV!\n"); break;
+      case 1: printf("You give wrong opt!!!\n"); break;
     }
   }
   return 0;
