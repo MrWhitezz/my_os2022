@@ -29,5 +29,5 @@ int parse_args(int argc, char *argv[]){
       case 1: printf("You give wrong opt!!!"); break;
     }
   }
-
+  return 0;
 }
