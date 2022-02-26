@@ -55,7 +55,7 @@ void print_pro(struct process pro[], int pnum, int id, int depth){
       printf("%s\n", pro[i].name);
       for (int j = 0; j < pnum; ++j){
         if (pro[j].ppid == id){
-          // print_pro(pro, pnum, pro[j].ppid, depth + 1);
+          print_pro(pro, pnum, pro[j].pid, depth + 1);
         }
       }
     }
