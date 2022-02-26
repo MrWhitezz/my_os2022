@@ -22,6 +22,7 @@ int get_pnum_load(int i, struct process pro[]);
 enum{PNUM, LOAD};
 void rm_paren(char *dst);
 void print_pro(struct process pro[], int pnum, int id, int depth);
+void pro_sort(struct process pro[], int pnum);
 
 int main(int argc, char *argv[]) {
 
@@ -32,6 +33,9 @@ int main(int argc, char *argv[]) {
   struct process *pro = malloc(pnum * sizeof(struct process));
 
   get_pnum_load(LOAD, pro);  
+
+  if (num_sort)
+    pro_sort(pro, pnum);
 
   print_pro(pro, pnum, 1, 0);
   // for (int i = 0; i < argc; i++) {
@@ -60,7 +64,18 @@ void print_pro(struct process pro[], int pnum, int id, int depth){
       }
     }
   }
+}
 
+void pro_sort(struct process pro[], int pnum){
+  for (int i = 0; i < pnum; ++i){
+    int min_id = i;
+    for (int j = i; j < pnum; ++j){
+      min_id = (pro[j].pid < pro[min_id].pid) ? j : min_id;
+    }
+    struct process tmp = pro[i];
+    pro[i] = pro[min_id];
+    pro[min_id] = tmp;
+  }
 }
 
 int get_pnum_load(int i, struct process pro[]){
