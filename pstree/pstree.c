@@ -33,7 +33,7 @@ int get_pnum(){
   DIR *d = opendir("/proc");
   struct dirent *dir;
   if (d){
-    while (dir = readdir(d) != NULL){
+    while ((dir = readdir(d)) != NULL){
       if (atoi(dir->d_name) != 0){
         num ++;
         printf("%s\n", dir->d_name);
