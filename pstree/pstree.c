@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
   }
   assert(!argv[argc]);
   
-  get_pnum();
+  printf ("TOTAL: %d\n", get_pnum());
   return 0;
 }
 
