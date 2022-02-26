@@ -28,6 +28,8 @@ int main(int argc, char *argv[]) {
 
   struct process *pro = malloc(pnum * sizeof(struct process));
 
+  get_pnum_load(LOAD, pro);
+
 
   // for (int i = 0; i < argc; i++) {
   //   assert(argv[i]);
