@@ -53,12 +53,11 @@ void print_pro(struct process pro[], int pnum, int id, int depth){
     if (pro[i].pid == id){
       put_tab(depth);
       printf("%s\n", pro[i].name);
-      // TODO: find children
-      for (int j = 0; j < pnum; ++j){
-        if (pro[j].ppid == id){
-          print_pro(pro, pnum, pro[j].ppid, depth + 1);
-        }
-      }
+      // for (int j = 0; j < pnum; ++j){
+      //   if (pro[j].ppid == id){
+      //     print_pro(pro, pnum, pro[j].ppid, depth + 1);
+      //   }
+      // }
     }
   }
 
