@@ -5,40 +5,55 @@
 #include <getopt.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <string.h>
 
-bool show_pid = false;
-bool num_sort = false;
-bool version  = false;
-int parse_args(int argc, char *argv[]);
-int get_pnum();
 struct process {
   pid_t pid;
   char name[64];
   pid_t ppid;
 };
 
+bool show_pid = false;
+bool num_sort = false;
+bool version  = false;
+int parse_args(int argc, char *argv[]);
+int get_pnum_load(int i, struct process pro[]);
+enum{PNUM, LOAD};
+
 int main(int argc, char *argv[]) {
+
   parse_args(argc, argv);
 
-  for (int i = 0; i < argc; i++) {
-    assert(argv[i]);
-    printf("argv[%d] = %s\n", i, argv[i]);
-  }
-  assert(!argv[argc]);
+  int pnum = get_pnum_load(PNUM, NULL);
+
+  struct process *pro = malloc(pnum * sizeof(struct process));
+
+
+  // for (int i = 0; i < argc; i++) {
+  //   assert(argv[i]);
+  //   printf("argv[%d] = %s\n", i, argv[i]);
+  // }
+  // assert(!argv[argc]);
   
-  printf ("TOTAL: %d\n", get_pnum());
   return 0;
 }
 
-int get_pnum(){
+int get_pnum_load(int i, struct process pro[]){
   int num = 0;
   DIR *d = opendir("/proc");
   struct dirent *dir;
   if (d){
     while ((dir = readdir(d)) != NULL){
       if (atoi(dir->d_name) != 0){
+        printf("find %s\n", dir->d_name);
+        if (i == LOAD) {
+          char stat_name[64] = "/proc/";
+          strcat(stat_name, dir->d_name);
+          strcat(stat_name, "/stat");
+          printf("Open %s\n", stat_name); 
+
+        }
         num ++;
-        printf("%s\n", dir->d_name);
       }
     }
   }
