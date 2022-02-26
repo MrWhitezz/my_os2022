@@ -51,7 +51,7 @@ void put_tab(int n){
 void print_pro(struct process pro[], int pnum, int id, int depth){
   for (int i = 0; i < pnum; ++i) {
     if (pro[i].pid == id){
-      put_tab(depth);
+      put_tab(depth + 1);
       printf("%s\n", pro[i].name);
       // for (int j = 0; j < pnum; ++j){
       //   if (pro[j].ppid == id){
