@@ -16,11 +16,12 @@ struct process {
 bool show_pid = false;
 bool num_sort = false;
 bool version  = false;
+
 int parse_args(int argc, char *argv[]);
 int get_pnum_load(int i, struct process pro[]);
 enum{PNUM, LOAD};
-
 void rm_paren(char *dst);
+void print_pro(struct process pro[], int pnum, int id, int depth);
 
 int main(int argc, char *argv[]) {
 
@@ -30,9 +31,9 @@ int main(int argc, char *argv[]) {
 
   struct process *pro = malloc(pnum * sizeof(struct process));
 
-  get_pnum_load(LOAD, pro);
+  get_pnum_load(LOAD, pro);  
 
-
+  print_pro(pro, pnum, 1, 0);
   // for (int i = 0; i < argc; i++) {
   //   assert(argv[i]);
   //   printf("argv[%d] = %s\n", i, argv[i]);
@@ -40,6 +41,27 @@ int main(int argc, char *argv[]) {
   // assert(!argv[argc]);
   
   return 0;
+}
+
+void put_tab(int n){
+  for (int i = 1; i < 2 * n; ++i)
+    putchar(' ');
+}
+
+void print_pro(struct process pro[], int pnum, int id, int depth){
+  for (int i = 0; i < pnum; ++i) {
+    if (pro[i].pid == id){
+      put_tab(depth);
+      printf("%s\n", pro[i].name);
+      // TODO: find children
+      for (int j = 0; j < pnum; ++j){
+        if (pro[j].ppid == id){
+          print_pro(pro, pnum, pro[j].ppid, depth + 1);
+        }
+      }
+    }
+  }
+
 }
 
 int get_pnum_load(int i, struct process pro[]){
@@ -95,10 +117,10 @@ int parse_args(int argc, char *argv[]){
   int opt;
   while ((opt = getopt_long(argc, argv, "-pnV", table, NULL)) != -1){
     switch (opt){
-      case 'p': show_pid = true; printf("PPP!\n"); break;
-      case 'n': num_sort = true; printf("NNN!\n"); break;
-      case 'V': version  = true; printf("VVV!\n"); break;
-      case 1: printf("You give wrong opt!!!\n"); break;
+      case 'p': show_pid = true; break;
+      case 'n': num_sort = true; break;
+      case 'V': version  = true; break;
+      case 1: printf("You give wrong opt!!!\n"); exit(0); break;
     }
   }
   return 0;
