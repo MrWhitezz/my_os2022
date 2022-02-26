@@ -56,7 +56,7 @@ int get_pnum_load(int i, struct process pro[]){
 
           FILE *fp = fopen(stat_name, "r");
           if (fp){
-            char s;
+            char s = 'S';
             fscanf(fp, "%d %s %c %d", pro[num].pid, pro[num].name, s, pro[num].ppid);
             fclose(fp);
             printf("pid: %d, comm: %s, ppid: %d\n", pro[num].pid, pro[num].name, pro[num].ppid);
