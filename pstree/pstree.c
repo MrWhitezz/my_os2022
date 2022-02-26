@@ -109,7 +109,7 @@ int get_pnum_load(int i, struct process pro[]){
               strcat(pro[num].name, dir->d_name);
               strcat(pro[num].name, ")");
             }
-            printf("pid: %d,\tcomm: %s,\tppid: %d\n", pro[num].pid, pro[num].name, pro[num].ppid);
+            // printf("pid: %d,\tcomm: %s,\tppid: %d\n", pro[num].pid, pro[num].name, pro[num].ppid);
           }
           else {assert(0);}
 
