@@ -62,7 +62,7 @@ int get_pnum_load(int i, struct process pro[]){
             fscanf(fp, "%d %s %c %d", &pro[num].pid, pro[num].name, &s, &pro[num].ppid);
             fclose(fp);
             rm_paren(pro[num].name);
-            printf("pid: %d, comm: %s, ppid: %d\n", pro[num].pid, pro[num].name, pro[num].ppid);
+            printf("pid: %d,\tcomm: %s,\tppid: %d\n", pro[num].pid, pro[num].name, pro[num].ppid);
           }
           else {assert(0);}
 
