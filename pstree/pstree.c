@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
   parse_args(argc, argv);
 
   if (version) {
-    fprintf(stdout, "pstree (PSmisc) 23.4\n\
+    fprintf(stderr, "pstree (PSmisc) 23.4\n\
 Copyright (C) 1993-2020 Werner Almesberger and Craig Small\n\
 \n\
 PSmisc comes with ABSOLUTELY NO WARRANTY.\n\
