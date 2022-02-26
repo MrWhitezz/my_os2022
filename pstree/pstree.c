@@ -28,6 +28,17 @@ int main(int argc, char *argv[]) {
 
   parse_args(argc, argv);
 
+  if (version) {
+    printf("pstree (PSmisc) 23.4\n \
+  Copyright (C) 1993-2020 Werner Almesberger and Craig Small\
+  \n\
+  PSmisc comes with ABSOLUTELY NO WARRANTY.\n\
+  This is free software, and you are welcome to redistribute it under\n\
+  the terms of the GNU General Public License.\n\
+  For more information about these matters, see the files named COPYING.\n");
+    return 0;
+  }
+
   int pnum = get_pnum_load(PNUM, NULL);
 
   struct process *pro = malloc((pnum + 5) * sizeof(struct process));
@@ -38,11 +49,6 @@ int main(int argc, char *argv[]) {
     pro_sort(pro, pnum);
 
   print_pro(pro, pnum, 1, 0);
-  // for (int i = 0; i < argc; i++) {
-  //   assert(argv[i]);
-  //   printf("argv[%d] = %s\n", i, argv[i]);
-  // }
-  // assert(!argv[argc]);
   
   return 0;
 }
