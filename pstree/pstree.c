@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 
   int pnum = get_pnum_load(PNUM, NULL);
 
-  struct process *pro = malloc(pnum * sizeof(struct process));
+  struct process *pro = malloc((pnum + 5) * sizeof(struct process));
 
   get_pnum_load(LOAD, pro);  
 
