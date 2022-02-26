@@ -78,7 +78,7 @@ void rm_paren(char *dst){
   int len = strlen(dst);
   char tmp[64] = "";
   strncpy(tmp, dst + 1, len - 2);
-  strncpy(dst, tmp, len - 2);
+  strcpy(dst, tmp);
 }
 
 int parse_args(int argc, char *argv[]){
