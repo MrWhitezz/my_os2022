@@ -55,7 +55,7 @@ void print_pro(struct process pro[], int pnum, int id, int depth){
       printf("%s\n", pro[i].name);
       for (int j = 0; j < pnum; ++j){
         if (pro[j].ppid == id){
-          print_pro(pro, pnum, pro[j].ppid, depth + 1);
+          // print_pro(pro, pnum, pro[j].ppid, depth + 1);
         }
       }
     }
@@ -88,7 +88,7 @@ int get_pnum_load(int i, struct process pro[]){
               strcat(pro[num].name, dir->d_name);
               strcat(pro[num].name, ")");
             }
-            // printf("pid: %d,\tcomm: %s,\tppid: %d\n", pro[num].pid, pro[num].name, pro[num].ppid);
+            printf("pid: %d,\tcomm: %s,\tppid: %d\n", pro[num].pid, pro[num].name, pro[num].ppid);
           }
           else {assert(0);}
 
