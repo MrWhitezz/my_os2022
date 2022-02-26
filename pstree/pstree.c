@@ -1,11 +1,21 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include <assert.h>
 #include <getopt.h>
+#include <sys/types.h>
+#include <dirent.h>
+
 bool show_pid = false;
 bool num_sort = false;
 bool version  = false;
 int parse_args(int argc, char *argv[]);
+int get_pnum();
+struct process {
+  pid_t pid;
+  char name[64];
+  pid_t ppid;
+};
 
 int main(int argc, char *argv[]) {
   parse_args(argc, argv);
@@ -16,6 +26,21 @@ int main(int argc, char *argv[]) {
   }
   assert(!argv[argc]);
   return 0;
+}
+
+int get_pnum(){
+  int num = 0;
+  DIR *d = opendir("/proc");
+  struct dirent *dir;
+  if (d){
+    while (dir = readdir(d) != NULL){
+      if (atoi(dir->d_name) != 0){
+        num ++;
+        printf("%s\n", dir->d_name);
+      }
+    }
+  }
+  return num;
 }
 
 int parse_args(int argc, char *argv[]){
