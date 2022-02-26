@@ -76,7 +76,9 @@ int get_pnum_load(int i, struct process pro[]){
 
 void rm_paren(char *dst){
   int len = strlen(dst);
-  strncpy(dst, dst + 1, len - 2);
+  char tmp[64] = "";
+  strncpy(tmp, dst + 1, len - 2);
+  strncpy(dst, tmp, len - 2);
 }
 
 int parse_args(int argc, char *argv[]){
