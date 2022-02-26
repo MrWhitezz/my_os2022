@@ -49,12 +49,12 @@ int get_pnum_load(int i, struct process pro[]){
   if (d){
     while ((dir = readdir(d)) != NULL){
       if (atoi(dir->d_name) != 0){
-        printf("find %s\n", dir->d_name);
+        // printf("find %s\n", dir->d_name);
         if (i == LOAD) {
           char stat_name[64] = "/proc/";
           strcat(stat_name, dir->d_name);
           strcat(stat_name, "/stat");
-          printf("Open %s\n", stat_name); 
+          // printf("Open %s\n", stat_name); 
 
           FILE *fp = fopen(stat_name, "r");
           if (fp){
