@@ -4,7 +4,7 @@
 #ifdef LOCAL_MACHINE
   #define debug(...) printf(__VA_ARGS__)
 #else
-  #define debug()
+  #define debug(...)
 #endif
 
 struct co {
