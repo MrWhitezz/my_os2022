@@ -56,7 +56,7 @@ static inline void stack_store(uintptr_t sp){
   asm volatile (
 #if __x86_64__
     "movq %%rsp, (%0);"
-      : : "d"((uintptr_t)sp): "memory"
+      : : "0"((uintptr_t)sp): "memory"
 #else
     "movl %%esp, (%0);"
       : : "d"((uintptr_t)sp): "memory"
@@ -126,7 +126,7 @@ void co_yield() {
           current = POOL[i];
           current->status = CO_RUNNING;
           
-          // stack_store(current->sp);
+          stack_store(current->sp);
           stack_change(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)]);
           ((current->func)(current->arg));
           current->status = CO_DEAD;
