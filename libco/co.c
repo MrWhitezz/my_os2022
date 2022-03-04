@@ -33,12 +33,12 @@ struct co {
 
 static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg) {
   asm volatile (
-#if __x86_64__
-    "movq %0, %%rsp; movq %2, %%rdi; jmp *%1"
-      : : "b"((uintptr_t)sp), "d"(entry), "a"(arg) : "memory"
 // #if __x86_64__
-//     "movq %0, %%rsp;"
-//       : : "b"((uintptr_t)sp): "memory"
+//     "movq %0, %%rsp; movq %2, %%rdi; jmp *%1"
+//       : : "b"((uintptr_t)sp), "d"(entry), "a"(arg) : "memory"
+#if __x86_64__
+    "movq %0, %%rsp;"
+      : : "b"((uintptr_t)sp): "memory"
 
 
 
@@ -103,7 +103,7 @@ void co_yield() {
           current = POOL[i];
           current->status = CO_RUNNING;
           
-          stack_switch_call((void*)1024, current->func, (uintptr_t)current->arg);
+          stack_switch_call(0, current->func, (uintptr_t)current->arg);
           assert(0); 
           ((current->func)(current->arg));
           current->status = CO_DEAD;
