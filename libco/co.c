@@ -59,7 +59,7 @@ static inline void stack_store(void *sp){
       : : "0"((uintptr_t)sp): "memory"
 #else
     "movl %%esp (%0);"
-      : : "0"((uintptr_t)sp - 8): "memory"
+      : : "0"((uintptr_t)sp): "memory"
 #endif
   );
 }
@@ -125,7 +125,6 @@ void co_yield() {
         else if (POOL[i]->status == CO_NEW){
           current = POOL[i];
           current->status = CO_RUNNING;
-          
           
           stack_change(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)]);
           ((current->func)(current->arg));
