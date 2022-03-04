@@ -28,6 +28,7 @@ struct co {
   enum co_status status;  // 协程的状态
   struct co *    waiter;  // 是否有其他协程在等待当前协程
   jmp_buf        context; // 寄存器现场 (setjmp.h)
+  uintptr_t      sp;
   uint8_t        stack[STACK_SIZE]__attribute__((aligned(16))); // 协程的堆栈
 };
 
@@ -49,6 +50,10 @@ static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg) {
       : : "b"((uintptr_t)sp - 8): "memory"
 #endif
   );
+}
+
+static inline void stack_store(void *sp){
+
 }
 
 static inline void stack_change(void *sp) {
