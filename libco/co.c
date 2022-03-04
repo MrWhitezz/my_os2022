@@ -84,6 +84,7 @@ void co_wait(struct co *co) {
 }
 
 void co_yield() {
+  assert(0);
   int val = setjmp(current->context);
   if (val == 0) {
     for (int i = 0; i < MAXCO; ++i){
