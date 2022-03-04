@@ -31,7 +31,7 @@ struct co {
   uint8_t        stack[STACK_SIZE]; // 协程的堆栈
 };
 
-static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg) {
+static inline void stack_switch_call(void *sp) {
   asm volatile (
 // #if __x86_64__
 //     "movq %0, %%rsp; movq %2, %%rdi; jmp *%1"
@@ -39,9 +39,12 @@ static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg) {
 #if __x86_64__
     "movq %0, %%rsp;"
       : : "b"((uintptr_t)sp): "memory"
+// #else
+//     "movl %0, %%esp; movl %2, 4(%0); jmp *%1"
+//       : : "b"((uintptr_t)sp - 8), "d"(entry), "a"(arg) : "memory"
 #else
-    "movl %0, %%esp; movl %2, 4(%0); jmp *%1"
-      : : "b"((uintptr_t)sp - 8), "d"(entry), "a"(arg) : "memory"
+    "movl %0, %%esp"
+      : : "b"((uintptr_t)sp - 8): "memory"
 #endif
   );
 }
@@ -97,7 +100,7 @@ void co_yield() {
           current->status = CO_RUNNING;
           
           assert(0); 
-          stack_switch_call(&current->stack[STACK_SIZE - 1 - sizeof(uintptr_t)], current->func, (uintptr_t)current->arg);
+          stack_switch_call(&current->stack[STACK_SIZE - 1 - sizeof(uintptr_t)]);
           assert(0); 
           ((current->func)(current->arg));
           current->status = CO_DEAD;
