@@ -59,7 +59,7 @@ static inline void stack_store(uintptr_t sp){
       : : "d"((uintptr_t)sp): "memory"
 #else
     "movl %%esp, (%0);"
-      : : "0"((uintptr_t)sp): "memory"
+      : : "d"((uintptr_t)sp): "memory"
 #endif
   );
 }
