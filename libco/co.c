@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <assert.h>
-#define STACK_SIZE 1024 * 1024
+#define STACK_SIZE 1024 * 16
 #define MAXCO      128 + 5
 
 #ifdef LOCAL_MACHINE
@@ -102,8 +102,6 @@ void co_yield() {
           current->status = CO_RUNNING;
           
           stack_switch_call(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)], NULL, 0);
-          assert(0); 
-          stack_switch_call(0, current->func, (uintptr_t)current->arg);
           assert(0); 
           ((current->func)(current->arg));
           current->status = CO_DEAD;
