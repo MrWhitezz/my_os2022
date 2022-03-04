@@ -55,11 +55,11 @@ static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg) {
 static inline void stack_store(uintptr_t sp){
   asm volatile (
 #if __x86_64__
-    "movq %%rsp (%0);"
-      : : "d"((uintptr_t)sp): "memory"
+    "movq %%rsp, (%0);"
+      : : "0"((uintptr_t)sp): "memory"
 #else
-    "movl %%esp (%0);"
-      : : "d"((uintptr_t)sp): "memory"
+    "movl %%esp, (%0);"
+      : : "0"((uintptr_t)sp): "memory"
 #endif
   );
 }
