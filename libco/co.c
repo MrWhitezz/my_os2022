@@ -3,6 +3,7 @@
 #include <setjmp.h>
 #include <stdint.h>
 #include <string.h>
+#include <assert.h>
 #define STACK_SIZE 64
 #define MAXCO      128 + 5
 
