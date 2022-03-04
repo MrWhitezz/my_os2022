@@ -123,12 +123,17 @@ void co_yield() {
           longjmp(current->context, 1);
         }
         else if (POOL[i]->status == CO_NEW){
-          stack_store((uintptr_t)&current->sp);
-          current = POOL[i];
-          current->status = CO_RUNNING;
-          stack_change(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)]);
-          ((current->func)(current->arg));
-          current->status = CO_DEAD;
+          // stack_store((uintptr_t)&current->sp);
+          int val_new = setjmp(current->context);
+          if (val_new == 0){
+            current = POOL[i];
+            current->status = CO_RUNNING;
+            stack_change(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)]);
+            ((current->func)(current->arg));
+            current->status = CO_DEAD;
+          }
+
+          
         }
       }
     }
