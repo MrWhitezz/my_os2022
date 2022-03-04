@@ -3,6 +3,7 @@
 #include <setjmp.h>
 #include <stdint.h>
 #define STACK_SIZE 64
+#define MAXCO      128 + 5
 
 #ifdef LOCAL_MACHINE
   #define debug(...) printf(__VA_ARGS__)
@@ -40,17 +41,56 @@ static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg) {
   );
 }
 
+struct co co_main = {};
+struct co *current = &co_main;
+struct co *POOL[MAXCO];
+
 
 struct co *co_start(const char *name, void (*func)(void *), void *arg) {
-  return NULL;
+  struct co *c1 = malloc(sizeof(struct co));
+  c1->name   = name;
+  c1->func   = func;
+  c1->arg    = arg;
+  c1->status = CO_NEW;
+  for (int i = 0; i < MAXCO; ++i){
+    if (POOL[i] == NULL)
+      POOL[i] = c1;
+  }
+  return c1;
 }
 
 void co_wait(struct co *co) {
+  co->waiter = current;
+  current->status = CO_WAITING;
+  while (co->status != CO_DEAD){
+    co_yield();
+  }
+  for (int i = 0; i < MAXCO; ++i){
+    if (POOL[i] == co)
+      POOL[i] = NULL;
+  }
+  free(co);
+  // unsure
+  current->status = CO_RUNNING;
 }
 
 void co_yield() {
-}
+  int val = setjmp(current->context);
+  if (val == 0) {
+    for (int i = 0; i < MAXCO; ++i){
+      if (POOL[i]->status == CO_RUNNING){
+        current = POOL[i];
+        longjmp(current->context, 1);
+      }
+      else if (POOL[i]->status == CO_NEW){
+        current = POOL[i];
+        current->status = CO_RUNNING;
+        stack_switch_call(&current->stack[STACK_SIZE - 1], current->func, current->arg);
+        
+      }
+    }
 
-// int main(){
-//   debug("hello\n");
-// }
+  } else {
+    // ?
+  }
+}
