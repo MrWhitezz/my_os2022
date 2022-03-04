@@ -53,7 +53,15 @@ static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg) {
 }
 
 static inline void stack_store(void *sp){
-
+  asm volatile (
+#if __x86_64__
+    "movq %%rsp (%0);"
+      : : "0"((uintptr_t)sp): "memory"
+#else
+    "movl %%esp (%0);"
+      : : "0"((uintptr_t)sp - 8): "memory"
+#endif
+  );
 }
 
 static inline void stack_change(void *sp) {
@@ -117,6 +125,7 @@ void co_yield() {
         else if (POOL[i]->status == CO_NEW){
           current = POOL[i];
           current->status = CO_RUNNING;
+          
           
           stack_change(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)]);
           ((current->func)(current->arg));
