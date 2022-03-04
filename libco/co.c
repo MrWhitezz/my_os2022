@@ -30,7 +30,7 @@ struct co {
   uint8_t        stack[STACK_SIZE]; // 协程的堆栈
 };
 
-static void stack_switch_call(void *sp, void *entry, uintptr_t arg) {
+static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg) {
   asm volatile (
 // #if __x86_64__
 //     "movq %0, %%rsp; movq %2, %%rdi; jmp *%1"
@@ -57,8 +57,10 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg) {
   c1->arg    = arg;
   c1->status = CO_NEW;
   for (int i = 0; i < MAXCO; ++i){
-    if (POOL[i] == NULL)
+    if (POOL[i] == NULL){
       POOL[i] = c1;
+      break;
+    }
   }
   return c1;
 }
@@ -70,8 +72,10 @@ void co_wait(struct co *co) {
     co_yield();
   }
   for (int i = 0; i < MAXCO; ++i){
-    if (POOL[i] == co)
+    if (POOL[i] == co){
       POOL[i] = NULL;
+      break;
+    }
   }
   free(co);
   // unsure
