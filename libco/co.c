@@ -104,7 +104,7 @@ void co_yield() {
           current->status = CO_RUNNING;
           
           assert(0);
-          stack_switch_call(&current->stack[STACK_SIZE - 1 - sizeof(uintptr_t)], current->func, (uintptr_t)current->arg);
+          stack_switch_call(0, current->func, (uintptr_t)current->arg);
           assert(0); 
           ((current->func)(current->arg));
           current->status = CO_DEAD;
