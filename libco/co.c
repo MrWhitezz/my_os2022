@@ -56,10 +56,10 @@ static inline void stack_store(uintptr_t sp){
   asm volatile (
 #if __x86_64__
     "movq %%rsp (%0);"
-      : : "r"((uintptr_t)sp): "memory"
+      : : "d"((uintptr_t)sp): "memory"
 #else
     "movl %%esp (%0);"
-      : : "r"((uintptr_t)sp): "memory"
+      : : "d"((uintptr_t)sp): "memory"
 #endif
   );
 }
