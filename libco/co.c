@@ -30,7 +30,7 @@ struct co {
   uint8_t        stack[STACK_SIZE]; // 协程的堆栈
 };
 
-static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg) {
+static void stack_switch_call(void *sp, void *entry, uintptr_t arg) {
   asm volatile (
 #if __x86_64__
     "movq %0, %%rsp; movq %2, %%rdi; jmp *%1"
