@@ -101,7 +101,7 @@ void co_yield() {
           current = POOL[i];
           current->status = CO_RUNNING;
           
-          stack_switch_call(&current->stack[STACK_SIZE - 2 * sizeof(uintptr_t)], NULL, 0);
+          stack_switch_call(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)], NULL, 0);
           assert(0); 
           stack_switch_call(0, current->func, (uintptr_t)current->arg);
           assert(0); 
