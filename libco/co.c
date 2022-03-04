@@ -53,7 +53,7 @@ struct co *POOL[MAXCO];
 
 struct co *co_start(const char *name, void (*func)(void *), void *arg) {
   struct co *c1 = malloc(sizeof(struct co));
-  strcpy(c1->name, name); 
+  c1->name   = name;
   assert(0);
   c1->func   = func;
   c1->arg    = arg;
