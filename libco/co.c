@@ -67,6 +67,7 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg) {
 }
 
 void co_wait(struct co *co) {
+  assert(0);
   co->waiter = current;
   current->status = CO_WAITING;
   while (co->status != CO_DEAD){
