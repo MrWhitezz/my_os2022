@@ -54,11 +54,9 @@ struct co *POOL[MAXCO];
 struct co *co_start(const char *name, void (*func)(void *), void *arg) {
   struct co *c1 = malloc(sizeof(struct co));
   c1->name   = name;
-  assert(0);
   c1->func   = func;
   c1->arg    = arg;
   c1->status = CO_NEW;
-  assert(0);
   for (int i = 0; i < MAXCO; ++i){
     if (POOL[i] == NULL){
       POOL[i] = c1;
@@ -69,7 +67,6 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg) {
 }
 
 void co_wait(struct co *co) {
-  assert(0);
   co->waiter = current;
   current->status = CO_WAITING;
   while (co->status != CO_DEAD){
@@ -87,7 +84,6 @@ void co_wait(struct co *co) {
 }
 
 void co_yield() {
-  assert(0);
   int val = setjmp(current->context);
   if (val == 0) {
     for (int i = 0; i < MAXCO; ++i){
