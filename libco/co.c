@@ -103,6 +103,7 @@ void co_yield() {
           
           stack_switch_call(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)], NULL, 0);
           ((current->func)(current->arg));
+          assert(0);
           current->status = CO_DEAD;
         }
       }
