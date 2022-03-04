@@ -41,8 +41,6 @@ static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg) {
       : : "b"((uintptr_t)sp): "memory"
 
 
-
-
 // #else
 //     "movl %0, %%esp; movl %2, 4(%0); jmp *%1"
 //       : : "b"((uintptr_t)sp - 8), "d"(entry), "a"(arg) : "memory"
@@ -103,6 +101,8 @@ void co_yield() {
           current = POOL[i];
           current->status = CO_RUNNING;
           
+          stack_switch_call(0, NULL, (uintptr_t)current->arg);
+          assert(0); 
           stack_switch_call(0, current->func, (uintptr_t)current->arg);
           assert(0); 
           ((current->func)(current->arg));
