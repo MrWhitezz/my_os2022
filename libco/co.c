@@ -103,7 +103,7 @@ void co_yield() {
           current = POOL[i];
           current->status = CO_RUNNING;
           
-          stack_switch_call(1024, current->func, (uintptr_t)current->arg);
+          stack_switch_call((void*)1024, current->func, (uintptr_t)current->arg);
           assert(0); 
           ((current->func)(current->arg));
           current->status = CO_DEAD;
