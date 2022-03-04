@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <assert.h>
-#define STACK_SIZE 1024
+#define STACK_SIZE 1024 * 16
 #define MAXCO      128 + 5
 
 #ifdef LOCAL_MACHINE
