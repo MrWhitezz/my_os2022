@@ -57,6 +57,7 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg) {
   c1->func   = func;
   c1->arg    = arg;
   c1->status = CO_NEW;
+  assert(0);
   for (int i = 0; i < MAXCO; ++i){
     if (POOL[i] == NULL){
       POOL[i] = c1;
