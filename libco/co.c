@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <setjmp.h>
 #include <stdint.h>
+#include <string.h>
 #define STACK_SIZE 64
 #define MAXCO      128 + 5
 
@@ -48,7 +49,7 @@ struct co *POOL[MAXCO];
 
 struct co *co_start(const char *name, void (*func)(void *), void *arg) {
   struct co *c1 = malloc(sizeof(struct co));
-  c1->name   = name;
+  strcpy(c1->name, name); 
   c1->func   = func;
   c1->arg    = arg;
   c1->status = CO_NEW;
@@ -85,8 +86,8 @@ void co_yield() {
       else if (POOL[i]->status == CO_NEW){
         current = POOL[i];
         current->status = CO_RUNNING;
-        stack_switch_call(&current->stack[STACK_SIZE - 1], current->func, current->arg);
-        
+        stack_switch_call(&current->stack[STACK_SIZE - 1], current->func, (uintptr_t)current->arg);
+
       }
     }
 
