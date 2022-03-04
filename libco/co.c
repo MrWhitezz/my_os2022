@@ -133,6 +133,7 @@ void co_yield() {
             ((current->func)(current->arg));
             current->status = CO_DEAD;
             current = old_cur;
+            assert(current != NULL);
             longjmp(old_cur->context, 1);
           }
 
