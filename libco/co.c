@@ -87,19 +87,21 @@ void co_yield() {
   int val = setjmp(current->context);
   if (val == 0) {
     for (int i = 0; i < MAXCO; ++i){
-      if (POOL[i]->status == CO_RUNNING){
-        current = POOL[i];
-        longjmp(current->context, 1);
-      }
-      else if (POOL[i]->status == CO_NEW){
-        current = POOL[i];
-        current->status = CO_RUNNING;
-        
-        assert(0); 
-        stack_switch_call(&current->stack[STACK_SIZE - 1 - sizeof(uintptr_t)], current->func, (uintptr_t)current->arg);
-        assert(0); 
-        ((current->func)(current->arg));
-        current->status = CO_DEAD;
+      if (POOL[i] != NULL){
+        if (POOL[i]->status == CO_RUNNING){
+          current = POOL[i];
+          longjmp(current->context, 1);
+        }
+        else if (POOL[i]->status == CO_NEW){
+          current = POOL[i];
+          current->status = CO_RUNNING;
+          
+          assert(0); 
+          stack_switch_call(&current->stack[STACK_SIZE - 1 - sizeof(uintptr_t)], current->func, (uintptr_t)current->arg);
+          assert(0); 
+          ((current->func)(current->arg));
+          current->status = CO_DEAD;
+        }
       }
     }
 
