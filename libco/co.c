@@ -28,7 +28,7 @@ struct co {
   enum co_status status;  // 协程的状态
   struct co *    waiter;  // 是否有其他协程在等待当前协程
   jmp_buf        context; // 寄存器现场 (setjmp.h)
-  uint8_t        stack[STACK_SIZE]; // 协程的堆栈
+  uint8_t        stack[STACK_SIZE]__attribute__((aligned(16))); // 协程的堆栈
 };
 
 static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg) {
@@ -104,7 +104,7 @@ void co_yield() {
           current->status = CO_RUNNING;
           
           assert(0);
-          stack_switch_call(0, current->func, (uintptr_t)current->arg);
+          stack_switch_call(&current->stack[STACK_SIZE - 1 - sizeof(uintptr_t)], current->func, (uintptr_t)current->arg);
           assert(0); 
           ((current->func)(current->arg));
           current->status = CO_DEAD;
