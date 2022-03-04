@@ -51,6 +51,18 @@ static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg) {
   );
 }
 
+static inline void stack_change(void *sp) {
+  asm volatile (
+#if __x86_64__
+    "movq %0, %%rsp;"
+      : : "b"((uintptr_t)sp): "memory"
+#else
+    "movl %0, %%esp"
+      : : "b"((uintptr_t)sp - 8): "memory"
+#endif
+  );
+}
+
 struct co co_main = {};
 struct co *current = &co_main;
 struct co *POOL[MAXCO];
@@ -101,7 +113,7 @@ void co_yield() {
           current = POOL[i];
           current->status = CO_RUNNING;
           
-          stack_switch_call(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)], NULL, 0);
+          stack_change(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)]);
           ((current->func)(current->arg));
           current->status = CO_DEAD;
           assert(0);
