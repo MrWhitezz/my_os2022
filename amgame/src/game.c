@@ -2,8 +2,6 @@
 
 struct craft ct;
 
-extern int w, h;
-
 // Operating system is a C program!
 int main(const char *args) {
   ioe_init();
@@ -23,9 +21,13 @@ int main(const char *args) {
 }
 
 void init_ct(){
+  AM_GPU_CONFIG_T info = {0};
+  ioe_read(AM_GPU_CONFIG, &info);
+  int w = info.width;
+  int h = info.height;
   ct.x = w / 2;
   ct.y = h / 2;
   ct.w = SIDE;
   ct.h = SIDE;
-  ct.color = 0x121119;
+  ct.color = 0xffffff;
 }
