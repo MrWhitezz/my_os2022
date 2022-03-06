@@ -112,6 +112,7 @@ void co_wait(struct co *co) {
     }
   }
   free(co);
+  debug("success wait!\n");
   // unsure
   current->status = CO_RUNNING;
 }
