@@ -19,9 +19,13 @@ void print_key() {
       halt(1);
     }
     switch (event.keycode){
+      case AM_KEY_K     :
       case AM_KEY_UP    : ct.direction = UP;    break;
+      case AM_KEY_J     :
       case AM_KEY_DOWN  : ct.direction = DOWN;  break;
+      case AM_KEY_H     :
       case AM_KEY_LEFT  : ct.direction = LEFT;  break;
+      case AM_KEY_L     :
       case AM_KEY_RIGHT : ct.direction = RIGHT; break;
     }
   }
