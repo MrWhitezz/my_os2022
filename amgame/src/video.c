@@ -25,6 +25,7 @@ void update_ct(){
   ioe_read(AM_TIMER_UPTIME, &tm);
   uint32_t new_ms = tm.us / 1000; 
   uint32_t dis = (new_ms - old_ms) / 1000 * 10;
+  printf("dis = %d\n", dis);
   switch (ct.direction){
     case UP    : ct.y = (ct.y + dis) % h;
     case DOWN  : ct.y = (ct.y - dis) % h;
@@ -32,7 +33,6 @@ void update_ct(){
     case LEFT  : ct.x = (ct.x - dis) % w;
   }
   
-
 }
 
 static void draw_tile(int x, int y, int w, int h, uint32_t color) {
