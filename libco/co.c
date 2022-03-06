@@ -147,4 +147,5 @@ void co_yield() {
   } else {
     // ?
   }
+  debug("yield fi\n");
 }
