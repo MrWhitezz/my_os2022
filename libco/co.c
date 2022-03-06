@@ -137,6 +137,7 @@ void co_yield() {
 
     if (ct_sz > 0){
       int index = rand() % ct_sz;
+      assert(POOL[index] != NULL);
       if (POOL[index]->status == CO_RUNNING){
           current = POOL[index];
           longjmp(current->context, 1);
