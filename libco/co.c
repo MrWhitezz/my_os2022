@@ -132,7 +132,7 @@ void co_yield() {
           longjmp(current->context, 1);
         }
         else if (POOL[i]->status == CO_NEW){
-          debug("There's new co %s\n", POOL[i]->name);
+          // debug("There's new co %s\n", POOL[i]->name);
           // stack_store((uintptr_t)&current->sp);
           current = POOL[i];
           current->status = CO_RUNNING;
