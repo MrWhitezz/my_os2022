@@ -139,8 +139,8 @@ void co_yield() {
           stack_store((uintptr_t)&current->parent_sp);
           stack_change(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)]);
           ((current->func)(current->arg));
-          current->status = CO_DEAD;
           stack_change((void *)current->parent_sp);
+          current->status = CO_DEAD;
 
           debug("%s return\n", current->name);
           current = this_co;
