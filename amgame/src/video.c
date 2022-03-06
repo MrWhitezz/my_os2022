@@ -29,7 +29,7 @@ void update_ct(){
     return;
   }
   uint32_t dis = (new_tm - old_tm) * 10 / 1000000;
-  printf("time %x\n", tm.us);
+  printf("time %d\n", tm.us);
   switch (ct.direction){
     case UP    : ct.y = (ct.y + dis) % h;
     case DOWN  : ct.y = (ct.y - dis) % h;
