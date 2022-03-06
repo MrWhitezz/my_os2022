@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <assert.h>
+#include <time.h>
 #define STACK_SIZE 1024 * 16
 #define MAXCO      128 + 5
 
@@ -80,7 +81,8 @@ static inline void stack_change(void *sp) {
 struct co co_main = {.name = "main"};
 struct co *current = &co_main;
 struct co *POOL[MAXCO];
-
+int    cert[MAXCO];
+int    ct_sz = 0;
 
 struct co *co_start(const char *name, void (*func)(void *), void *arg) {
   struct co *c1 = malloc(sizeof(struct co));
@@ -122,37 +124,66 @@ void co_wait(struct co *co) {
 
 void co_yield() {
   // debug("this_co %s\n", current->name);
+  srand(time(NULL));
   struct co *this_co = current;
   int val = setjmp(current->context);
   if (val == 0) {
+    ct_sz = 0;
     for (int i = 0; i < MAXCO; ++i){
-      if (POOL[i] != NULL){
-        if (POOL[i]->status == CO_RUNNING){
-          current = POOL[i];
-          longjmp(current->context, 1);
-        }
-        else if (POOL[i]->status == CO_NEW){
-          // debug("There's new co %s\n", POOL[i]->name);
-          // stack_store((uintptr_t)&current->sp);
-          current = POOL[i];
-          current->status = CO_RUNNING;
-          stack_store((uintptr_t)&current->parent_sp);
-          stack_change(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)]);
-          ((current->func)(current->arg));
-          current->status = CO_DEAD;
-          stack_change((void *)current->parent_sp);
-
-          // debug("%s return\n", current->name);
-          current = this_co;
-          // debug("thread back to %s\n", current->name);
-          break;
-          
-        }
+      if (POOL[i] != NULL && (POOL[i]->status == CO_RUNNING|| POOL[i]->status == CO_NEW)){
+        cert[ct_sz++] = i;
       }
     }
 
-  } else {
-    // ?
+    if (ct_sz > 0){
+      int index = rand() % ct_sz;
+      if (POOL[index]->status == CO_RUNNING){
+          current = POOL[index];
+          longjmp(current->context, 1);
+      }
+      else if (POOL[index]->status == CO_NEW){
+        // debug("There's new co %s\n", POOL[i]->name);
+        // stack_store((uintptr_t)&current->sp);
+        current = POOL[index];
+        current->status = CO_RUNNING;
+        stack_store((uintptr_t)&current->parent_sp);
+        stack_change(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)]);
+        ((current->func)(current->arg));
+        current->status = CO_DEAD;
+        stack_change((void *)current->parent_sp);
+
+        current = this_co;
+      }  
+    }
   }
-  // debug("yield fi\n");
+    
+    // for (int i = 0; i < MAXCO; ++i){
+    //   if (POOL[i] != NULL){
+    //     if (POOL[i]->status == CO_RUNNING){
+    //       current = POOL[i];
+    //       longjmp(current->context, 1);
+    //     }
+    //     else if (POOL[i]->status == CO_NEW){
+    //       // debug("There's new co %s\n", POOL[i]->name);
+    //       // stack_store((uintptr_t)&current->sp);
+    //       current = POOL[i];
+    //       current->status = CO_RUNNING;
+    //       stack_store((uintptr_t)&current->parent_sp);
+    //       stack_change(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)]);
+    //       ((current->func)(current->arg));
+    //       current->status = CO_DEAD;
+    //       stack_change((void *)current->parent_sp);
+
+    //       // debug("%s return\n", current->name);
+    //       current = this_co;
+    //       // debug("thread back to %s\n", current->name);
+    //       break;
+          
+    //     }
+    //   }
+    // }
+
+  else {
+
+  }
 }
