@@ -78,7 +78,7 @@ static inline void stack_change(void *sp) {
 }
 
 struct co co_main = {};
-struct co *current = &co_main, *old_cur = NULL;
+struct co *current = &co_main;
 struct co *POOL[MAXCO];
 
 
@@ -118,6 +118,7 @@ void co_wait(struct co *co) {
 }
 
 void co_yield() {
+  struct co *this_co = current;
   int val = setjmp(current->context);
   if (val == 0) {
     for (int i = 0; i < MAXCO; ++i){
@@ -128,17 +129,13 @@ void co_yield() {
         }
         else if (POOL[i]->status == CO_NEW){
           // stack_store((uintptr_t)&current->sp);
-          old_cur = current;
-          int val_new = setjmp(current->context);
-          if (val_new == 0){
-            current = POOL[i];
-            current->status = CO_RUNNING;
-            stack_change(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)]);
-            ((current->func)(current->arg));
-            current->status = CO_DEAD;
-            current = old_cur;
-            longjmp(old_cur->context, 1);
-          }
+          current = POOL[i];
+          current->status = CO_RUNNING;
+          stack_change(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)]);
+          ((current->func)(current->arg));
+
+          current->status = CO_DEAD;
+          current = this_co;
           
         }
       }
