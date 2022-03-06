@@ -4,8 +4,8 @@ struct craft ct;
 
 // Operating system is a C program!
 int main(const char *args) {
-  init_ct();
   ioe_init();
+  init_ct();
 
   puts("mainargs = \"");
   puts(args); // make run mainargs=xxx
