@@ -29,7 +29,7 @@ struct co {
   enum co_status status;  // 协程的状态
   struct co *    waiter;  // 是否有其他协程在等待当前协程
   jmp_buf        context; // 寄存器现场 (setjmp.h)
-  uintptr_t      sp;
+  uintptr_t      parent_sp;
   uint8_t        stack[STACK_SIZE]__attribute__((aligned(16))); // 协程的堆栈
 };
 
@@ -131,11 +131,13 @@ void co_yield() {
           // stack_store((uintptr_t)&current->sp);
           current = POOL[i];
           current->status = CO_RUNNING;
+          stack_store(&current->parent_sp);
           stack_change(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)]);
           ((current->func)(current->arg));
           debug("%s return\n", current->name);
 
           current->status = CO_DEAD;
+          stack_change(&current->parent_sp);
           current = this_co;
           debug("thread back to %s\n", current->name);
           
