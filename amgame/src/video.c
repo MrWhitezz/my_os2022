@@ -3,6 +3,8 @@
 #define SIDE 16
 static int w, h;
 
+extern struct craft ct;
+
 static void init() {
   AM_GPU_CONFIG_T info = {0};
   ioe_read(AM_GPU_CONFIG, &info);
