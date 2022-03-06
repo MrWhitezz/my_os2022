@@ -102,6 +102,8 @@ void co_wait(struct co *co) {
   while (co->status != CO_DEAD){
     co_yield();
   }
+  debug("\n %s finished\n", co->name);
+  debug("current: %s\n", current->name);
   for (int i = 0; i < MAXCO; ++i){
     if (POOL[i] == co){
       POOL[i] = NULL;
