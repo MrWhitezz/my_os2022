@@ -7,6 +7,7 @@ extern int w, h;
 // Operating system is a C program!
 int main(const char *args) {
   ioe_init();
+  init_ct();
 
   puts("mainargs = \"");
   puts(args); // make run mainargs=xxx
