@@ -261,7 +261,7 @@ static inline Queue* q_new() {
         fprintf(stderr, "New queue failure\n");
         exit(1);
     }
-    queue->cap = 300;
+    queue->cap = 100;
     queue->sz = 0;
     INIT_LIST_HEAD(&queue->list);
     return queue;
