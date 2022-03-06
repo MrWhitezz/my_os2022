@@ -1,8 +1,10 @@
 #include <game.h>
 
+#define BGC 0x114514
 static int w, h;
 
 extern struct craft ct;
+static struct craft ct_old = {};
 
 static void init() {
   AM_GPU_CONFIG_T info = {0};
@@ -12,6 +14,7 @@ static void init() {
   assert(tmc.has_rtc == true);
   w = info.width;
   h = info.height;
+  ct_old = ct;
 }
 
 void update_ct(){
@@ -36,9 +39,15 @@ void splash() {
   for (int x = 0; x * SIDE <= w; x ++) {
     for (int y = 0; y * SIDE <= h; y++) {
       if (1) {
-        draw_tile(x * SIDE, y * SIDE, SIDE, SIDE, 0x114514); // white
+        draw_tile(x * SIDE, y * SIDE, SIDE, SIDE, BGC); // white
       }
     }
   }
+}
+
+void splash_ct(){
+  draw_tile(ct_old.x, ct_old.y, ct_old.w, ct_old.h, BGC);
+  
   draw_tile(ct.x, ct.y, ct.w, ct.h, ct.color);
+  ct_old = ct;
 }

@@ -8,6 +8,7 @@ void splash();
 void print_key();
 void init_ct();
 void update_ct();
+void splash_ct();
 
 struct craft
 {
