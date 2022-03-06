@@ -28,7 +28,7 @@ void init_ct(){
   int h = info.height;
   ct.x = w / 2;
   ct.y = h / 2;
-  ct.w = SIDE;
-  ct.h = SIDE;
+  ct.w = SIDE * 2;
+  ct.h = SIDE * 2;
   ct.color = 0xffffff;
 }
