@@ -25,7 +25,7 @@ void update_ct(){
   ioe_read(AM_TIMER_UPTIME, &tm);
   uint32_t new_ms = tm.us / 1000; 
   uint32_t dis = (new_ms - old_ms) / 1000 * 10;
-  printf("dis = %d\n", dis);
+  printf("time %x\n", tm.us);
   switch (ct.direction){
     case UP    : ct.y = (ct.y + dis) % h;
     case DOWN  : ct.y = (ct.y - dis) % h;
