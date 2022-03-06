@@ -1,7 +1,7 @@
 #include <game.h>
 
 #define SIDE 16
-static int w, h;
+int w, h;
 
 extern struct craft ct;
 
@@ -33,4 +33,5 @@ void splash() {
       }
     }
   }
+  draw_tile(ct.x, ct.y, ct.w, ct.h, ct.color);
 }

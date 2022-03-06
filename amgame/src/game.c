@@ -2,6 +2,8 @@
 
 struct craft ct;
 
+extern int w, h;
+
 // Operating system is a C program!
 int main(const char *args) {
   ioe_init();
@@ -17,4 +19,12 @@ int main(const char *args) {
     print_key();
   }
   return 0;
+}
+
+void init_ct(){
+  ct.x = w / 2;
+  ct.y = h / 2;
+  ct.w = SIDE;
+  ct.h = SIDE;
+  ct.color = 0x121119;
 }
