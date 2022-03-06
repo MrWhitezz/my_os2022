@@ -133,6 +133,7 @@ void co_yield() {
           current->status = CO_RUNNING;
           stack_change(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)]);
           ((current->func)(current->arg));
+          debug("%s return\n", current->name);
 
           current->status = CO_DEAD;
           current = this_co;
