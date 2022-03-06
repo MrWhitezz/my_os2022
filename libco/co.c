@@ -8,6 +8,7 @@
 #define MAXCO      128 + 5
 
 #ifdef LOCAL_MACHINE
+  int x = 1;
   #define debug(...) printf(__VA_ARGS__)
 #else
   #define debug(...)
