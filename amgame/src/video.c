@@ -33,8 +33,8 @@ void update_ct(){
   printf("time %d\n", tm.us);
   printf("dis  %d\n", dis);
   switch (ct.direction){
-    case UP    : ct.y = (ct.y + dis) % h; break;
-    case DOWN  : ct.y = (ct.y - dis) % h; break;
+    case UP    : ct.y = (ct.y - dis) % h; break;
+    case DOWN  : ct.y = (ct.y + dis) % h; break;
     case RIGHT : ct.x = (ct.x + dis) % w; break;
     case LEFT  : ct.x = (ct.x - dis) % w; break;
     default    : assert(0);
