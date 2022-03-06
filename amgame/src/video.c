@@ -48,6 +48,7 @@ void splash() {
 void splash_ct(){
   draw_tile(ct_old.x, ct_old.y, ct_old.w, ct_old.h, BGC, 0);
   
-  draw_tile(ct.x, ct.y, ct.w, ct.h, ct.color, 1);
+  draw_tile(ct.x, ct.y, ct.w, ct.h, ct.color, 0);
+  draw_tile(0, 0, 0, 0, 0, 1);
   ct_old = ct;
 }
