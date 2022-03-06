@@ -137,11 +137,8 @@ void co_yield() {
           debug("%s return\n", current->name);
 
           current->status = CO_DEAD;
-          debug("1\n");
           stack_change((void *)current->parent_sp);
-          debug("1\n");
           current = this_co;
-          debug("1\n");
           
           debug("thread back to %s\n", current->name);
           
