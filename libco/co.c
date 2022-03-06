@@ -1,6 +1,6 @@
 #include "co.h"
 #include <stdlib.h>
-// #include <stdio.h>
+#include <stdio.h>
 #include <setjmp.h>
 #include <stdint.h>
 #include <string.h>
