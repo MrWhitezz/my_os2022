@@ -7,6 +7,7 @@ extern struct craft ct;
 static struct craft ct_old = {};
 
 AM_TIMER_UPTIME_T tm = {};
+uint32_t old_tm = 0;
 
 static void init() {
   AM_GPU_CONFIG_T   info = {0};
@@ -14,6 +15,7 @@ static void init() {
   ioe_read(AM_GPU_CONFIG,   &info);
   ioe_read(AM_TIMER_CONFIG, &tmc);
   ioe_read(AM_TIMER_UPTIME, &tm);
+  old_tm = tm.us;
   assert(tmc.has_rtc == true);
   w = info.width;
   h = info.height;
@@ -21,10 +23,12 @@ static void init() {
 }
 
 void update_ct(){
-  uint32_t old_ms = tm.us / 1000; 
   ioe_read(AM_TIMER_UPTIME, &tm);
-  uint32_t new_ms = tm.us / 1000; 
-  uint32_t dis = (new_ms - old_ms) / 1000 * 10;
+  uint32_t new_tm = tm.us; 
+  if (new_tm - old_tm < 100000){
+    return;
+  }
+  uint32_t dis = (new_tm - old_tm) * 10 / 1000000;
   printf("time %x\n", tm.us);
   switch (ct.direction){
     case UP    : ct.y = (ct.y + dis) % h;
