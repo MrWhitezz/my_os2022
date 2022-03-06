@@ -117,6 +117,7 @@ void co_wait(struct co *co) {
 }
 
 void co_yield() {
+  debug("this_co %s\n", current->name);
   struct co *this_co = current;
   int val = setjmp(current->context);
   if (val == 0) {
