@@ -16,6 +16,7 @@ int main(const char *args) {
   puts("Press any key to see its key code...\n");
   while (1) {
     print_key();
+    update_ct();
     splash_ct();
   }
   return 0;
@@ -31,4 +32,5 @@ void init_ct(){
   ct.w = SIDE * 2;
   ct.h = SIDE * 2;
   ct.color = 0xffffff;
+  ct.direction = RIGHT;
 }
