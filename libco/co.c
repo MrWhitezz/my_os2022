@@ -72,7 +72,7 @@ static inline void stack_change(void *sp) {
       : : "b"((uintptr_t)sp): "memory"
 #else
     "movl %0, %%esp"
-      : : "b"((uintptr_t)sp - 8): "memory"
+      : : "b"((uintptr_t)sp): "memory"
 #endif
   );
 }
