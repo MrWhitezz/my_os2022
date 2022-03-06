@@ -131,7 +131,7 @@ void co_yield() {
           // stack_store((uintptr_t)&current->sp);
           current = POOL[i];
           current->status = CO_RUNNING;
-          stack_store(&current->parent_sp);
+          stack_store((uintptr_t)&current->parent_sp);
           stack_change(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)]);
           ((current->func)(current->arg));
           debug("%s return\n", current->name);
