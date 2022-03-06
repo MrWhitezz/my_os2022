@@ -137,6 +137,7 @@ void co_yield() {
 
           current->status = CO_DEAD;
           current = this_co;
+          debug("thread back to %s\n", current->name);
           
         }
       }
