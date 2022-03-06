@@ -68,7 +68,7 @@ static void producer(void *arg) {
             // co_yield();
             do_produce(queue);
             i += 1;
-            printf("Produce: g_running = %d\n", g_running);
+            // printf("Produce: g_running = %d\n", g_running);
         }
         co_yield();
         // printf("After yield\n");
