@@ -135,7 +135,6 @@ void co_yield() {
             current = old_cur;
             longjmp(old_cur->context, 1);
           }
-
           
         }
       }
