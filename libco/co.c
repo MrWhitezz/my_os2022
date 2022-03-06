@@ -14,7 +14,6 @@
   #define debug(...)
 #endif
 
-
 enum co_status {
   CO_NEW = 1, // 新创建，还未执行过
   CO_RUNNING, // 已经执行过
@@ -133,7 +132,7 @@ void co_yield() {
           longjmp(current->context, 1);
         }
         else if (POOL[i]->status == CO_NEW){
-          // debug("There's new co %s\n", POOL[i]->name);
+          debug("There's new co %s\n", POOL[i]->name);
           // stack_store((uintptr_t)&current->sp);
           current = POOL[i];
           current->status = CO_RUNNING;
@@ -145,7 +144,7 @@ void co_yield() {
 
           // debug("%s return\n", current->name);
           current = this_co;
-          // debug("thread back to %s\n", current->name);
+          debug("thread back to %s\n", current->name);
           break;
           
         }
