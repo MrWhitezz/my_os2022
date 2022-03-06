@@ -144,7 +144,7 @@ void co_yield() {
 
           // debug("%s return\n", current->name);
           current = this_co;
-          debug("thread back to %s\n", current->name);
+          // debug("thread back to %s\n", current->name);
           break;
           
         }
