@@ -77,7 +77,7 @@ static inline void stack_change(void *sp) {
   );
 }
 
-struct co co_main = {};
+struct co co_main = {.name = "main"};
 struct co *current = &co_main;
 struct co *POOL[MAXCO];
 
