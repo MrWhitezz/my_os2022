@@ -22,10 +22,10 @@ void update_ct(){
 
 }
 
-static void draw_tile(int x, int y, int w, int h, uint32_t color) {
+static void draw_tile(int x, int y, int w, int h, uint32_t color, bool is_sync) {
   uint32_t pixels[w * h]; // WARNING: large stack-allocated memory
   AM_GPU_FBDRAW_T event = {
-    .x = x, .y = y, .w = w, .h = h, .sync = 1,
+    .x = x, .y = y, .w = w, .h = h, .sync = is_sync,
     .pixels = pixels,
   };
   for (int i = 0; i < w * h; i++) {
@@ -39,15 +39,15 @@ void splash() {
   for (int x = 0; x * SIDE <= w; x ++) {
     for (int y = 0; y * SIDE <= h; y++) {
       if (1) {
-        draw_tile(x * SIDE, y * SIDE, SIDE, SIDE, BGC); // white
+        draw_tile(x * SIDE, y * SIDE, SIDE, SIDE, BGC, 1); // white
       }
     }
   }
 }
 
 void splash_ct(){
-  draw_tile(ct_old.x, ct_old.y, ct_old.w, ct_old.h, BGC);
+  draw_tile(ct_old.x, ct_old.y, ct_old.w, ct_old.h, BGC, 0);
   
-  draw_tile(ct.x, ct.y, ct.w, ct.h, ct.color);
+  draw_tile(ct.x, ct.y, ct.w, ct.h, ct.color, 1);
   ct_old = ct;
 }
