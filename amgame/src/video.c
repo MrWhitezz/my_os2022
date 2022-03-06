@@ -28,7 +28,7 @@ void update_ct(){
   if (new_tm - old_tm < 100000){
     return;
   }
-  uint32_t dis = (new_tm - old_tm) * 10 / 1000000;
+  uint32_t dis = (new_tm - old_tm) * 50 / 1000000;
   old_tm = new_tm;
   printf("time %d\n", tm.us);
   printf("dis  %d\n", dis);
