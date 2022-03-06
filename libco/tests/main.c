@@ -71,6 +71,7 @@ static void producer(void *arg) {
             printf("Produce: g_running = %d\n", g_running);
         }
         co_yield();
+        printf("After yield\n");
     }
 }
 
