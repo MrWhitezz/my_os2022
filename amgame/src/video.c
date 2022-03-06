@@ -1,14 +1,22 @@
 #include <game.h>
 
-int w, h;
+static int w, h;
 
 extern struct craft ct;
 
 static void init() {
   AM_GPU_CONFIG_T info = {0};
+  AM_TIMER_CONFIG_T tmc   = {0};
   ioe_read(AM_GPU_CONFIG, &info);
+  ioe_read(AM_TIMER_CONFIG, &tmc);
+  assert(tmc.has_rtc == true);
   w = info.width;
   h = info.height;
+}
+
+void update_ct(){
+
+
 }
 
 static void draw_tile(int x, int y, int w, int h, uint32_t color) {
