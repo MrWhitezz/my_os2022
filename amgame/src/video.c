@@ -25,7 +25,7 @@ static void init() {
 void update_ct(){
   ioe_read(AM_TIMER_UPTIME, &tm);
   uint32_t new_tm = tm.us; 
-  if (new_tm - old_tm < 100000){
+  if (new_tm - old_tm < 50000){
     return;
   }
   uint32_t dis = (new_tm - old_tm) * 50 / 1000000;
