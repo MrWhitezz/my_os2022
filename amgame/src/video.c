@@ -1,6 +1,5 @@
 #include <game.h>
 
-#define SIDE 16
 int w, h;
 
 extern struct craft ct;
