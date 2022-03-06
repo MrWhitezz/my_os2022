@@ -11,6 +11,7 @@ struct craft
   int x, y;
 };
 
+
 static inline void puts(const char *s) {
   for (; *s; s++) putch(*s);
 }
