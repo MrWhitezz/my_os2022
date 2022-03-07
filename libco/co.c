@@ -116,7 +116,6 @@ void co_yield() {
       }
     }
 
-    // debug("\n");
 
     if (ct_sz > 0){
       int index = cert[rand() % ct_sz];
