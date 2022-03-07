@@ -65,6 +65,7 @@ int    cert[MAXCO];
 int    ct_sz = 0;
 
 struct co *co_start(const char *name, void (*func)(void *), void *arg) {
+  srand(time(NULL));
   struct co *c1 = malloc(sizeof(struct co));
   c1->name   = name;
   c1->func   = func;
@@ -104,7 +105,6 @@ void co_wait(struct co *co) {
 
 void co_yield() {
   // debug("this_co %s\n", current->name);
-  srand(time(NULL));
   struct co *this_co = current;
   int val = setjmp(current->context);
   if (val == 0) {
