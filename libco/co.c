@@ -34,26 +34,6 @@ struct co {
   uint8_t        stack[STACK_SIZE]__attribute__((aligned(16))); // 协程的堆栈
 };
 
-static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg) {
-  asm volatile (
-// #if __x86_64__
-//     "movq %0, %%rsp; movq %2, %%rdi; jmp *%1"
-//       : : "b"((uintptr_t)sp), "d"(entry), "a"(arg) : "memory"
-#if __x86_64__
-    "movq %0, %%rsp;"
-      : : "b"((uintptr_t)sp): "memory"
-
-
-// #else
-//     "movl %0, %%esp; movl %2, 4(%0); jmp *%1"
-//       : : "b"((uintptr_t)sp - 8), "d"(entry), "a"(arg) : "memory"
-#else
-    "movl %0, %%esp"
-      : : "b"((uintptr_t)sp - 8): "memory"
-#endif
-  );
-}
-
 static inline void stack_store(uintptr_t sp){
   asm volatile (
 #if __x86_64__
@@ -161,32 +141,6 @@ void co_yield() {
     }
   }
     
-    // for (int i = 0; i < MAXCO; ++i){
-    //   if (POOL[i] != NULL){
-    //     if (POOL[i]->status == CO_RUNNING){
-    //       current = POOL[i];
-    //       longjmp(current->context, 1);
-    //     }
-    //     else if (POOL[i]->status == CO_NEW){
-    //       // debug("There's new co %s\n", POOL[i]->name);
-    //       // stack_store((uintptr_t)&current->sp);
-    //       current = POOL[i];
-    //       current->status = CO_RUNNING;
-    //       stack_store((uintptr_t)&current->parent_sp);
-    //       stack_change(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)]);
-    //       ((current->func)(current->arg));
-    //       current->status = CO_DEAD;
-    //       stack_change((void *)current->parent_sp);
-
-    //       // debug("%s return\n", current->name);
-    //       current = this_co;
-    //       // debug("thread back to %s\n", current->name);
-    //       break;
-          
-    //     }
-    //   }
-    // }
-
   else {
 
   }
