@@ -102,18 +102,21 @@ static void test_2() {
 
     Queue *queue = q_new();
 
-    struct co *thd1 = co_start("producer-1", producer, queue);
-    struct co *thd2 = co_start("producer-2", producer, queue);
-    struct co *thd3 = co_start("consumer-1", consumer, queue);
-    struct co *thd4 = co_start("consumer-2", consumer, queue);
+    struct co *pd1 = co_start("producer-1", producer, queue);
+    struct co *pd2 = co_start("producer-2", producer, queue);
+    struct co *pd3 = co_start("producer-3", producer, queue);
 
-    co_wait(thd1);
-    co_wait(thd2);
+    struct co *cs1 = co_start("consumer-1", consumer, queue);
+    struct co *cs2 = co_start("consumer-2", consumer, queue);
+
+    co_wait(pd1);
+    co_wait(pd2);
+    co_wait(pd3);
 
     g_running = 0;
 
-    co_wait(thd3);
-    co_wait(thd4);
+    co_wait(cs1);
+    co_wait(cs2);
 
     while (!q_is_empty(queue)) {
         do_consume(queue);
