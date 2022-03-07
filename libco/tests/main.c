@@ -105,6 +105,10 @@ static void test_2() {
     struct co *pd1 = co_start("producer-1", producer, queue);
     struct co *pd2 = co_start("producer-2", producer, queue);
     struct co *pd3 = co_start("producer-3", producer, queue);
+    struct co *pd4 = co_start("producer-4", producer, queue);
+    struct co *pd5 = co_start("producer-5", producer, queue);
+    struct co *pd6 = co_start("producer-6", producer, queue);
+    struct co *pd7 = co_start("producer-7", producer, queue);
 
     struct co *cs1 = co_start("consumer-1", consumer, queue);
     struct co *cs2 = co_start("consumer-2", consumer, queue);
@@ -112,6 +116,10 @@ static void test_2() {
     co_wait(pd1);
     co_wait(pd2);
     co_wait(pd3);
+    co_wait(pd4);
+    co_wait(pd5);
+    co_wait(pd6);
+    co_wait(pd7);
 
     g_running = 0;
 
