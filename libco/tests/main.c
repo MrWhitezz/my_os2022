@@ -115,11 +115,11 @@ static void test_2() {
 
     co_wait(pd1);
     co_wait(pd2);
-    co_wait(pd3);
-    co_wait(pd4);
-    co_wait(pd5);
-    co_wait(pd6);
-    co_wait(pd7);
+    // co_wait(pd3);
+    // co_wait(pd4);
+    // co_wait(pd5);
+    // co_wait(pd6);
+    // co_wait(pd7);
 
     g_running = 0;
 
