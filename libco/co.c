@@ -78,9 +78,9 @@ static inline void stack_change(void *sp) {
   );
 }
 
-struct co co_main = {.name = "main"};
+struct co co_main = {.name = "main", .status = CO_RUNNING};
 struct co *current = &co_main;
-struct co *POOL[MAXCO];
+struct co *POOL[MAXCO] = {&co_main};
 int    cert[MAXCO];
 int    ct_sz = 0;
 
@@ -152,6 +152,9 @@ void co_yield() {
         ((current->func)(current->arg));
         current->status = CO_DEAD;
         stack_change((void *)current->parent_sp);
+        if (current->waiter != NULL){
+          current->waiter->status = CO_RUNNING;
+        }
 
         current = this_co;
       }  
