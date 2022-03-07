@@ -112,8 +112,10 @@ void co_yield() {
     for (int i = 0; i < MAXCO; ++i){
       if (POOL[i] != NULL && (POOL[i]->status == CO_RUNNING|| POOL[i]->status == CO_NEW)){
         cert[ct_sz++] = i;
+        debug("%d ", i);
       }
     }
+    debug("\n");
 
     if (ct_sz > 0){
       int index = cert[rand() % ct_sz];
