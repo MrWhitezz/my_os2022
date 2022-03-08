@@ -1,10 +1,12 @@
 #include "co.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include <setjmp.h>
 #include <stdint.h>
 #include <string.h>
 #include <assert.h>
-#define STACK_SIZE 1024 * 16
+#include <time.h>
+#define STACK_SIZE 1024 * 64
 #define MAXCO      128 + 5
 
 #ifdef LOCAL_MACHINE
@@ -28,29 +30,9 @@ struct co {
   enum co_status status;  // 协程的状态
   struct co *    waiter;  // 是否有其他协程在等待当前协程
   jmp_buf        context; // 寄存器现场 (setjmp.h)
-  uintptr_t      sp;
+  uintptr_t      parent_sp;
   uint8_t        stack[STACK_SIZE]__attribute__((aligned(16))); // 协程的堆栈
 };
-
-static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg) {
-  asm volatile (
-// #if __x86_64__
-//     "movq %0, %%rsp; movq %2, %%rdi; jmp *%1"
-//       : : "b"((uintptr_t)sp), "d"(entry), "a"(arg) : "memory"
-#if __x86_64__
-    "movq %0, %%rsp;"
-      : : "b"((uintptr_t)sp): "memory"
-
-
-// #else
-//     "movl %0, %%esp; movl %2, 4(%0); jmp *%1"
-//       : : "b"((uintptr_t)sp - 8), "d"(entry), "a"(arg) : "memory"
-#else
-    "movl %0, %%esp"
-      : : "b"((uintptr_t)sp - 8): "memory"
-#endif
-  );
-}
 
 static inline void stack_store(uintptr_t sp){
   asm volatile (
@@ -68,20 +50,22 @@ static inline void stack_change(void *sp) {
   asm volatile (
 #if __x86_64__
     "movq %0, %%rsp;"
-      : : "b"((uintptr_t)sp): "memory"
+      : : "r"((uintptr_t)sp): "memory"
 #else
     "movl %0, %%esp"
-      : : "b"((uintptr_t)sp - 8): "memory"
+      : : "r"((uintptr_t)sp): "memory"
 #endif
   );
 }
 
-struct co co_main = {};
-struct co *current = &co_main, *old_cur = NULL;
-struct co *POOL[MAXCO];
-
+struct co co_main = {.name = "main", .status = CO_RUNNING};
+struct co *current = &co_main;
+struct co *POOL[MAXCO] = {&co_main};
+int    cert[MAXCO];
+int    ct_sz = 0;
 
 struct co *co_start(const char *name, void (*func)(void *), void *arg) {
+  srand(time(NULL));
   struct co *c1 = malloc(sizeof(struct co));
   c1->name   = name;
   c1->func   = func;
@@ -97,11 +81,16 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg) {
 }
 
 void co_wait(struct co *co) {
+  debug("Begin wait %s\n", co->name);
+  debug("current: %s\n", current->name);
   co->waiter = current;
   current->status = CO_WAITING;
+  debug("co stat %d\n", co->status);
   while (co->status != CO_DEAD){
     co_yield();
   }
+  debug("%s finished\n", co->name);
+  debug("current: %s\n", current->name);
   for (int i = 0; i < MAXCO; ++i){
     if (POOL[i] == co){
       POOL[i] = NULL;
@@ -109,38 +98,52 @@ void co_wait(struct co *co) {
     }
   }
   free(co);
+  debug("success wait!\n");
   // unsure
   current->status = CO_RUNNING;
 }
 
 void co_yield() {
+  // debug("this_co %s\n", current->name);
+  struct co *this_co = current;
   int val = setjmp(current->context);
   if (val == 0) {
+    ct_sz = 0;
     for (int i = 0; i < MAXCO; ++i){
-      if (POOL[i] != NULL){
-        if (POOL[i]->status == CO_RUNNING){
-          current = POOL[i];
-          longjmp(current->context, 1);
-        }
-        else if (POOL[i]->status == CO_NEW){
-          // stack_store((uintptr_t)&current->sp);
-          old_cur = current;
-          int val_new = setjmp(current->context);
-          if (val_new == 0){
-            current = POOL[i];
-            current->status = CO_RUNNING;
-            stack_change(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)]);
-            ((current->func)(current->arg));
-            current->status = CO_DEAD;
-            current = old_cur;
-            longjmp(old_cur->context, 1);
-          }
-          
-        }
+      if (POOL[i] != NULL && (POOL[i]->status == CO_RUNNING|| POOL[i]->status == CO_NEW)){
+        cert[ct_sz++] = i;
+        // debug("%d ", i);
       }
     }
 
-  } else {
-    // ?
+
+    if (ct_sz > 0){
+      int index = cert[rand() % ct_sz];
+      assert(POOL[index] != NULL);
+      if (POOL[index]->status == CO_RUNNING){
+          current = POOL[index];
+          longjmp(current->context, 1);
+      }
+      else if (POOL[index]->status == CO_NEW){
+        // debug("There's new co %s\n", POOL[i]->name);
+        // stack_store((uintptr_t)&current->sp);
+        current = POOL[index];
+        current->status = CO_RUNNING;
+        stack_store((uintptr_t)&current->parent_sp);
+        stack_change(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)]);
+        ((current->func)(current->arg));
+        current->status = CO_DEAD;
+        stack_change((void *)current->parent_sp);
+        if (current->waiter != NULL){
+          current->waiter->status = CO_RUNNING;
+        }
+
+        current = this_co;
+      }  
+    }
+  }
+    
+  else {
+
   }
 }
