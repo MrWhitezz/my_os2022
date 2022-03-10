@@ -39,6 +39,7 @@ static void test_1() {
     struct co *thd8 = co_start("thread-8", work, "e");
 
     co_wait(thd1);
+    co_yield();
     co_wait(thd2);
     co_wait(thd3);
     co_wait(thd4);
