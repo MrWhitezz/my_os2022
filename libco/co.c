@@ -6,7 +6,7 @@
 #include <string.h>
 #include <assert.h>
 #include <time.h>
-#define STACK_SIZE 1024 * 64
+#define STACK_SIZE 1024 * 32
 #define MAXCO      128 + 1
 
 #ifdef LOCAL_MACHINE
