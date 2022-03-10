@@ -7,6 +7,8 @@
 #include <assert.h>
 #include <time.h>
 #if __x86_64__
+  #define STACK_SIZE 1024 * 64
+#else
   #define STACK_SIZE 1024 * 32
 #endif
 #define MAXCO      128 + 1
