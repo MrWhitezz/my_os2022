@@ -18,7 +18,7 @@
   #define STACK_SIZE 1024 * 32
 #endif
 
-#define CANARY_SZ  1024
+#define CANARY_SZ  256
 #define STK_OFF    (1024 + 16 * sizeof(uintptr_t))
 #define MAXCO      128 + 1
 
