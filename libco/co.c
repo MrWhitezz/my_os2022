@@ -12,11 +12,12 @@
   #define debug(...)
 #endif
 
-#if __x86_64__
-  #define STACK_SIZE 1024 * 64
-#else
-  #define STACK_SIZE 1024 * 32
-#endif
+#define STACK_SIZE 1024 * 64
+// #if __x86_64__
+//   #define STACK_SIZE 1024 * 64
+// #else
+//   #define STACK_SIZE 1024 * 32
+// #endif
 
 #define CANARY_SZ  256
 #define STK_OFF    (1024 + 16 * sizeof(uintptr_t))
