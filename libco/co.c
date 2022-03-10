@@ -23,23 +23,23 @@
 #define MAXCO      128 + 1
 
 
-#define MAGIC 0x55555555
-#define BOTTOM (STACK_SIZE / sizeof(uint32_t) - 1)
-struct stack { char data[STACK_SIZE]; };
+// #define MAGIC 0x55555555
+// #define BOTTOM (STACK_SIZE / sizeof(uint32_t) - 1)
+// struct stack { char data[STACK_SIZE]; };
 
-void canary_init(struct stack *s) {
-  uint32_t *ptr = (uint32_t *)s;
-  for (int i = 0; i < CANARY_SZ; i++)
-    ptr[BOTTOM - i] = ptr[i] = MAGIC;
-}
+// void canary_init(struct stack *s) {
+//   uint32_t *ptr = (uint32_t *)s;
+//   for (int i = 0; i < CANARY_SZ; i++)
+//     ptr[BOTTOM - i] = ptr[i] = MAGIC;
+// }
 
-void canary_check(struct stack *s) {
-  uint32_t *ptr = (uint32_t *)s;
-  for (int i = 0; i < CANARY_SZ; i++) {
-    assert(ptr[BOTTOM - i] == MAGIC);
-    assert(ptr[i] == MAGIC);
-  }
-}
+// void canary_check(struct stack *s) {
+//   uint32_t *ptr = (uint32_t *)s;
+//   for (int i = 0; i < CANARY_SZ; i++) {
+//     assert(ptr[BOTTOM - i] == MAGIC);
+//     assert(ptr[i] == MAGIC);
+//   }
+// }
 
 enum co_status {
   CO_NEW = 1, // 新创建，还未执行过
