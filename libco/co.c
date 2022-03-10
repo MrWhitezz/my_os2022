@@ -6,18 +6,40 @@
 #include <string.h>
 #include <assert.h>
 #include <time.h>
-#if __x86_64__
-  #define STACK_SIZE 1024 * 64
-#else
-  #define STACK_SIZE 1024 * 32
-#endif
-#define MAXCO      128 + 1
-
 #ifdef LOCAL_MACHINE
   #define debug(...) printf(__VA_ARGS__)
 #else
   #define debug(...)
 #endif
+
+#if __x86_64__
+  #define STACK_SIZE 1024 * 64
+#else
+  #define STACK_SIZE 1024 * 32
+#endif
+
+#define CANARY_SZ  1024
+#define STK_OFF    (1024 + 16 * sizeof(uintptr_t))
+#define MAXCO      128 + 1
+
+
+#define MAGIC 0x55555555
+#define BOTTOM (STACK_SIZE / sizeof(uint32_t) - 1)
+struct stack { char data[STACK_SIZE]; };
+
+void canary_init(struct stack *s) {
+  uint32_t *ptr = (uint32_t *)s;
+  for (int i = 0; i < CANARY_SZ; i++)
+    ptr[BOTTOM - i] = ptr[i] = MAGIC;
+}
+
+void canary_check(struct stack *s) {
+  uint32_t *ptr = (uint32_t *)s;
+  for (int i = 0; i < CANARY_SZ; i++) {
+    panic_on(ptr[BOTTOM - i] != MAGIC, "underflow");
+    panic_on(ptr[i] != MAGIC, "overflow");
+  }
+}
 
 enum co_status {
   CO_NEW = 1, // 新创建，还未执行过
@@ -134,7 +156,7 @@ void co_yield() {
         current = POOL[index];
         current->status = CO_RUNNING;
         stack_store((uintptr_t)&current->parent_sp);
-        stack_change(&current->stack[STACK_SIZE - 16 * sizeof(uintptr_t)]);
+        stack_change(&current->stack[STACK_SIZE - STK_OFF]);
         ((current->func)(current->arg));
         current->status = CO_DEAD;
         stack_change((void *)current->parent_sp);
