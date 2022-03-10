@@ -28,7 +28,7 @@
 void canary_init(void *p) {
   uint32_t *ptr = (uint32_t *)p;
   for (int i = 0; i < CANARY_SZ; i++)
-    // ptr[BOTTOM - i] = ptr[i] = MAGIC;
+    ptr[BOTTOM - i] = ptr[i] = MAGIC;
     ;
 }
 
@@ -130,8 +130,8 @@ void co_wait(struct co *co) {
 }
 
 void co_yield() {
-  // if (current != &co_main)
-  //   canary_check(&current->stack[0]);
+  if (current != &co_main)
+    canary_check(&current->stack[0]);
   // debug("this_co %s\n", current->name);
   struct co *this_co = current;
   int val = setjmp(current->context);
