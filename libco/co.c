@@ -36,8 +36,8 @@ void canary_init(struct stack *s) {
 void canary_check(struct stack *s) {
   uint32_t *ptr = (uint32_t *)s;
   for (int i = 0; i < CANARY_SZ; i++) {
-    panic_on(ptr[BOTTOM - i] != MAGIC, "underflow");
-    panic_on(ptr[i] != MAGIC, "overflow");
+    assert(ptr[BOTTOM - i] == MAGIC);
+    assert(ptr[i] == MAGIC);
   }
 }
 
