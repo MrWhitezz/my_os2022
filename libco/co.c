@@ -29,6 +29,7 @@ void canary_init(void *p) {
   uint32_t *ptr = (uint32_t *)p;
   for (int i = 0; i < CANARY_SZ; i++)
     // ptr[BOTTOM - i] = ptr[i] = MAGIC;
+    ;
 }
 
 void canary_check(void *p) {
