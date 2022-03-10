@@ -22,14 +22,13 @@
 #define STK_OFF    (1024 + 16 * sizeof(uintptr_t))
 #define MAXCO      128 + 1
 
-
 #define MAGIC 0x55555555
 #define BOTTOM (STACK_SIZE / sizeof(uint32_t) - 1)
 
 void canary_init(void *p) {
   uint32_t *ptr = (uint32_t *)p;
   for (int i = 0; i < CANARY_SZ; i++)
-    ptr[BOTTOM - i] = ptr[i] = MAGIC;
+    // ptr[BOTTOM - i] = ptr[i] = MAGIC;
 }
 
 void canary_check(void *p) {
@@ -96,7 +95,7 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg) {
   c1->func   = func;
   c1->arg    = arg;
   c1->status = CO_NEW;
-  // canary_init(&c1->stack[0]);
+  canary_init(&c1->stack[0]);
   for (int i = 0; i < MAXCO; ++i){
     if (POOL[i] == NULL){
       POOL[i] = c1;
