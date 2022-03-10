@@ -40,19 +40,12 @@ static void test_1() {
 
     co_yield();
     co_wait(thd1);
-    co_yield();
     co_wait(thd2);
-    co_yield();
     co_wait(thd3);
-    co_yield();
     co_wait(thd4);
-    co_yield();
     co_wait(thd5);
-    co_yield();
     co_wait(thd6);
-    co_yield();
     co_wait(thd7);
-    co_yield();
     co_wait(thd8);
 
 //    printf("\n");
