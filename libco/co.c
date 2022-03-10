@@ -23,23 +23,22 @@
 #define MAXCO      128 + 1
 
 
-// #define MAGIC 0x55555555
-// #define BOTTOM (STACK_SIZE / sizeof(uint32_t) - 1)
-// struct stack { char data[STACK_SIZE]; };
+#define MAGIC 0x55555555
+#define BOTTOM (STACK_SIZE / sizeof(uint32_t) - 1)
 
-// void canary_init(struct stack *s) {
-//   uint32_t *ptr = (uint32_t *)s;
-//   for (int i = 0; i < CANARY_SZ; i++)
-//     ptr[BOTTOM - i] = ptr[i] = MAGIC;
-// }
+void canary_init(void *p) {
+  uint32_t *ptr = (uint32_t *)p;
+  for (int i = 0; i < CANARY_SZ; i++)
+    ptr[BOTTOM - i] = ptr[i] = MAGIC;
+}
 
-// void canary_check(struct stack *s) {
-//   uint32_t *ptr = (uint32_t *)s;
-//   for (int i = 0; i < CANARY_SZ; i++) {
-//     assert(ptr[BOTTOM - i] == MAGIC);
-//     assert(ptr[i] == MAGIC);
-//   }
-// }
+void canary_check(void *p) {
+  uint32_t *ptr = (uint32_t *)p;
+  for (int i = 0; i < CANARY_SZ; i++) {
+    assert(ptr[BOTTOM - i] == MAGIC);
+    assert(ptr[i] == MAGIC);
+  }
+}
 
 enum co_status {
   CO_NEW = 1, // 新创建，还未执行过
@@ -97,6 +96,7 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg) {
   c1->func   = func;
   c1->arg    = arg;
   c1->status = CO_NEW;
+  canary_init(&c1->stack[0]);
   for (int i = 0; i < MAXCO; ++i){
     if (POOL[i] == NULL){
       POOL[i] = c1;
@@ -130,6 +130,7 @@ void co_wait(struct co *co) {
 }
 
 void co_yield() {
+  canary_check(&current->stack[0]);
   // debug("this_co %s\n", current->name);
   struct co *this_co = current;
   int val = setjmp(current->context);
