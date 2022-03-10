@@ -63,7 +63,7 @@ static void do_produce(Queue *queue) {
 static void producer(void *arg) {
     // printf("Produce something\n");
     Queue *queue = (Queue*)arg;
-    for (int i = 0; i < 10000; ) {
+    for (int i = 0; i < 100000; ) {
         // printf("queue sz = %d cap = %d\n", queue->sz, queue->cap);
 
         if (!q_is_full(queue)) {
