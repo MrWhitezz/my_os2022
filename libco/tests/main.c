@@ -16,7 +16,7 @@ static int get_count() {
 
 static void work_loop(void *arg) {
     const char *s = (const char*)arg;
-    for (int i = 0; i < 10000; ++i) {
+    for (int i = 0; i < 40000 / 8; ++i) {
         printf("%s%d  ", s, get_count());
         add_count();
         co_yield();
@@ -32,12 +32,20 @@ static void test_1() {
     struct co *thd1 = co_start("thread-1", work, "X");
     struct co *thd2 = co_start("thread-2", work, "Y");
     struct co *thd3 = co_start("thread-3", work, "Z");
-    struct co *thd4 = co_start("thread-4", work, "x");
+    struct co *thd4 = co_start("thread-4", work, "a");
+    struct co *thd5 = co_start("thread-5", work, "b");
+    struct co *thd6 = co_start("thread-6", work, "c");
+    struct co *thd7 = co_start("thread-7", work, "d");
+    struct co *thd8 = co_start("thread-8", work, "e");
 
     co_wait(thd1);
     co_wait(thd2);
     co_wait(thd3);
     co_wait(thd4);
+    co_wait(thd5);
+    co_wait(thd6);
+    co_wait(thd7);
+    co_wait(thd8);
 
 //    printf("\n");
 }
