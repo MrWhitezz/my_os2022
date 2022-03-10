@@ -54,7 +54,6 @@ static void test_1() {
     co_wait(thd7);
     co_yield();
     co_wait(thd8);
-    co_yield();
 
 //    printf("\n");
 }
