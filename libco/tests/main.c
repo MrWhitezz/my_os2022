@@ -16,6 +16,7 @@ static int get_count() {
 
 static void work_loop(void *arg) {
     const char *s = (const char*)arg;
+    printf("%s beg\n", s);
     for (int i = 0; i < 400 / 8; ++i) {
         printf("%s%d  ", s, get_count());
         add_count();
