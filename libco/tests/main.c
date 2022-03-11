@@ -143,10 +143,10 @@ static void test_2() {
 
     co_wait(pd1);
     printf("debug in test2 line: %d\n", __LINE__);
-    co_yield();
     co_wait(pd2);
-    co_yield();
+    printf("debug in test2 line: %d\n", __LINE__);
     co_wait(pd3);
+    printf("debug in test2 line: %d\n", __LINE__);
     co_wait(pd4);
     printf("debug in test2 line: %d\n", __LINE__);
     // co_wait(pd5);
