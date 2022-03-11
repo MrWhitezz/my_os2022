@@ -136,6 +136,11 @@ static void test_2() {
     // struct co *pd6 = co_start("producer-6", producer, queue);
     // struct co *pd7 = co_start("producer-7", producer, queue);
 
+    co_yield();
+    co_yield();
+    co_yield();
+    co_yield();
+    co_yield();
     struct co *cs1 = co_start("consumer-1", consumer, queue);
     printf("begin create pds 6\n");
     co_yield();
