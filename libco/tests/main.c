@@ -118,6 +118,7 @@ static void consumer(void *arg) {
 static void test_2() {
 
     Queue *queue = q_new();
+    printf("begin test2!!!\n");
 
     co_yield();
     struct co *pd1 = co_start("producer-1", producer, queue);
@@ -156,6 +157,7 @@ static void test_2() {
     }
 
     q_free(queue);
+    printf("end test2!!!\n");
 }
 
 int main() {
