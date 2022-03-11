@@ -125,14 +125,9 @@ static void test_2() {
     printf("begin test2!!!\n");
 
     co_yield();
-    printf("debug in test2 line: %d\n", __LINE__);
     struct co *pd1 = co_start("producer-1", producer, queue);
     struct co *pd2 = co_start("producer-2", producer, queue);
-    co_yield();
-    printf("debug in test2 line: %d\n", __LINE__);
     struct co *pd3 = co_start("producer-3", producer, queue);
-    printf("debug in test2 line: %d\n", __LINE__);
-    co_yield();
     struct co *pd4 = co_start("producer-4", producer, queue);
     printf("debug in test2 line: %d\n", __LINE__);
     // struct co *pd5 = co_start("producer-5", producer, queue);
@@ -140,10 +135,9 @@ static void test_2() {
     // struct co *pd7 = co_start("producer-7", producer, queue);
 
     co_yield();
-    printf("debug in test2 line: %d\n", __LINE__);
     struct co *cs1 = co_start("consumer-1", consumer, queue);
-    printf("debug in test2 line: %d\n", __LINE__);
     co_yield();
+    printf("debug in test2 line: %d\n", __LINE__);
     struct co *cs2 = co_start("consumer-2", consumer, queue);
     printf("debug in test2 line: %d\n", __LINE__);
 
