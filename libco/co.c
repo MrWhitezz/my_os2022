@@ -12,11 +12,11 @@
   #define debug(...)
 #endif
 
-#define STACK_SIZE (1024 * (64 + 12))
+#define STACK_SIZE (1024 * (64 + 2))
 
 #define CANARY_SZ  256
 #define STK_OFF    (1024 + 16 * sizeof(uintptr_t))
-#define MAXCO      (128 + 32)
+#define MAXCO      (128 + 8)
 
 #define MAGIC 0x99999999
 #define BOTTOM (STACK_SIZE / sizeof(uint32_t) - 1)
