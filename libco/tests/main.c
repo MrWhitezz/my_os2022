@@ -107,15 +107,15 @@ static void do_consume(Queue *queue) {
 
 static void consumer(void *arg) {
     Queue *queue = (Queue*)arg;
-    printf("try to consume %d ",g_running);
+    // printf("try to consume %d ",g_running);
     while (g_running) {
-        printf("try to consume ");
+        // printf("try to consume ");
         if (!q_is_empty(queue)) {
             do_consume(queue);
         }
         co_yield();
     }
-    printf("end to consume ");
+    // printf("end to consume ");
 }
 
 static void test_2() {
