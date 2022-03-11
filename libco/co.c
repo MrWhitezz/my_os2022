@@ -114,24 +114,36 @@ void co_wait(struct co *co) {
   current->status = CO_RUNNING;
 }
 
+int id = 0;
+void fd_next() {
+  while (1){
+    id = (id + 1) % MAXCO;
+    if (POOL[id] != NULL && (POOL[id]->status == CO_RUNNING || POOL[id]->status == CO_NEW))
+      return;
+  }
+}
+
 void co_yield() {
   // if (current != &co_main)
   //   canary_check(&current->stack[0]);
 
   int val = setjmp(current->context);
   if (val == 0) {
-    int ct_size = 0;
-    for (int i = 0; i < MAXCO; ++i){
-      if (POOL[i] != NULL && (POOL[i]->status == CO_RUNNING || POOL[i]->status == CO_NEW)){
-        cert[ct_size++] = i;
-        // debug("%d ", i);
-      }
-    }
+    // int ct_size = 0;
+    // for (int i = 0; i < MAXCO; ++i){
+    //   if (POOL[i] != NULL && (POOL[i]->status == CO_RUNNING || POOL[i]->status == CO_NEW)){
+    //     cert[ct_size++] = i;
+    //     // debug("%d ", i);
+    //   }
+    // }
+    fd_next();
+    int index = id;
 
 
-    if (ct_size > 0){
-      int index = cert[rand() % ct_size];
-      // assert(POOL[index] != NULL);
+    // if (ct_size > 0){
+    if (1){
+      // int index = cert[rand() % ct_size];
+      assert(POOL[index] != NULL);
       if (POOL[index]->status == CO_RUNNING){
           current = POOL[index];
           longjmp(current->context, 1);
