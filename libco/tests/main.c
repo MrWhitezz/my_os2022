@@ -148,6 +148,8 @@ static void test_2() {
     co_wait(pd3);
     co_yield();
     co_wait(pd4);
+    co_wait(pd5);
+    co_wait(pd6);
     printf("debug in test2 line: %d\n", __LINE__);
 
     g_running = 0;
@@ -162,11 +164,6 @@ static void test_2() {
     co_yield();
     printf("debug in test2 line: %d\n", __LINE__);
 
-    printf("debug in test2 line: %d\n", __LINE__);
-    co_wait(pd5);
-    printf("debug in test2 line: %d\n", __LINE__);
-    co_wait(pd6);
-    printf("debug in test2 line: %d\n", __LINE__);
     co_wait(pd7);
     printf("debug in test2 line: %d\n", __LINE__);
 
