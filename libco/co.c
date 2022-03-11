@@ -18,7 +18,7 @@
 #define STK_OFF    (1024 + 16 * sizeof(uintptr_t))
 #define MAXCO      128 + 1
 
-#define MAGIC 0x55555555
+#define MAGIC 0x99999999
 #define BOTTOM (STACK_SIZE / sizeof(uint32_t) - 1)
 
 void canary_init(void *p) {
