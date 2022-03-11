@@ -92,7 +92,7 @@ static void producer(void *arg) {
         co_yield();
         // printf("After yield\n");
     }
-    printf("pd %s fi ", (char *)arg);
+    printf("pd fi ");
 }
 
 static void do_consume(Queue *queue) {
