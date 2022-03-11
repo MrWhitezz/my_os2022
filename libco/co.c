@@ -125,7 +125,7 @@ void co_yield() {
     for (int i = 0; i < MAXCO; ++i){
       if (POOL[i] != NULL && (POOL[i]->status == CO_RUNNING || POOL[i]->status == CO_NEW)){
         cert[ct_sz++] = i;
-        if (ct_sz > MAXCO - 10) break;
+        if (ct_sz > MAXCO - 100) break;
         // debug("%d ", i);
       }
     }
