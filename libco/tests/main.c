@@ -67,13 +67,13 @@ static void do_produce(Queue *queue) {
         fprintf(stderr, "New item failure\n");
         return;
     }
-    item->data = (char*)malloc(10);
+    item->data = (char*)malloc(20);
     if (!item->data) {
         fprintf(stderr, "New data failure\n");
         free(item);
         return;
     }
-    memset(item->data, 0, 10);
+    memset(item->data, 0, 20);
     sprintf(item->data, "libco-%d", g_count++);
     q_push(queue, item);
 }
@@ -100,7 +100,7 @@ static void do_consume(Queue *queue) {
 
     Item *item = q_pop(queue);
     if (item) {
-        // printf("%s  ", (char *)item->data);
+        printf("%s  ", (char *)item->data);
         free(item->data);
         free(item);
     }
@@ -120,7 +120,7 @@ static void consumer(void *arg) {
 }
 
 #define PD_SZ 40
-#define CS_SZ 8
+#define CS_SZ 10
 static void test_2() {
     g_running = 1;
 
