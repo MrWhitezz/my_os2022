@@ -133,7 +133,7 @@ void co_yield() {
   if (current != &co_main)
     canary_check(&current->stack[0]);
   // debug("this_co %s\n", current->name);
-  struct co *this_co = current;
+  // struct co *this_co = current;
   int val = setjmp(current->context);
   if (val == 0) {
     ct_sz = 0;
@@ -157,16 +157,16 @@ void co_yield() {
         // stack_store((uintptr_t)&current->sp);
         current = POOL[index];
         current->status = CO_RUNNING;
-        stack_store((uintptr_t)&current->parent_sp);
+        // stack_store((uintptr_t)&current->parent_sp);
         stack_change(&current->stack[STACK_SIZE - STK_OFF]);
         ((current->func)(current->arg));
         current->status = CO_DEAD;
-        stack_change((void *)current->parent_sp);
+        // stack_change((void *)current->parent_sp);
         if (current->waiter != NULL){
           current->waiter->status = CO_RUNNING;
         }
 
-        current = this_co;
+        co_yield();
       }  
     }
   }
