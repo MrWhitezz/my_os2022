@@ -9,6 +9,7 @@ static void os_run() {
     putch(*s == '*' ? '0' + cpu_current() : *s);
   }
   while (1) ;
+  printf("yyy\n");
 }
 
 MODULE_DEF(os) = {
