@@ -203,7 +203,7 @@ int main() {
     while(1) {
         test_2();
         printf("finished test_2 %d times\n", T++);
-        sleep(1);
+        // sleep(1);
     }
 
     printf("\n\n");
