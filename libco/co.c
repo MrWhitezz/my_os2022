@@ -112,7 +112,6 @@ void co_wait(struct co *co) {
   debug("current: %s\n", current->name);
   co->waiter = current;
   current->status = CO_WAITING;
-  debug("co stat %d\n", co->status);
   while (co->status != CO_DEAD){
     co_yield();
   }
