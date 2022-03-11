@@ -103,10 +103,12 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg) {
 
 void co_wait(struct co *co) {
   debug("Begin wait %s\n", co->name);
-  debug("current: %s\n", current->name);
+  debug("current: %s at %p\n", current->name, current);
+  
 
   co->waiter = current;
   current->status = CO_WAITING;
+  
   while (co->status != CO_DEAD){
     co_yield();
   }
@@ -157,7 +159,7 @@ void co_yield() {
         current->status = CO_DEAD;
         debug("DEAD ");
         if (current->waiter != NULL){
-          debug("TRY_RUN_WAIT ");
+          debug("TRY_RUN_WAIT %p ", current->waiter);
           current->waiter->status = CO_RUNNING;
         }
         debug("DEAD ");
