@@ -152,14 +152,23 @@ static void test_2() {
 
     g_running = 0;
 
+    printf("debug in test2 line: %d\n", __LINE__);
     co_wait(cs1);
+    printf("debug in test2 line: %d\n", __LINE__);
     co_yield();
+    printf("debug in test2 line: %d\n", __LINE__);
     co_wait(cs2);
+    printf("debug in test2 line: %d\n", __LINE__);
     co_yield();
+    printf("debug in test2 line: %d\n", __LINE__);
 
+    printf("debug in test2 line: %d\n", __LINE__);
     co_wait(pd5);
+    printf("debug in test2 line: %d\n", __LINE__);
     co_wait(pd6);
+    printf("debug in test2 line: %d\n", __LINE__);
     co_wait(pd7);
+    printf("debug in test2 line: %d\n", __LINE__);
 
     while (!q_is_empty(queue)) {
         do_consume(queue);
@@ -167,6 +176,7 @@ static void test_2() {
     co_yield();
 
     q_free(queue);
+    printf("debug in test2 line: %d\n", __LINE__);
 }
 
 int main() {
