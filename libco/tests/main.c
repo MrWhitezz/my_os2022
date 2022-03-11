@@ -139,23 +139,15 @@ static void test_2() {
     struct co *cs1 = co_start("consumer-1", consumer, queue);
     printf("begin create pds 6\n");
     co_yield();
-    printf("begin create pds 7\n");
     struct co *cs2 = co_start("consumer-2", consumer, queue);
-    printf("begin create pds 8\n");
 
     co_yield();
-    printf("begin create pds 9\n");
     co_wait(pd1);
-    printf("begin create pds 1\n");
     co_yield();
-    printf("begin create pds 2\n");
     co_wait(pd2);
-    printf("begin create pds 3\n");
     co_yield();
     co_wait(pd3);
-    printf("begin create pds 4\n");
     co_wait(pd4);
-    printf("begin create pds 5\n");
     // co_wait(pd5);
     // co_wait(pd6);
     // co_wait(pd7);
