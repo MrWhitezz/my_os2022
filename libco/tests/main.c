@@ -80,7 +80,7 @@ static void do_produce(Queue *queue) {
 static void producer(void *arg) {
     // printf("Produce something\n");
     Queue *queue = (Queue*)arg;
-    for (int i = 0; i < 10000; ) {
+    for (int i = 0; i < 100; ) {
         // printf("queue sz = %d cap = %d\n", queue->sz, queue->cap);
 
         if (!q_is_full(queue)) {
@@ -138,6 +138,9 @@ static void test_2() {
     struct co *cs1 = co_start("consumer-1", consumer, queue);
     co_yield();
     struct co *cs2 = co_start("consumer-2", consumer, queue);
+
+
+
     co_wait(cs1);
 
     co_wait(pd1);
