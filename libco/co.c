@@ -100,6 +100,7 @@ void co_wait(struct co *co) {
   while (co->status != CO_DEAD){
     co_yield();
   }
+
   debug("%s finished and will be freed!\n", co->name);
   debug("current: %s\n", current->name);
   for (int i = 0; i < MAXCO; ++i){
@@ -122,7 +123,7 @@ void co_yield() {
   if (val == 0) {
     ct_sz = 0;
     for (int i = 0; i < MAXCO; ++i){
-      if (POOL[i] != NULL && (POOL[i]->status == CO_RUNNING|| POOL[i]->status == CO_NEW)){
+      if (POOL[i] != NULL && (POOL[i]->status == CO_RUNNING || POOL[i]->status == CO_NEW)){
         cert[ct_sz++] = i;
         // debug("%d ", i);
       }
@@ -131,7 +132,7 @@ void co_yield() {
 
     if (ct_sz > 0){
       int index = cert[rand() % ct_sz];
-      assert(POOL[index] != NULL);
+      // assert(POOL[index] != NULL);
       if (POOL[index]->status == CO_RUNNING){
           current = POOL[index];
           longjmp(current->context, 1);
