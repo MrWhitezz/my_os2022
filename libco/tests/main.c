@@ -119,6 +119,7 @@ static void consumer(void *arg) {
 }
 
 static void test_2() {
+    g_running = 1;
 
     Queue *queue = q_new();
     printf("begin test2!!!\n");
