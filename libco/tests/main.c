@@ -148,6 +148,7 @@ static void test_2() {
     g_running = 0;
 
     co_wait(cs1);
+    co_yield();
     co_wait(cs2);
 
     while (!q_is_empty(queue)) {
@@ -164,7 +165,11 @@ int main() {
     test_1();
 
     // printf("\n\nTest #2. Expect: (libco-){200, 201, 202, ..., 399}\n");
-    test_2();
+    int T = 0;
+    while(1) {
+        test_2();
+        printf("\n finished test_2 %d times\n", T++);
+    }
 
     printf("\n\n");
 
