@@ -159,6 +159,7 @@ void co_yield() {
         if (current->waiter != NULL){
           current->waiter->status = CO_RUNNING;
         }
+        debug("DEAD ");
 
         co_yield();
         assert(0);
