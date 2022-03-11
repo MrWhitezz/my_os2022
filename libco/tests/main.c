@@ -160,10 +160,11 @@ static void test_2() {
     co_wait(pd5);
     co_wait(pd6);
     co_wait(pd7);
-    
+
     while (!q_is_empty(queue)) {
         do_consume(queue);
     }
+    co_yield();
 
     q_free(queue);
 }
