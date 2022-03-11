@@ -199,7 +199,7 @@ int main() {
     // test_1();
 
     // printf("\n\nTest #2. Expect: (libco-){200, 201, 202, ..., 399}\n");
-    int T = 10;
+    int T = 20;
     while(T--) {
         test_2();
         printf("finished test_2 %d times\n", T);
