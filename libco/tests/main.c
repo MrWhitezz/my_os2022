@@ -115,6 +115,7 @@ static void consumer(void *arg) {
         }
         co_yield();
     }
+    printf("end to consume ");
 }
 
 static void test_2() {
