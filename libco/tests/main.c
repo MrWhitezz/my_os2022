@@ -119,6 +119,7 @@ static void test_2() {
 
     Queue *queue = q_new();
 
+    co_yield();
     struct co *pd1 = co_start("producer-1", producer, queue);
     struct co *pd2 = co_start("producer-2", producer, queue);
     co_yield();
