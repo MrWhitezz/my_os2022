@@ -119,7 +119,7 @@ static void consumer(void *arg) {
 }
 
 #define PD_SZ 120
-#define CS_SZ 8
+#define CS_SZ 9
 static void test_2() {
     g_running = 1;
 
