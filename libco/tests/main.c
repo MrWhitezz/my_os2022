@@ -202,7 +202,7 @@ int main() {
     int T = 10;
     while(T--) {
         test_2();
-        printf("finished test_2 %d times\n", T++);
+        printf("finished test_2 %d times\n", T);
         // sleep(1);
     }
 
