@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+#include <unistd.h>
 #include "co-test.h"
 
 int g_count = 0;
@@ -202,6 +203,7 @@ int main() {
     while(1) {
         test_2();
         printf("finished test_2 %d times\n", T++);
+        sleep(1);
     }
 
     printf("\n\n");
