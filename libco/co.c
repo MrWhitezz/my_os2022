@@ -152,10 +152,9 @@ void co_yield() {
         // debug("There's new co %s\n", POOL[i]->name);
         current = POOL[index];
         current->status = CO_RUNNING;
-        stack_switch_call(&current->stack[STACK_SIZE - STK_OFF], current->func, (uintptr_t)current->arg);
-        // stack_change(&current->stack[STACK_SIZE - STK_OFF]);
-        // ((current->func)(current->arg));
-
+        // stack_switch_call(&current->stack[STACK_SIZE - STK_OFF], current->func, (uintptr_t)current->arg);
+        stack_change(&current->stack[STACK_SIZE - STK_OFF]);
+        ((current->func)(current->arg));
 
         current->status = CO_DEAD;
         debug("%s DEAD at %p ", current->name, current);
@@ -163,7 +162,6 @@ void co_yield() {
           debug("TRY_RUN_WAIT %p ", current->waiter);
           current->waiter->status = CO_RUNNING;
         }
-        debug("DEAD ");
 
         co_yield();
         assert(0);
