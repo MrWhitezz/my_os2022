@@ -125,39 +125,37 @@ static void test_2() {
     printf("begin test2!!!\n");
 
     co_yield();
-    printf("begin create pds 1\n");
+    printf("debug in test2 line: %d\n", __LINE__);
     struct co *pd1 = co_start("producer-1", producer, queue);
     struct co *pd2 = co_start("producer-2", producer, queue);
     co_yield();
-    printf("begin create pds 2\n");
+    printf("debug in test2 line: %d\n", __LINE__);
     struct co *pd3 = co_start("producer-3", producer, queue);
-    printf("begin create pds 3\n");
+    printf("debug in test2 line: %d\n", __LINE__);
     co_yield();
-    printf("begin create pds 4\n");
     struct co *pd4 = co_start("producer-4", producer, queue);
-    printf("begin create pds 5\n");
+    printf("debug in test2 line: %d\n", __LINE__);
     // struct co *pd5 = co_start("producer-5", producer, queue);
     // struct co *pd6 = co_start("producer-6", producer, queue);
     // struct co *pd7 = co_start("producer-7", producer, queue);
 
     co_yield();
-    co_yield();
-    co_yield();
-    co_yield();
-    co_yield();
+    printf("debug in test2 line: %d\n", __LINE__);
     struct co *cs1 = co_start("consumer-1", consumer, queue);
-    printf("begin create pds 6\n");
+    printf("debug in test2 line: %d\n", __LINE__);
     co_yield();
-    printf("begin create pds 6\n");
     struct co *cs2 = co_start("consumer-2", consumer, queue);
+    printf("debug in test2 line: %d\n", __LINE__);
 
     co_yield();
+    printf("debug in test2 line: %d\n", __LINE__);
     co_wait(pd1);
     co_yield();
     co_wait(pd2);
     co_yield();
     co_wait(pd3);
     co_wait(pd4);
+    printf("debug in test2 line: %d\n", __LINE__);
     // co_wait(pd5);
     // co_wait(pd6);
     // co_wait(pd7);
@@ -167,6 +165,7 @@ static void test_2() {
     co_wait(cs1);
     co_yield();
     co_wait(cs2);
+    printf("debug in test2 line: %d\n", __LINE__);
 
     while (!q_is_empty(queue)) {
         do_consume(queue);
