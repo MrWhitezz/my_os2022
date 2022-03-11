@@ -70,7 +70,6 @@ struct co co_main = {.name = "main", .status = CO_RUNNING, .waiter = NULL};
 struct co *current = &co_main;
 struct co *POOL[MAXCO] = {&co_main};
 int    cert[MAXCO];
-int    ct_sz = 0;
 
 struct co *co_start(const char *name, void (*func)(void *), void *arg) {
   srand(time(NULL));
@@ -121,18 +120,17 @@ void co_yield() {
 
   int val = setjmp(current->context);
   if (val == 0) {
-    ct_sz = 0;
+    int ct_size = 0;
     for (int i = 0; i < MAXCO; ++i){
       if (POOL[i] != NULL && (POOL[i]->status == CO_RUNNING || POOL[i]->status == CO_NEW)){
-        cert[ct_sz++] = i;
-        if (ct_sz > MAXCO - 100) break;
+        cert[ct_size++] = i;
         // debug("%d ", i);
       }
     }
 
 
-    if (ct_sz > 0){
-      int index = cert[rand() % ct_sz];
+    if (ct_size > 0){
+      int index = cert[rand() % ct_size];
       // assert(POOL[index] != NULL);
       if (POOL[index]->status == CO_RUNNING){
           current = POOL[index];
