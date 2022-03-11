@@ -106,6 +106,7 @@ static void do_consume(Queue *queue) {
 }
 
 static void consumer(void *arg) {
+    printf("try to consume ");
     Queue *queue = (Queue*)arg;
     while (g_running) {
         if (!q_is_empty(queue)) {
