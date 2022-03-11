@@ -21,20 +21,20 @@
 #define MAGIC 0x99999999
 #define BOTTOM (STACK_SIZE / sizeof(uint32_t) - 1)
 
-// void canary_init(void *p) {
-//   uint32_t *ptr = (uint32_t *)p;
-//   for (int i = 0; i < CANARY_SZ; i++)
-//     ptr[BOTTOM - i] = ptr[i] = MAGIC;
-//     ;
-// }
+void canary_init(void *p) {
+  uint32_t *ptr = (uint32_t *)p;
+  for (int i = 0; i < CANARY_SZ; i++)
+    ptr[BOTTOM - i] = ptr[i] = MAGIC;
+    ;
+}
 
-// void canary_check(void *p) {
-//   uint32_t *ptr = (uint32_t *)p;
-//   for (int i = 0; i < CANARY_SZ; i++) {
-//     assert(ptr[BOTTOM - i] == MAGIC);
-//     assert(ptr[i] == MAGIC);
-//   }
-// }
+void canary_check(void *p) {
+  uint32_t *ptr = (uint32_t *)p;
+  for (int i = 0; i < CANARY_SZ; i++) {
+    assert(ptr[BOTTOM - i] == MAGIC);
+    assert(ptr[i] == MAGIC);
+  }
+}
 
 enum co_status {
   CO_NEW = 1, // 新创建，还未执行过
@@ -90,9 +90,6 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg) {
 }
 
 void co_wait(struct co *co) {
-  debug("Begin wait %s at %p\n", co->name, co);
-  debug("current: %s at %p\n", current->name, current);
-
   co->waiter = current;
   current->status = CO_WAITING;
   
@@ -100,8 +97,6 @@ void co_wait(struct co *co) {
     co_yield();
   }
 
-  debug("%s finished and will be freed!\n", co->name);
-  debug("current: %s\n", current->name);
   for (int i = 0; i < MAXCO; ++i){
     if (POOL[i] == co){
       POOL[i] = NULL;
@@ -109,7 +104,6 @@ void co_wait(struct co *co) {
     }
   }
   free(co);
-  debug("success wait!\n");
   // unsure
   current->status = CO_RUNNING;
 }
@@ -129,43 +123,27 @@ void co_yield() {
 
   int val = setjmp(current->context);
   if (val == 0) {
-    // int ct_size = 0;
-    // for (int i = 0; i < MAXCO; ++i){
-    //   if (POOL[i] != NULL && (POOL[i]->status == CO_RUNNING || POOL[i]->status == CO_NEW)){
-    //     cert[ct_size++] = i;
-    //     // debug("%d ", i);
-    //   }
-    // }
     fd_next();
-    int index = id;
+    assert(POOL[id] != NULL);
+    if (POOL[id]->status == CO_RUNNING){
+        current = POOL[id];
+        longjmp(current->context, 1);
+    }
+    else if (POOL[id]->status == CO_NEW){
+      current = POOL[id];
+      current->status = CO_RUNNING;
+      stack_change(&current->stack[STACK_SIZE - STK_OFF]);
+      ((current->func)(current->arg));
 
-
-    // if (ct_size > 0){
-    if (1){
-      // int index = cert[rand() % ct_size];
-      assert(POOL[index] != NULL);
-      if (POOL[index]->status == CO_RUNNING){
-          current = POOL[index];
-          longjmp(current->context, 1);
+      current->status = CO_DEAD;
+      debug("%s DEAD at %p ", current->name, current);
+      if (current->waiter != NULL){
+        debug("TRY_RUN_WAIT %p ", current->waiter);
+        current->waiter->status = CO_RUNNING;
       }
-      else if (POOL[index]->status == CO_NEW){
-        // debug("There's new co %s\n", POOL[i]->name);
-        current = POOL[index];
-        current->status = CO_RUNNING;
-        // stack_switch_call(&current->stack[STACK_SIZE - STK_OFF], current->func, (uintptr_t)current->arg);
-        stack_change(&current->stack[STACK_SIZE - STK_OFF]);
-        ((current->func)(current->arg));
 
-        current->status = CO_DEAD;
-        debug("%s DEAD at %p ", current->name, current);
-        if (current->waiter != NULL){
-          debug("TRY_RUN_WAIT %p ", current->waiter);
-          current->waiter->status = CO_RUNNING;
-        }
-
-        co_yield();
-        assert(0);
-      }  
+      co_yield();
+      assert(0);
     }
   }
     
