@@ -81,7 +81,7 @@ static void do_produce(Queue *queue) {
 static void producer(void *arg) {
     // printf("Produce something\n");
     Queue *queue = (Queue*)arg;
-    for (int i = 0; i < 1000; ) {
+    for (int i = 0; i < 100; ) {
         // printf("queue sz = %d cap = %d\n", queue->sz, queue->cap);
 
         if (!q_is_full(queue)) {
@@ -119,7 +119,7 @@ static void consumer(void *arg) {
     // printf("end to consume ");
 }
 
-#define PD_SZ 120
+#define PD_SZ 100
 #define CS_SZ 1
 static void test_2() {
     g_running = 1;
