@@ -121,17 +121,23 @@ static void test_2() {
 
     struct co *pd1 = co_start("producer-1", producer, queue);
     struct co *pd2 = co_start("producer-2", producer, queue);
+    co_yield();
     struct co *pd3 = co_start("producer-3", producer, queue);
+    co_yield();
     struct co *pd4 = co_start("producer-4", producer, queue);
     // struct co *pd5 = co_start("producer-5", producer, queue);
     // struct co *pd6 = co_start("producer-6", producer, queue);
     // struct co *pd7 = co_start("producer-7", producer, queue);
 
     struct co *cs1 = co_start("consumer-1", consumer, queue);
+    co_yield();
     struct co *cs2 = co_start("consumer-2", consumer, queue);
 
+    co_yield();
     co_wait(pd1);
+    co_yield();
     co_wait(pd2);
+    co_yield();
     co_wait(pd3);
     co_wait(pd4);
     // co_wait(pd5);
