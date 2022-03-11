@@ -54,18 +54,6 @@ struct co {
   uint8_t        stack[STACK_SIZE]__attribute__((aligned(16))); // 协程的堆栈
 };
 
-static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg) {
-  asm volatile (
-#if __x86_64__
-    "movq %0, %%rsp; movq %2, %%rdi; jmp *%1"
-      : : "b"((uintptr_t)sp), "d"(entry), "a"(arg) : "memory"
-#else
-    "movl %0, %%esp; movl %2, 4(%0); jmp *%1"
-      : : "b"((uintptr_t)sp - 8), "d"(entry), "a"(arg) : "memory"
-#endif
-  );
-}
-
 static inline void stack_change(void *sp) {
   asm volatile (
 #if __x86_64__
