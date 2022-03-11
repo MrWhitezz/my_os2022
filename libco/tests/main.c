@@ -169,7 +169,7 @@ int main() {
     int T = 0;
     while(1) {
         test_2();
-        printf("\n finished test_2 %d times\n", T++);
+        printf("finished test_2 %d times\n", T++);
     }
 
     printf("\n\n");
