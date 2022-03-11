@@ -119,7 +119,7 @@ static void consumer(void *arg) {
     // printf("end to consume ");
 }
 
-#define PD_SZ 80
+#define PD_SZ 40
 #define CS_SZ 8
 static void test_2() {
     g_running = 1;
