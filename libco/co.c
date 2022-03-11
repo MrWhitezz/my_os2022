@@ -13,11 +13,6 @@
 #endif
 
 #define STACK_SIZE 1024 * 64
-// #if __x86_64__
-//   #define STACK_SIZE 1024 * 64
-// #else
-//   #define STACK_SIZE 1024 * 32
-// #endif
 
 #define CANARY_SZ  256
 #define STK_OFF    (1024 + 16 * sizeof(uintptr_t))
@@ -56,7 +51,6 @@ struct co {
   enum co_status status;  // 协程的状态
   struct co *    waiter;  // 是否有其他协程在等待当前协程
   jmp_buf        context; // 寄存器现场 (setjmp.h)
-  uintptr_t      parent_sp;
   uint8_t        stack[STACK_SIZE]__attribute__((aligned(16))); // 协程的堆栈
 };
 
@@ -110,7 +104,7 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg) {
 void co_wait(struct co *co) {
   debug("Begin wait %s\n", co->name);
   debug("current: %s\n", current->name);
-  
+
   co->waiter = current;
   current->status = CO_WAITING;
   while (co->status != CO_DEAD){
@@ -133,8 +127,7 @@ void co_wait(struct co *co) {
 void co_yield() {
   if (current != &co_main)
     canary_check(&current->stack[0]);
-  // debug("this_co %s\n", current->name);
-  // struct co *this_co = current;
+
   int val = setjmp(current->context);
   if (val == 0) {
     ct_sz = 0;
@@ -155,14 +148,11 @@ void co_yield() {
       }
       else if (POOL[index]->status == CO_NEW){
         // debug("There's new co %s\n", POOL[i]->name);
-        // stack_store((uintptr_t)&current->sp);
         current = POOL[index];
         current->status = CO_RUNNING;
-        // stack_store((uintptr_t)&current->parent_sp);
         stack_change(&current->stack[STACK_SIZE - STK_OFF]);
         ((current->func)(current->arg));
         current->status = CO_DEAD;
-        // stack_change((void *)current->parent_sp);
         if (current->waiter != NULL){
           current->waiter->status = CO_RUNNING;
         }
