@@ -80,7 +80,7 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg) {
   c1->arg    = arg;
   c1->waiter = NULL;
   c1->status = CO_NEW;
-  canary_init(&c1->stack[0]);
+  // canary_init(&c1->stack[0]);
   for (int i = 0; i < MAXCO; ++i){
     if (POOL[i] == NULL){
       POOL[i] = c1;
@@ -115,8 +115,8 @@ void co_wait(struct co *co) {
 }
 
 void co_yield() {
-  if (current != &co_main)
-    canary_check(&current->stack[0]);
+  // if (current != &co_main)
+  //   canary_check(&current->stack[0]);
 
   int val = setjmp(current->context);
   if (val == 0) {
