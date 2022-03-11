@@ -99,7 +99,7 @@ static void do_consume(Queue *queue) {
 
     Item *item = q_pop(queue);
     if (item) {
-        // printf("%s  ", (char *)item->data);
+        printf("%s  ", (char *)item->data);
         free(item->data);
         free(item);
     }
@@ -118,54 +118,67 @@ static void consumer(void *arg) {
     // printf("end to consume ");
 }
 
+#define PD_SZ 120
+#define CS_SZ 8
 static void test_2() {
     g_running = 1;
 
     Queue *queue = q_new();
 
-    co_yield();
-    struct co *pd1 = co_start("producer-1", producer, queue);
-    struct co *pd2 = co_start("producer-2", producer, queue);
-    struct co *pd3 = co_start("producer-3", producer, queue);
-    co_yield();
-    struct co *pd4 = co_start("producer-4", producer, queue);
-    struct co *pd5 = co_start("producer-5", producer, queue);
-    struct co *pd6 = co_start("producer-6", producer, queue);
-    co_yield();
-    struct co *pd7 = co_start("producer-7", producer, queue);
+    // co_yield();
+    // struct co *pd1 = co_start("producer-1", producer, queue);
+    // struct co *pd2 = co_start("producer-2", producer, queue);
+    // struct co *pd3 = co_start("producer-3", producer, queue);
+    // co_yield();
+    // struct co *pd4 = co_start("producer-4", producer, queue);
+    // struct co *pd5 = co_start("producer-5", producer, queue);
+    // struct co *pd6 = co_start("producer-6", producer, queue);
+    // co_yield();
+    // struct co *pd7 = co_start("producer-7", producer, queue);
 
-    co_yield();
-    struct co *cs1 = co_start("consumer-1", consumer, queue);
-    co_yield();
-    struct co *cs2 = co_start("consumer-2", consumer, queue);
-
-
+    // co_yield();
+    // struct co *cs1 = co_start("consumer-1", consumer, queue);
+    // co_yield();
+    // struct co *cs2 = co_start("consumer-2", consumer, queue);
 
 
-    co_wait(pd1);
-    co_yield();
-    co_wait(pd2);
-    co_wait(pd3);
-    co_yield();
-    co_wait(pd4);
-    co_wait(pd5);
-    co_wait(pd6);
-    co_wait(pd7);
-    printf("debug in test2 line: %d\n", __LINE__);
 
-    g_running = 0;
 
-    printf("debug in test2 line: %d\n", __LINE__);
-    co_wait(cs1);
-    printf("debug in test2 line: %d\n", __LINE__);
-    co_yield();
-    printf("debug in test2 line: %d\n", __LINE__);
-    co_wait(cs2);
-    printf("debug in test2 line: %d\n", __LINE__);
-    co_yield();
-    printf("debug in test2 line: %d\n", __LINE__);
+    // co_wait(pd1);
+    // co_yield();
+    // co_wait(pd2);
+    // co_wait(pd3);
+    // co_yield();
+    // co_wait(pd4);
+    // co_wait(pd5);
+    // co_wait(pd6);
+    // co_wait(pd7);
+    // printf("debug in test2 line: %d\n", __LINE__);
 
-    printf("debug in test2 line: %d\n", __LINE__);
+    // g_running = 0;
+
+    // co_wait(cs1);
+    // co_wait(cs2);
+    // co_yield();
+    struct co *pd[PD_SZ];
+    struct co *cs[CS_SZ];
+    for (int i = 0; i < PD_SZ; ++i){
+        pd[i] = co_start("produce", producer, queue);
+    }
+    for (int i = 0; i < CS_SZ; ++i){
+        cs[i] = co_start("consume", consumer, queue);
+    }
+    
+
+    for (int i = 0; i < PD_SZ; ++i){
+        co_yield();
+        co_wait(pd[i]);
+    }
+    for(int i = 0; i < CS_SZ; ++i){
+        co_yield();
+        co_wait(cs[i]);
+    }
+
 
     while (!q_is_empty(queue)) {
         do_consume(queue);
@@ -173,7 +186,6 @@ static void test_2() {
     co_yield();
 
     q_free(queue);
-    printf("debug in test2 line: %d\n", __LINE__);
 }
 
 int main() {
