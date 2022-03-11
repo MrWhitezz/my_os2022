@@ -138,6 +138,7 @@ static void test_2() {
     struct co *cs1 = co_start("consumer-1", consumer, queue);
     co_yield();
     struct co *cs2 = co_start("consumer-2", consumer, queue);
+    co_wait(cs1);
 
     co_wait(pd1);
     co_yield();
@@ -152,7 +153,6 @@ static void test_2() {
 
     g_running = 0;
 
-    co_wait(cs1);
     co_yield();
     co_wait(cs2);
     co_yield();
@@ -171,7 +171,7 @@ int main() {
     // test_1();
 
     // printf("\n\nTest #2. Expect: (libco-){200, 201, 202, ..., 399}\n");
-    int T = 0;
+    int T = 1;
     while(1) {
         test_2();
         printf("finished test_2 %d times\n", T++);
