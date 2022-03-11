@@ -121,15 +121,17 @@ static void test_2() {
     printf("begin test2!!!\n");
 
     co_yield();
-    printf("begin create pds\n");
+    printf("begin create pds 1\n");
     struct co *pd1 = co_start("producer-1", producer, queue);
     struct co *pd2 = co_start("producer-2", producer, queue);
-    printf("begin create pds\n");
     co_yield();
-    printf("begin create pds\n");
+    printf("begin create pds 2\n");
     struct co *pd3 = co_start("producer-3", producer, queue);
+    printf("begin create pds 3\n");
     co_yield();
+    printf("begin create pds 4\n");
     struct co *pd4 = co_start("producer-4", producer, queue);
+    printf("begin create pds 5\n");
     // struct co *pd5 = co_start("producer-5", producer, queue);
     // struct co *pd6 = co_start("producer-6", producer, queue);
     // struct co *pd7 = co_start("producer-7", producer, queue);
