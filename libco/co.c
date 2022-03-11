@@ -54,14 +54,14 @@ struct co {
   uint8_t        stack[STACK_SIZE]__attribute__((aligned(16))); // 协程的堆栈
 };
 
-static inline void stack_store(uintptr_t sp){
+static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg) {
   asm volatile (
 #if __x86_64__
-    "movq %%rsp, (%0);"
-      : : "r"((uintptr_t)sp): "memory"
+    "movq %0, %%rsp; movq %2, %%rdi; jmp *%1"
+      : : "b"((uintptr_t)sp), "d"(entry), "a"(arg) : "memory"
 #else
-    "movl %%esp, (%0);"
-      : : "r"((uintptr_t)sp): "memory"
+    "movl %0, %%esp; movl %2, 4(%0); jmp *%1"
+      : : "b"((uintptr_t)sp - 8), "d"(entry), "a"(arg) : "memory"
 #endif
   );
 }
@@ -152,8 +152,9 @@ void co_yield() {
         // debug("There's new co %s\n", POOL[i]->name);
         current = POOL[index];
         current->status = CO_RUNNING;
-        stack_change(&current->stack[STACK_SIZE - STK_OFF]);
-        ((current->func)(current->arg));
+        stack_switch_call(&current->stack[STACK_SIZE - STK_OFF], current->func, (uintptr_t)current->arg);
+        // stack_change(&current->stack[STACK_SIZE - STK_OFF]);
+        // ((current->func)(current->arg));
 
 
         current->status = CO_DEAD;
