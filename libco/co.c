@@ -110,6 +110,7 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg) {
 void co_wait(struct co *co) {
   debug("Begin wait %s\n", co->name);
   debug("current: %s\n", current->name);
+  
   co->waiter = current;
   current->status = CO_WAITING;
   while (co->status != CO_DEAD){
