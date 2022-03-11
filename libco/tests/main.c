@@ -147,9 +147,8 @@ static void test_2() {
     struct co *cs2 = co_start("consumer-2", consumer, queue);
     printf("debug in test2 line: %d\n", __LINE__);
 
-    co_yield();
-    printf("debug in test2 line: %d\n", __LINE__);
     co_wait(pd1);
+    printf("debug in test2 line: %d\n", __LINE__);
     co_yield();
     co_wait(pd2);
     co_yield();
