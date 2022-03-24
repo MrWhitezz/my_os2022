@@ -22,6 +22,7 @@ uint32_t list_size;
 
 void list_init(){
   list_size = ((uintptr_t)heap.end - (uintptr_t)heap.start) / 2;
+  list_size = ROUNDDOWN(list_size, 16 * (1 << 20));
   printf("list_size: %d\n", list_size);
   assert(ROUNDUP(list_size, 16 * (1 << 20)) == list_size);
   head = (__node_t*)heap.start;
