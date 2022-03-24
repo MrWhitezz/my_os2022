@@ -66,9 +66,6 @@ void* list_alloc(size_t size){
       break;
     }
     curr = curr->next;
-    // something wrong
-    header_t * h = (header_t*)curr;
-    assert(h != NULL);
   }
   // release lock
   spin_unlock(&lk1);
