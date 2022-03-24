@@ -13,8 +13,9 @@ extern __node_t * head;
 extern uint32_t list_size;
 
 static void *kalloc(size_t size) {
-  
-  return malloc(size);
+  if (size <= sizeof(header_t))
+    size = sizeof(header_t); 
+  return list_alloc(size);
 }
 
 static void kfree(void *ptr) {
