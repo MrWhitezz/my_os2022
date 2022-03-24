@@ -10,7 +10,7 @@ static void os_run() {
     putch(*s == '*' ? '0' + cpu_current() : *s);
   }
   for (unsigned x = 0; x < 0x11; x++) {
-    printf("%d is aligned to %d\n", x, x & ~(x - 1));
+    printf("%d is aligned to %d\n", x, nextPower_2(x));
   }
   while (1) ;
 }
