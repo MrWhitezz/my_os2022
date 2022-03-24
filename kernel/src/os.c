@@ -9,7 +9,7 @@ static void os_run() {
   for (const char *s = "Hello World from CPU #*\n"; *s; s++) {
     putch(*s == '*' ? '0' + cpu_current() : *s);
   }
-  for (unsigned x = 0; x < 100; x++) {
+  for (unsigned x = 0; x < 2147484647; x++) {
     printf("%d is aligned to %d\n", x, nextPower_2(x));
   }
   while (1) ;

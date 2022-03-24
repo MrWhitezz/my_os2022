@@ -36,6 +36,8 @@ void* list_alloc(size_t size){
   // add lock
   spin_lock(&lk1);
   __node_t * curr = head;
+  // always give a larger size
+  size = nextPower_2(size);
 
   while(1){
     // TODO
