@@ -36,7 +36,24 @@ void  fill_header(header_t *header, void *start, int size){
 
 void  drag_node(__node_t *from, __node_t *to){
     // this function only drags relative position in list from one node to another
+    __node_t ** prev = &head;
+    __node_t * curr = head;
+    if (curr == from){
+        head = to;
+        head->next = from->next;
+    }
+    else{
+        curr = curr->next;
+    }
+    while(curr != NULL && curr != from){
+        prev = &((*prev)->next);
+        assert(*prev == curr);
+        curr = curr->next;
+    }
+    assert(curr == from && (*prev)->next == from);
 
+    (*prev)->next = to;
+    to->next = from->next;
 }
 
 void* list_alloc(size_t size){
