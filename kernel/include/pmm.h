@@ -21,3 +21,4 @@ typedef struct __node_t
 
 void  list_init();
 void* list_alloc(size_t size);
+void  drag_node(__node_t *from, __node_t *to);

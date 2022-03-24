@@ -22,9 +22,15 @@ uint32_t list_size;
 
 void list_init(){
   list_size = ((uintptr_t)heap.end - (uintptr_t)heap.start) / 2;
+  assert(ROUNDUP(list_size, 16 * (1 << 20)) == list_size);
   head = (__node_t*)heap.start;
   head->size = list_size;
   head->next = NULL;
+}
+
+void  drag_node(__node_t *from, __node_t *to){
+    // this function only drags info from one node to another
+
 }
 
 void* list_alloc(size_t size){
