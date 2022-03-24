@@ -8,8 +8,8 @@ void spin_unlock(spinlock_t *lk);
 
 typedef struct header_t
 {
+    void * start;
     int size;
-    int magic;
 }header_t;
 
 typedef struct __node_t
@@ -22,3 +22,4 @@ typedef struct __node_t
 void  list_init();
 void* list_alloc(size_t size);
 void  drag_node(__node_t *from, __node_t *to);
+void  fill_header(header_t *header, void *start, int size);

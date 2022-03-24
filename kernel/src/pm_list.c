@@ -23,15 +23,19 @@ uint32_t list_size;
 void list_init(){
   list_size = ((uintptr_t)heap.end - (uintptr_t)heap.start) / 2;
   list_size = ROUNDDOWN(list_size, 16 * (1 << 20));
-  printf("list_size: %d\n", list_size);
   assert(ROUNDUP(list_size, 16 * (1 << 20)) == list_size);
   head = (__node_t*)heap.start;
   head->size = list_size;
   head->next = NULL;
 }
 
+void  fill_header(header_t *header, void *start, int size){
+    header->start = start;
+    header->size = size;
+}
+
 void  drag_node(__node_t *from, __node_t *to){
-    // this function only drags info from one node to another
+    // this function only drags relative position in list from one node to another
 
 }
 
@@ -49,10 +53,16 @@ void* list_alloc(size_t size){
     if (curr == NULL){
       break;
     }
-    uint32_t free_sz = curr->size - ((ROUNDUP(curr, size) - (uintptr_t)curr)); 
+    uint32_t rd_sz = ((ROUNDUP(curr, size) - (uintptr_t)curr));
+    uint32_t free_sz = curr->size - rd_sz; 
     if (free_sz >= size){
       ret = (void *)ROUNDUP(curr, size);
-      // TODO: move the curr to ret + size
+      fill_header((header_t *)ret, curr, size + rd_sz);
+      __node_t * new_curr = (__node_t *)((uintptr_t)ret + size);
+      assert(((size_t)new_curr - (size_t)curr) == size + rd_sz);
+      drag_node(curr, new_curr);
+      curr = new_curr;
+      curr->size = free_sz - size;
       break;
     }
     curr = curr->next;
@@ -62,6 +72,8 @@ void* list_alloc(size_t size){
   }
   // release lock
   spin_unlock(&lk1);
-  return ret;
-
+  if (ret == NULL){
+    return NULL;
+  }
+  return ret + list_size;
 }
