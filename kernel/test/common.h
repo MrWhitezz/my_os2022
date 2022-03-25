@@ -5,6 +5,8 @@
 #include <string.h>
 #include <assert.h>
 
+int      atomic_xchg (int *addr, int newval);
+
 typedef struct {
   void *start, *end;
 } Area;
