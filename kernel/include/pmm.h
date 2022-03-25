@@ -1,4 +1,6 @@
 #include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
 #define MAX_ALLOC (16 * (1 << 20))
 
 // Spinlock
