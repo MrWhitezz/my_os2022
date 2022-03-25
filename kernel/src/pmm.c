@@ -15,7 +15,7 @@ static void *kalloc(size_t size) {
 }
 
 static void kfree(void *ptr) {
-  // free(ptr);
+  list_free(ptr);
 }
 
 static void pmm_init() {
