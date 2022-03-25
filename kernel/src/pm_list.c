@@ -1,5 +1,6 @@
 #include <pmm.h>
 #include <common.h>
+#define addr_leq(a, b) ((uintptr_t)(a) <= (uintptr_t)(b))
 
 // Spin lock
 void spin_lock(spinlock_t *lk) { while (atomic_xchg(lk, 1))  ; }
@@ -15,7 +16,7 @@ unsigned int nextPower_2(unsigned int x){
   return x + 1;
 }
 
-spinlock_t lk1;
+spinlock_t lk[LK_SIZE];
 __node_t * head;
 uint32_t list_size;
 
@@ -30,36 +31,37 @@ void list_init(){
 }
 
 void  fill_header(header_t *header, void *start, int size){
-    header->start = start;
-    header->size = size;
+  header->start = start;
+  header->size = size;
 }
 
 void  drag_node(__node_t *from, __node_t *to){
-    // this function only drags relative position in list from one node to another
-    __node_t ** prev = &head;
-    __node_t * curr = head;
-    if (curr == from){
-        head = to;
-        head->next = from->next;
-    }
-    else{
-        curr = curr->next;
-    }
-    while(curr != NULL && curr != from){
-        prev = &((*prev)->next);
-        assert(*prev == curr);
-        curr = curr->next;
-    }
-    assert(curr == from && (*prev)->next == from);
+  // this function only drags relative position in list from one node to another
+  __node_t ** prev = &head;
+  __node_t * curr = head;
+  if (curr == from){
+    head = to;
+    head->next = from->next;
+    return;
+  }
+  else{
+    curr = curr->next;
+  }
+  while(curr != NULL && curr != from){
+    prev = &((*prev)->next);
+    assert(*prev == curr);
+    curr = curr->next;
+  }
+  assert(curr == from && (*prev)->next == from);
 
-    (*prev)->next = to;
-    to->next = from->next;
+  (*prev)->next = to;
+  to->next = from->next;
 }
 
 void* list_alloc(size_t size){
   assert(size >= sizeof(struct header_t));
   // add lock
-  spin_lock(&lk1);
+  spin_lock(&lk[LK_ALLOC]);
   __node_t * curr = head;
   void * ret = NULL;
   // always give a larger size
@@ -85,9 +87,49 @@ void* list_alloc(size_t size){
     curr = curr->next;
   }
   // release lock
-  spin_unlock(&lk1);
+  spin_unlock(&lk[LK_ALLOC]);
   if (ret == NULL){
     return NULL;
   }
   return ret + list_size;
+}
+
+void  list_insert(__node_t *node){
+  __node_t **prev = &head;
+  __node_t *curr = head;
+  if (addr_leq(node, curr)){
+    head = node;
+    head->next = curr;
+    return;
+  }
+  else {
+    curr = curr->next;
+  }
+
+  while(curr != NULL && !addr_leq(node, curr)){
+    prev = &((*prev)->next);
+    assert(*prev == curr);
+    curr = curr->next;
+  }
+
+  if (curr == NULL){
+    (*prev)->next = node;
+    node->next = NULL;
+  }
+  else{
+    assert(addr_leq(node, curr));
+    assert(addr_leq((*prev)->next, node));
+    (*prev)->next = node;
+    node->next = curr;
+  }
+}
+
+void  list_free(void *ptr){
+  void *lptr = ptr - list_size;
+  header_t *h = (header_t *)lptr;
+  __node_t *cur = (__node_t *)h->start;
+  cur->size = h->size;
+  spin_lock(&lk[LK_ALLOC]); // name needs to be modify
+  list_insert(cur);
+  spin_unlock(&lk[LK_ALLOC]);
 }
