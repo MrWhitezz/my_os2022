@@ -1,4 +1,7 @@
 #include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
 #define MODULE(mod) \
   typedef struct mod_##mod##_t mod_##mod##_t; \
   extern mod_##mod##_t *mod; \
