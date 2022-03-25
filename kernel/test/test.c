@@ -8,6 +8,7 @@ int atomic_xchg(int *addr, int newval) {
   return atomic_exchange((int *)addr, newval);
 }
 Area heap = {};
+
 int main() {
   pmm->init();
   for (int i = 0; i < 4; i++)
