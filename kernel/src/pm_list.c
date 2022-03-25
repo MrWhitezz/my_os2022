@@ -2,6 +2,10 @@
 #include <common.h>
 #define addr_leq(a, b) ((uintptr_t)(a) <= (uintptr_t)(b))
 
+#ifdef TEST
+extern  Area   heap;
+#endif
+
 // Spin lock
 void spin_lock(spinlock_t *lk) { while (atomic_xchg(lk, 1))  ; }
 void spin_unlock(spinlock_t *lk) { atomic_xchg(lk, 0); }
