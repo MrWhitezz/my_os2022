@@ -29,4 +29,5 @@ int main() {
     create(do_test_1);
   join(goodbye);
   printf("End of main.\n");
+  Log("End of main.\n");
 }
