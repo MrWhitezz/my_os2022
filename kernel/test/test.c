@@ -28,6 +28,5 @@ int main() {
   for (int i = 0; i < 1; i++)
     create(do_test_1);
   join(goodbye);
-  printf("End of main.\n");
   Log("End of main.\n");
 }

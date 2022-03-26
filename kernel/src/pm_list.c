@@ -63,6 +63,7 @@ void  drag_node(__node_t *from, __node_t *to){
 }
 
 void* list_alloc(size_t size){
+  Log("something\n");
   assert(size >= sizeof(struct header_t));
   // add lock
   spin_lock(&lk[LK_ALLOC]);
