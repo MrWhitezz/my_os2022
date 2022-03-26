@@ -20,7 +20,7 @@ void do_test_1(){
       size += 1 << j;
     }
   }
-  printf("Total size: %dKiB\n", size >> 10);
+  printf("Total size: %d MiB\n", size >> 20);
 }
 
 int main() {
