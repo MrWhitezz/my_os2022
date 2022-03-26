@@ -63,7 +63,6 @@ void  drag_node(__node_t *from, __node_t *to){
 }
 
 void* list_alloc(size_t size){
-  Log("Begin ALLOC\n");
   assert(size >= sizeof(struct header_t));
   // add lock
   spin_lock(&lk[LK_ALLOC]);
@@ -71,7 +70,7 @@ void* list_alloc(size_t size){
   void * ret = NULL;
   // always give a larger size
   size = nextPower_2(size);
-  Log("Enter LOOP\n");
+  // Log("Enter LOOP\n");
 
   while(1){
     // TODO
@@ -92,7 +91,7 @@ void* list_alloc(size_t size){
     }
     curr = curr->next;
   }
-  Log("FINISH LOOP\n");
+  // Log("FINISH LOOP\n");
   // release lock
   spin_unlock(&lk[LK_ALLOC]);
   if (ret == NULL){ return NULL; }
