@@ -29,3 +29,4 @@ void  drag_node(__node_t *from, __node_t *to);
 void  fill_header(header_t *header, void *start, int size);
 void  list_free(void *ptr);
 void  list_insert(__node_t *node);
+void  list_delete(__node_t *node);

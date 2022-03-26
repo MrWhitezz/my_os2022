@@ -92,10 +92,22 @@ void* list_alloc(size_t size){
       ret = (void *)ROUNDUP(curr, size);
       __node_t * new_curr = (__node_t *)((uintptr_t)ret + size);
       assert(((size_t)new_curr - (size_t)curr) == size + rd_sz);
-      drag_node(curr, new_curr);
-      fill_header((header_t *)ret, curr, size + rd_sz);
-      curr = new_curr;
-      curr->size = free_sz - size;
+
+      int rem_sz = curr->size - size - rd_sz;      
+      int fill_sz = size + rd_sz;
+      assert(rem_sz == free_sz - size);
+      if (rem_sz < (sizeof(__node_t))){
+        fill_sz = curr->size;
+        list_delete(curr);
+        fill_header((header_t *)ret, curr, fill_sz);
+      }
+      else { 
+        drag_node(curr, new_curr); 
+        fill_header((header_t *)ret, curr, fill_sz);
+        curr = new_curr;
+        curr->size = free_sz - size;
+      }
+      
       debug("Just after alloc: curr = %p\n", curr);
       break;
     }
@@ -106,6 +118,22 @@ void* list_alloc(size_t size){
   spin_unlock(&lk[LK_ALLOC]);
   if (ret == NULL){ return NULL; }
   return ret + list_size;
+}
+
+void  list_delete(__node_t *node){
+  __node_t *curr = head;
+  __node_t *prev = NULL;
+  if (head == node){ head = node->next; return; }
+
+  while(curr != NULL){
+    if (curr == node){
+      if (prev == NULL){ head = curr->next; }
+      else{ prev->next = curr->next; }
+      break;
+    }
+    prev = curr;
+    curr = curr->next;
+  }
 }
 
 void  list_insert(__node_t *node){
