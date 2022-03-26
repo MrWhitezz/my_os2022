@@ -11,7 +11,7 @@ Area heap = {};
 
 void do_test_1(){
   #define ALLOC_SZ 12
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 30; i++) {
     void *ptr[ALLOC_SZ];
     for (int j = 0; j < ALLOC_SZ; ++j){
       ptr[j] = pmm->alloc(1 << j);
