@@ -46,7 +46,7 @@ void  drag_node(__node_t *from, __node_t *to){
   if (curr == from){
     head = to;
     head->next = from->next;
-    // return; // interesting bug
+    return; // interesting bug
   }
   else{
     curr = curr->next;
