@@ -127,7 +127,7 @@ void  list_delete(__node_t *node){
 
   while(curr != NULL){
     if (curr == node){
-      if (prev == NULL){ head = curr->next; }
+      if (prev == NULL){ head = curr->next; assert(0); /* should not reach here*/}
       else{ prev->next = curr->next; }
       break;
     }
@@ -137,32 +137,21 @@ void  list_delete(__node_t *node){
 }
 
 void  list_insert(__node_t *node){
-  __node_t **prev = &head;
   __node_t *curr = head;
-  if (addr_leq(node, curr)){
-    head = node;
-    head->next = curr;
-    return;
-  }
-  else {
+  __node_t *prev = NULL;
+  while(curr != NULL){
+    if (addr_leq(curr, node)){
+      if (prev == NULL){ head = node; head->next = curr; }
+      else{ prev->next = node; node->next = curr; }
+      break;
+    }
+    prev = curr;
     curr = curr->next;
   }
-
-  while(curr != NULL && !addr_leq(node, curr)){
-    prev = &((*prev)->next);
-    assert(*prev == curr);
-    curr = curr->next;
-  }
-
   if (curr == NULL){
-    (*prev)->next = node;
-    node->next = NULL;
-  }
-  else{
-    assert(addr_leq(node, curr));
-    assert(addr_leq((*prev)->next, node));
-    (*prev)->next = node;
-    node->next = curr;
+    assert(0);
+    prev->next = node;
+    node->next = head;
   }
 }
 
