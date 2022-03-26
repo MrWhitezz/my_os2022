@@ -70,22 +70,22 @@ void* list_alloc(size_t size){
   void * ret = NULL;
   // always give a larger size
   size = nextPower_2(size);
-  debug("Enter LOOP\n");
+  //debug("Enter LOOP\n");
 
   while(1){
-    debug("heap.end = %p\n", heap.end);
+    //debug("heap.end = %p\n", heap.end);
     
     assert(curr < (__node_t*)(heap.end));
     if (curr == NULL){
       break;
     }
-    debug("curr = %p, curr->next = %p\n", curr, curr->next);
-    debug("head = %p, head->next = %p\n", head, head->next);
+    //debug("curr = %p, curr->next = %p\n", curr, curr->next);
+    //debug("head = %p, head->next = %p\n", head, head->next);
     uint32_t rd_sz = ((ROUNDUP(curr, size) - (uintptr_t)curr));
     uint32_t free_sz = curr->size - rd_sz; 
     if (free_sz >= size){
-      debug("free_sz = %d, size = %d\n", free_sz, size);
-      debug("curr = %p, rd_sz = %d\n", curr, rd_sz);
+      //debug("free_sz = %d, size = %d\n", free_sz, size);
+      //debug("curr = %p, rd_sz = %d\n", curr, rd_sz);
       ret = (void *)ROUNDUP(curr, size);
       __node_t * new_curr = (__node_t *)((uintptr_t)ret + size);
       assert(((size_t)new_curr - (size_t)curr) == size + rd_sz);
@@ -97,7 +97,7 @@ void* list_alloc(size_t size){
     }
     curr = curr->next;
   }
-  debug("FINISH LOOP\n");
+  //debug("FINISH LOOP\n");
   // release lock
   spin_unlock(&lk[LK_ALLOC]);
   if (ret == NULL){ return NULL; }
