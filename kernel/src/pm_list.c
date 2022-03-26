@@ -149,9 +149,8 @@ void  list_insert(__node_t *node){
     curr = curr->next;
   }
   if (curr == NULL){
-    assert(0);
     prev->next = node;
-    node->next = head;
+    node->next = NULL;
   }
 }
 
