@@ -25,7 +25,7 @@ unsigned int nextPower_2(unsigned int x);
 
 	#define Log(...) \
 	do { \
-		printf(ASNI_FG_MAGENTA __VA_ARGS__); \
+		printf(ASNI_FG_MAGENTA __VA_ARGS__ ASNI_NONE); \
 	} while (0)
 #else
   #define Log(...)
