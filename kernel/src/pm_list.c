@@ -135,6 +135,7 @@ void  list_insert(__node_t *node){
 }
 
 void  list_free(void *ptr){
+  debug("list_free begined\n");
   void *lptr = ptr - list_size;
   header_t *h = (header_t *)lptr;
   __node_t *cur = (__node_t *)h->start;
@@ -142,4 +143,6 @@ void  list_free(void *ptr){
   spin_lock(&lk[LK_ALLOC]); // name needs to be modify
   list_insert(cur);
   spin_unlock(&lk[LK_ALLOC]);
+
+  debug("list_free finished\n");
 }
