@@ -19,7 +19,8 @@ void do_test_1(){
       // printf("alloc 0x%x at %p\n", 1 << j, ptr[j]);
       size += 1 << j;
     }
-    printf("ptr[0] = %p\n", ptr[0]);
+    if (i % 1000 == 0) 
+      printf("ptr[0] = %p\n", ptr[0]);
   }
   printf("Total size: %d MiB\n", size >> 20);
 }
