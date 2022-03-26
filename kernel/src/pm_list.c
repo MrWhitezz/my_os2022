@@ -70,7 +70,7 @@ void* list_alloc(size_t size){
   void * ret = NULL;
   // always give a larger size
   size = nextPower_2(size);
-  Log("Enter LOOP\n");
+  debug("Enter LOOP\n");
 
   while(1){
     // TODO
@@ -80,8 +80,8 @@ void* list_alloc(size_t size){
     uint32_t rd_sz = ((ROUNDUP(curr, size) - (uintptr_t)curr));
     uint32_t free_sz = curr->size - rd_sz; 
     if (free_sz >= size){
-      Log("free_sz = %d, size = %d\n", free_sz, size);
-      Log("curr = %p, rd_sz = %d\n", curr, rd_sz);
+      debug("free_sz = %d, size = %d\n", free_sz, size);
+      debug("curr = %p, rd_sz = %d\n", curr, rd_sz);
       ret = (void *)ROUNDUP(curr, size);
       fill_header((header_t *)ret, curr, size + rd_sz);
       __node_t * new_curr = (__node_t *)((uintptr_t)ret + size);
@@ -93,7 +93,7 @@ void* list_alloc(size_t size){
     }
     curr = curr->next;
   }
-  Log("FINISH LOOP\n");
+  debug("FINISH LOOP\n");
   // release lock
   spin_unlock(&lk[LK_ALLOC]);
   if (ret == NULL){ return NULL; }
