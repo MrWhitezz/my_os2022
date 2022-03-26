@@ -75,6 +75,7 @@ void* list_alloc(size_t size){
   while(1){
     debug("heap.end = %p\n", heap.end);
     debug("curr = %p, curr->next = %p\n", curr, curr->next);
+    debug("head = %p, head->next = %p\n", head, head->next);
     if (curr->next != NULL) assert(0);
     
     assert(curr < (__node_t*)(heap.end));
