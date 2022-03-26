@@ -75,7 +75,7 @@ MODULE(pmm) {
     printf(ASNI_FG_BLUE __VA_ARGS__ ASNI_NONE); \
   } while (0)
 
-// #define debug(...) printf(__VA_ARGS__)
+#define debug(...) printf(__VA_ARGS__)
 
 #endif
 
