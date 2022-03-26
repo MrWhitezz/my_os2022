@@ -15,7 +15,9 @@ void do_test_1(){
   for (int i = 0; i < 15000; i++) {
     void *ptr[ALLOC_SZ];
     for (int j = 0; j < ALLOC_SZ; ++j){
+      Log("try alloc\n");
       ptr[j] = pmm->alloc(1 << j);
+      Log("alloc success, try to free\n");
       pmm->free(ptr[j]);
       // printf("alloc 0x%x at %p\n", 1 << j, ptr[j]);
       size += 1 << j;
