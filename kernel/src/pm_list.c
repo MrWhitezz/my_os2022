@@ -91,8 +91,11 @@ void* list_alloc(size_t size){
       fill_header((header_t *)ret, curr, size + rd_sz);
       __node_t * new_curr = (__node_t *)((uintptr_t)ret + size);
       assert(((size_t)new_curr - (size_t)curr) == size + rd_sz);
+      debug("curr = %p, curr->next = %p\n", curr, curr->next);
       drag_node(curr, new_curr);
+      debug("curr = %p, curr->next = %p\n", curr, curr->next);
       curr = new_curr;
+      debug("curr = %p, curr->next = %p\n", curr, curr->next);
       curr->size = free_sz - size;
       break;
     }
