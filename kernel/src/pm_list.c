@@ -87,7 +87,7 @@ void* list_alloc(size_t size){
     uint32_t rd_sz = ((ROUNDUP(curr, size) - (uintptr_t)curr));
     uint32_t free_sz = curr->size - rd_sz; 
     if (free_sz >= size){
-      debug("free_sz = %d, size = %d, rd_sz = %d\n", free_sz, size, rd_sz);
+      debug("curr->size = %d, free_sz = %d, size = %d, rd_sz = %d\n", curr->size, free_sz, size, rd_sz);
       debug("Just before alloc: curr = %p\n", curr);
       ret = (void *)ROUNDUP(curr, size);
       __node_t * new_curr = (__node_t *)((uintptr_t)ret + size);
