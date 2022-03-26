@@ -74,7 +74,7 @@ void* list_alloc(size_t size){
 
   while(1){
     //debug("heap.end = %p\n", heap.end);
-    debug("head = %p, head->next = %p\n", head, head->next);
+    // debug("head = %p, head->next = %p\n", head, head->next);
     
     assert(curr < (__node_t*)(heap.end));
     if (curr == NULL){
@@ -88,8 +88,8 @@ void* list_alloc(size_t size){
     uint32_t rd_sz = ((ROUNDUP(curr, size) - (uintptr_t)curr));
     uint32_t free_sz = curr->size - rd_sz; 
     if (free_sz >= size){
-      debug("free_sz = %d, size = %d\n", free_sz, size);
-      debug("curr = %p, rd_sz = %d\n", curr, rd_sz);
+      debug("free_sz = %d, size = %d, rd_sz = %d\n", free_sz, size, rd_sz);
+      debug("Just before alloc: curr = %p\n", curr);
       ret = (void *)ROUNDUP(curr, size);
       __node_t * new_curr = (__node_t *)((uintptr_t)ret + size);
       assert(((size_t)new_curr - (size_t)curr) == size + rd_sz);
@@ -97,6 +97,7 @@ void* list_alloc(size_t size){
       fill_header((header_t *)ret, curr, size + rd_sz);
       curr = new_curr;
       curr->size = free_sz - size;
+      debug("Just after alloc: curr = %p\n", curr);
       break;
     }
     curr = curr->next;
