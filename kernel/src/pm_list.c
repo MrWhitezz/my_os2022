@@ -87,6 +87,8 @@ void* list_alloc(size_t size){
     uint32_t rd_sz = ((ROUNDUP(curr, size) - (uintptr_t)curr));
     uint32_t free_sz = curr->size - rd_sz; 
     if (free_sz >= (uint32_t)size){
+      bool must_true = free_sz >= (uint32_t)size;
+      debug("must_true = %d\n", must_true);
       debug("curr->size = %d, free_sz = %d, size = %d, rd_sz = %d\n", curr->size, free_sz, size, rd_sz);
       debug("Just before alloc: curr = %p\n", curr);
       ret = (void *)ROUNDUP(curr, size);
