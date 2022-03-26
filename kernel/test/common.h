@@ -72,7 +72,7 @@ MODULE(pmm) {
 
 #define Log(...) \
   do { \
-    printf(__VA_ARGS__); \
+    printf(ASNI_FG_BLUE __VA_ARGS__); \
   } while (0)
 
 #endif
