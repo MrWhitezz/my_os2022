@@ -4,7 +4,7 @@
 
 unsigned int nextPower_2(unsigned int x);
 
-#ifdef LOCAL_MACHINE
+#ifdef LOCAL_DEBUG
   #define debug(...) printf(__VA_ARGS__)
 #else
   #define debug(...)
