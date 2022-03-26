@@ -70,11 +70,10 @@ void* list_alloc(size_t size){
   void * ret = NULL;
   // always give a larger size
   size = nextPower_2(size);
-  debug("Enter LOOP\n");
+  debug("Before alloc: head = %p, head->next = %p\n", head, head->next);
 
   while(1){
     //debug("heap.end = %p\n", heap.end);
-    debug("head = %p, head->next = %p\n", head, head->next);
     
     assert(curr < (__node_t*)(heap.end));
     if (curr == NULL){
@@ -102,7 +101,7 @@ void* list_alloc(size_t size){
     }
     curr = curr->next;
   }
-  debug("FINISH LOOP\n");
+  debug("After alloc: head = %p, head->next = %p\n", head, head->next);
   // release lock
   spin_unlock(&lk[LK_ALLOC]);
   if (ret == NULL){ return NULL; }
