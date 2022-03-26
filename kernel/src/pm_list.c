@@ -79,6 +79,10 @@ void* list_alloc(size_t size){
     if (curr == NULL){
       break;
     }
+    if (curr -> next == curr){
+      debug("curr = %p, curr->next = %p\n", curr, curr->next);
+      assert(0);
+    }
     debug("curr = %p, curr->next = %p\n", curr, curr->next);
     uint32_t rd_sz = ((ROUNDUP(curr, size) - (uintptr_t)curr));
     uint32_t free_sz = curr->size - rd_sz; 
