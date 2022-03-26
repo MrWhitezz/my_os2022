@@ -15,7 +15,7 @@ void do_test_1(){
     void *ptr[ALLOC_SZ];
     for (int j = 0; j < ALLOC_SZ; ++j){
       ptr[j] = pmm->alloc(1 << j);
-      printf("alloc %d at %p\n", 1 << j, ptr[j]);
+      printf("alloc %x at %p\n", 1 << j, ptr[j]);
     }
   }
 }
