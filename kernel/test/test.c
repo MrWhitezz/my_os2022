@@ -22,7 +22,7 @@ void do_test_1(){
 
 int main() {
   pmm->init();
-  for (int i = 0; i < 1; i++)
-    create(do_test_1);
+  // for (int i = 0; i < 1; i++)
+  //   create(do_test_1);
   join(goodbye);
 }
