@@ -74,14 +74,13 @@ void* list_alloc(size_t size){
 
   while(1){
     debug("heap.end = %p\n", heap.end);
-    debug("curr = %p, curr->next = %p\n", curr, curr->next);
-    debug("head = %p, head->next = %p\n", head, head->next);
-    if (curr->next != NULL) assert(0);
     
     assert(curr < (__node_t*)(heap.end));
     if (curr == NULL){
       break;
     }
+    debug("curr = %p, curr->next = %p\n", curr, curr->next);
+    debug("head = %p, head->next = %p\n", head, head->next);
     uint32_t rd_sz = ((ROUNDUP(curr, size) - (uintptr_t)curr));
     uint32_t free_sz = curr->size - rd_sz; 
     if (free_sz >= size){
