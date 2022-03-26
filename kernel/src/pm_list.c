@@ -143,6 +143,5 @@ void  list_free(void *ptr){
   spin_lock(&lk[LK_ALLOC]); // name needs to be modify
   list_insert(cur);
   spin_unlock(&lk[LK_ALLOC]);
-
   debug("list_free finished\n");
 }
