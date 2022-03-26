@@ -9,9 +9,20 @@ int atomic_xchg(int *addr, int newval) {
 }
 Area heap = {};
 
+void do_test_1(){
+  #define ALLOC_SZ 10
+  for (int i = 0; i < 10; i++) {
+    void *ptr[ALLOC_SZ];
+    for (int j = 0; j < ALLOC_SZ; ++j){
+      ptr[j] = pmm->alloc(1 << j);
+      printf("alloc %d at %p\n", 1 << j, ptr[j]);
+    }
+  }
+}
+
 int main() {
   pmm->init();
-  for (int i = 0; i < 4; i++)
-    create(entry);
+  for (int i = 0; i < 1; i++)
+    create(do_test_1);
   join(goodbye);
 }

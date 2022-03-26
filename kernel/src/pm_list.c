@@ -46,7 +46,7 @@ void  drag_node(__node_t *from, __node_t *to){
   if (curr == from){
     head = to;
     head->next = from->next;
-    // return;
+    return; // interesting bug
   }
   else{
     curr = curr->next;
@@ -92,9 +92,7 @@ void* list_alloc(size_t size){
   }
   // release lock
   spin_unlock(&lk[LK_ALLOC]);
-  if (ret == NULL){
-    return NULL;
-  }
+  if (ret == NULL){ return NULL; }
   return ret + list_size;
 }
 

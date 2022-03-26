@@ -15,7 +15,7 @@ static void *kalloc(size_t size) {
 }
 
 static void kfree(void *ptr) {
-  list_free(ptr);
+  // list_free(ptr);
 }
 
 #ifndef TEST
