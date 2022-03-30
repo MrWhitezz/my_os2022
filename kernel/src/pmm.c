@@ -136,18 +136,35 @@ static void *G_alloc(size_t npage){
   G_header_t *p = G_head;
   G_header_t *prev = NULL;
   while (p != NULL){
-    if (p->size >= sz){
+    size_t avail_sz = ((uintptr_t)p + p->size) - (ROUNDUP((uintptr_t)p, sz));
+    if (avail_sz >= sz){
       if (p->size == sz){
+        assert(p->size == avail_sz);
         if (prev == NULL){ G_head = p->next; }
         else{ prev->next = p->next; }
       }else{
-        G_header_t *p_new = (G_header_t *)((uintptr_t)p + sz);
-        p_new->next = p->next;
-        p_new->size = p->size - sz;
-        if (prev == NULL){ G_head = p_new; }
-        else{ prev->next = p_new; }
+        if ((uintptr_t)p == (ROUNDUP((uintptr_t)p, sz))){
+          G_header_t *p_new = (G_header_t *)((uintptr_t)p + sz);
+          p_new->next = p->next;
+          p_new->size = p->size - sz;
+          if (prev == NULL){ G_head = p_new; }
+          else{ prev->next = p_new; }
+        }
+        else {
+          if (avail_sz == sz){
+            p->size = p->size - avail_sz;
+            // for return
+          }
+          else {
+            G_header_t *p_new = (G_header_t *)(ROUNDUP((uintptr_t)p, sz) + sz);
+            p_new->next = p->next;
+            p_new->size = avail_sz - sz;
+            p->next = p_new;
+          }
+          p = (G_header_t *)(ROUNDUP(p, sz));
+        }
       }
-      assert((ROUNDDOWN((uintptr_t)p, GPAGE_SZ)) == (uintptr_t)p);
+      assert((ROUNDDOWN((uintptr_t)p, sz)) == (uintptr_t)p);
       break;
     }
     prev = p;
@@ -181,6 +198,7 @@ static void G_free(void *ptr){
 }
 
 static void *kalloc(size_t size) {
+  if (size > MAX_ALLOC) return NULL;
   size = nextPower_2(size);
   if (size <= 4 * 1024) {
     if (size < 16) size = 16;

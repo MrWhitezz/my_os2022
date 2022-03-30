@@ -1,6 +1,7 @@
-#define GPAGE_SZ (64 * 1024)
-#define GMAGIC   0xDEADBEEF
-#define SMAGIC   0x55555555
+#define MAX_ALLOC (16 *(1 << 20))
+#define GPAGE_SZ  (64 * 1024)
+#define GMAGIC    0xDEADBEEF
+#define SMAGIC    0x55555555
 #define addr_leq(a, b) ((uintptr_t)(a) <= (uintptr_t)(b))
 
 typedef struct G_header_t {
