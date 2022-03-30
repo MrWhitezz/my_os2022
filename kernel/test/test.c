@@ -12,7 +12,7 @@ int      cpu_current (void) {return 0;}
 Area heap = {};
 
 void do_test_1(){
-  #define ALLOC_SZ 12
+  #define ALLOC_SZ 14
   uint32_t size = 0;
   for (int i = 0; i < 15000; i++) {
     void *ptr[ALLOC_SZ];
