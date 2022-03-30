@@ -41,6 +41,7 @@ static spinlock_t *get_slab_lk(S_header_t *s_head){
 
 static int get_slab_index(size_t x){
   int index = 0;
+  assert(x == nextPower_2(x));
   while (x > 16) {
     x = x >> 1;
     index++;

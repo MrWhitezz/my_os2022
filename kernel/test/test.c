@@ -21,16 +21,8 @@ static int get_slab_index(size_t x){
 }
 
 void do_test_func(){
-  // for (int i = 0; i < 0x1145; ++i){
-  //   printf("%d index: %d\n", i, get_slab_index(i));
-  // }
-  printf("%d index: %d\n", 32, get_slab_index(32));
-  printf("%d index: %d\n", 33, get_slab_index(33));
-  size_t tmp = 33;
-  while (tmp > 16)
-  {
-    printf("%d\n", tmp);
-    tmp = tmp >> 1;
+  for (int i = 16; i < 4 * 1024; i = i * 2){
+    printf("%d index: %d\n", i, get_slab_index(i));
   }
   
 
