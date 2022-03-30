@@ -183,7 +183,6 @@ static void G_free(void *ptr){
 static void *kalloc(size_t size) {
   size = nextPower_2(size);
   if (size <= 4 * 1024) {
-    size = nextPower_2(size);
     if (size < 16) size = 16;
     return S_alloc(size);
   } else {

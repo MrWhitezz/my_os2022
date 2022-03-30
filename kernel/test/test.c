@@ -33,13 +33,13 @@ void do_test_1(){
   uint32_t size = 0;
   for (int i = 0; i < 100; i++) {
     void *ptr[ALLOC_SZ];
-    for (int j = 0; j < ALLOC_SZ; ++j){
+    for (int j = 0; j < (1 << ALLOC_SZ); j += 114){
       // Log("try alloc\n");
-      ptr[j] = pmm->alloc(1 << j);
+      ptr[j] = pmm->alloc(j);
       // Log("alloc success, try to free\n");
       // pmm->free(ptr[j]);
       // printf("alloc 0x%x at %p\n", 1 << j, ptr[j]);
-      size += 1 << j;
+      size += j;
     }
     if (i % 1000 == 0) 
       printf("ptr[0] = %p\n", ptr[0]);
