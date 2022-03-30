@@ -94,6 +94,8 @@ static void *S_alloc(size_t size){
       assert((ROUNDDOWN((uintptr_t)node, size)) == (uintptr_t)node);
       break;
     }
+    // should not reach
+    assert(0);
     prev = node;
     node = node->next;
   }
