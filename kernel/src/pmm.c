@@ -67,7 +67,7 @@ static void S_init() {
       Slab[i][j]->n_head = (S_node_t *)ROUNDUP(((uintptr_t)Slab[i][j] + sizeof(S_header_t)), Slab[i][j]->unit_size);
       Slab[i][j]->S_magic = SMAGIC;
       Slab[i][j]->n_head->next = NULL;
-      Slab[i][j]->n_head->size = (GPAGE_SZ - sizeof(S_header_t));
+      Slab[i][j]->n_head->size = (GPAGE_SZ - ((uintptr_t)Slab[i][j]->n_head - (uintptr_t)Slab[i][j]));
     }
   }
 }
