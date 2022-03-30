@@ -102,6 +102,7 @@ static void *S_alloc(size_t size){
     node = node->next;
   }
   spin_unlock(&S_lock[cpu][id]);
+  assert((ROUNDDOWN((uintptr_t)node, size)) == (uintptr_t)node);
   return (void *)node;
 }
 
@@ -171,6 +172,7 @@ static void *G_alloc(size_t npage){
     p = p->next;
   }
   spin_unlock(&G_lock);
+  assert((ROUNDDOWN((uintptr_t)p, sz)) == (uintptr_t)p);
   return (void *)(p);
 }
 
