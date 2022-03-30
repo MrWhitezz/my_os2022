@@ -32,10 +32,19 @@ void do_test_1(){
   printf("Total size: %d MiB\n", size >> 20);
 }
 
+void do_test_2(){
+  for (int i = 0; i < 10; ++i){
+    void *ptr = pmm->alloc(128 * 1024);
+    printf("alloc 0x%x at %p\n", 128, ptr);
+    pmm->free(ptr);
+  }
+}
+
 int main() {
   pmm->init();
   for (int i = 0; i < 1; i++)
     create(do_test_1);
+  do_test_2();
   join(goodbye);
   Log("End of main.\n");
 }
