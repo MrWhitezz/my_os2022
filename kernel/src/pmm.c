@@ -37,8 +37,6 @@ static void pmm_init() {
   heap.end   = ptr + HEAP_SIZE;
   printf("Got %d MiB heap: [%p, %p)\n", HEAP_SIZE >> 20, heap.start, heap.end);
 
-  list_init();
-  memset(lk, SPIN_INIT(), sizeof(lk)); // abuse of SPIN_INIT() == 1
 }
 #endif
 
