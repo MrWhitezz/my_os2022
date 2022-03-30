@@ -31,7 +31,7 @@ void do_test_func(){
 void do_test_1(){
   #define ALLOC_SZ 14
   uint32_t size = 0;
-  for (int i = 0; i < 15000; i++) {
+  for (int i = 0; i < 100; i++) {
     void *ptr[ALLOC_SZ];
     for (int j = 0; j < ALLOC_SZ; ++j){
       // Log("try alloc\n");
