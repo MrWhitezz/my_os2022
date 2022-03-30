@@ -14,7 +14,7 @@ Area heap = {};
 void do_test_1(){
   #define ALLOC_SZ 14
   uint32_t size = 0;
-  for (int i = 0; i < 1000; i++) {
+  for (int i = 0; i < 10000; i++) {
     void *ptr[ALLOC_SZ];
     for (int j = 0; j < (1 << ALLOC_SZ); j += 114){
       // Log("try alloc\n");
@@ -23,7 +23,7 @@ void do_test_1(){
       // pmm->free(ptr[j]);
       // printf("alloc 0x%x at %p\n", 1 << j, ptr[j]);
       if (ptr[j] != NULL)
-      size += j;
+          size += j;
     }
     if (i % 1000 == 0) 
       printf("ptr[0] = %p\n", ptr[0]);
