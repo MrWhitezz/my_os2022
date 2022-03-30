@@ -78,6 +78,7 @@ static void *S_alloc(size_t size){
   int id = get_slab_index(size);
   if (size != Slab[cpu][id]->unit_size) {
     printf("size: %d, unit_size: %d\n", size, Slab[cpu][id]->unit_size);
+    printf("id: %d\n", id);
   }
   assert(size == Slab[cpu][id]->unit_size);
   spin_lock(&S_lock[cpu][id]);
