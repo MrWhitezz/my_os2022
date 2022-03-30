@@ -96,6 +96,7 @@ static void *S_alloc(size_t size){
       break;
     }
     // should not reach
+    return NULL;
     assert(0);
     prev = node;
     node = node->next;
