@@ -13,6 +13,8 @@ typedef struct {
   void *start, *end;
 } Area;
 
+extern  Area   heap;
+
 #define MODULE(mod) \
   typedef struct mod_##mod##_t mod_##mod##_t; \
   extern mod_##mod##_t *mod; \

@@ -216,7 +216,6 @@ static void pmm_init() {
 // 测试代码的 pmm_init ()
 
 #define HEAP_SIZE (128 * (1 << 20))
-extern  Area   heap;
 static void pmm_init() {
   char *ptr  = malloc(HEAP_SIZE);
   heap.start = ptr;
