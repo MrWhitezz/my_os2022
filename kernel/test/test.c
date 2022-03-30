@@ -22,6 +22,7 @@ void do_test_1(){
       // Log("alloc success, try to free\n");
       // pmm->free(ptr[j]);
       // printf("alloc 0x%x at %p\n", 1 << j, ptr[j]);
+      if (ptr[j] != NULL)
       size += j;
     }
     if (i % 1000 == 0) 
