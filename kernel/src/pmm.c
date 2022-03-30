@@ -77,10 +77,6 @@ static void *S_alloc(size_t size){
   assert(cpu < cpu_count());
   assert(size = nextPower_2(size));
   int id = get_slab_index(size);
-  if (size != Slab[cpu][id]->unit_size) {
-    printf("size: %ld, unit_size: %ld\n", size, Slab[cpu][id]->unit_size);
-    printf("id: %ld\n", id);
-  }
   assert(Slab[cpu][id]->S_magic == SMAGIC);
   assert(size == Slab[cpu][id]->unit_size);
   spin_lock(&S_lock[cpu][id]);
