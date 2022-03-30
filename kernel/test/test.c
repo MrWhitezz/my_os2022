@@ -26,6 +26,13 @@ void do_test_func(){
   // }
   printf("%d index: %d\n", 32, get_slab_index(32));
   printf("%d index: %d\n", 33, get_slab_index(33));
+  size_t tmp = 33;
+  while (tmp > 0)
+  {
+    printf("%d\n", tmp);
+    tmp = tmp >> 1;
+  }
+  
 
 }
 
