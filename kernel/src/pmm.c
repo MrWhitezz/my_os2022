@@ -63,7 +63,7 @@ static void S_init() {
       S_lock[i][j] = SPIN_INIT();
       Slab[i][j] = (S_header_t *)G_alloc(1);
       Slab[i][j]->unit_size = (1 << (j + 4));
-      printf("Slab[%d][%d]->unit_size = %ld\n", i, j, Slab[i][j]->unit_size);
+      // printf("Slab[%d][%d]->unit_size = %ld\n", i, j, Slab[i][j]->unit_size);
       Slab[i][j]->n_head = (S_node_t *)ROUNDUP(((uintptr_t)Slab[i][j] + sizeof(S_header_t)), Slab[i][j]->unit_size);
       Slab[i][j]->S_magic = SMAGIC;
       Slab[i][j]->n_head->next = NULL;
@@ -81,6 +81,7 @@ static void *S_alloc(size_t size){
     printf("size: %ld, unit_size: %ld\n", size, Slab[cpu][id]->unit_size);
     printf("id: %ld\n", id);
   }
+  assert(Slab[cpu][id]->S_magic == SMAGIC);
   assert(size == Slab[cpu][id]->unit_size);
   spin_lock(&S_lock[cpu][id]);
   S_node_t *node = Slab[cpu][id]->n_head;
