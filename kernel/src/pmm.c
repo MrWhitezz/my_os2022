@@ -76,6 +76,9 @@ static void *S_alloc(size_t size){
   assert(cpu < cpu_count());
   assert(size = nextPower_2(size));
   int id = get_slab_index(size);
+  if (size != Slab[cpu][id]->unit_size) {
+    printf("size: %d, unit_size: %d\n", size, Slab[cpu][id]->unit_size);
+  }
   assert(size == Slab[cpu][id]->unit_size);
   spin_lock(&S_lock[cpu][id]);
   S_node_t *node = Slab[cpu][id]->n_head;
@@ -95,7 +98,7 @@ static void *S_alloc(size_t size){
       assert((ROUNDDOWN((uintptr_t)node, size)) == (uintptr_t)node);
       break;
     }
-    // should not reach
+    // should seldom reach
     prev = node;
     node = node->next;
   }
