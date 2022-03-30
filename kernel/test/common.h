@@ -6,6 +6,8 @@
 #include <assert.h>
 
 int      atomic_xchg (int *addr, int newval);
+int      cpu_current (void);
+int      cpu_count   (void);
 
 typedef struct {
   void *start, *end;
