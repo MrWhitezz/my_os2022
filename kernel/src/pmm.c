@@ -76,6 +76,7 @@ static void *S_alloc(size_t size){
   assert(cpu < cpu_count());
   assert(size = nextPower_2(size));
   int id = get_slab_index(size);
+  assert(size == Slab[cpu][id]->unit_size);
   spin_lock(&S_lock[cpu][id]);
   S_node_t *node = Slab[cpu][id]->n_head;
   S_node_t *prev = NULL;
@@ -83,7 +84,7 @@ static void *S_alloc(size_t size){
     if (node->size >= size) {
       if (node->size == size) {
         if (prev == NULL) { Slab[cpu][id]->n_head = node->next; }
-        else { prev->next = node->next; }
+        else { assert(0); prev->next = node->next; }
       } else {
         S_node_t *new_node = (S_node_t *)((uintptr_t)node + size);
         new_node->size = node->size - size;
@@ -181,6 +182,8 @@ static void G_free(void *ptr){
 static void *kalloc(size_t size) {
   size = nextPower_2(size);
   if (size <= 4 * 1024) {
+    size = nextPower_2(size);
+    if (size < 16) size = 16;
     return S_alloc(size);
   } else {
     size_t npage = size / GPAGE_SZ;
