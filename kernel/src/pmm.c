@@ -56,7 +56,7 @@ static void meta_init(){
   for (int i = 0; i < META_SZ; i++) {
     if (G_start + (i + 1) * GPAGE_SZ > heap.end) {
       n_meta = i;
-      break;
+      return;
     }
     Meta[i].start    = (G_start + i * GPAGE_SZ);
     Meta[i].end      = NULL;
