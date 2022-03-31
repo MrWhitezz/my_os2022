@@ -73,6 +73,8 @@ void do_test_2(){
 }
 
 void do_test_3(){
+  Log("begin test 3\n"); 
+  size_t tot_sz = 0;
   for (int j = 0; j < 10; ++ j){
     for (int i = 0; i < 4; ++i){
       size_t sz = 64 * 1024 * (1 << i);
@@ -82,6 +84,8 @@ void do_test_3(){
       pmm->free(ptr);
     }
   }
+  printf("Total size: %ld MiB\n", tot_sz >> 20);
+  Log("end test 3\n");
 }
 
 int main(int argc, char *argv[]) {

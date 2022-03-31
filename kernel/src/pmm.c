@@ -221,8 +221,7 @@ static void *kalloc(size_t size) {
 }
 
 static void kfree(void *ptr) {
-  while (0)
-  {
+  while (0) {
     S_free(ptr);
   }
   
