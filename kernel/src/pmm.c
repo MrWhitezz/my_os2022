@@ -44,7 +44,7 @@ static int get_meta_index(void *p){
 static bool is_valid_ret(void *p){
   assert(p != NULL);
   if (p < G_start) return false;
-  if (p > G_start + (n_meta * GPAGE_SZ)) return false;
+  if (p >= G_start + (n_meta * GPAGE_SZ)) return false;
   return true;
 }
 
