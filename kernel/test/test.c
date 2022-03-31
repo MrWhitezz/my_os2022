@@ -80,7 +80,7 @@ void do_test_3(){
   void *ptr[arr_sz];
   for (int j = 0; j < 100000; ++ j){
     for (int i = 0; i < arr_sz; ++i){
-      size_t rd = rand() % 100;
+      size_t rd = rand() % 1000;
       size_t sz = 64 * 1024 * (rd + 1);
       ptr[i] = pmm->alloc(sz);
       // printf("alloc 0x%ld at %p\n", sz, ptr);
