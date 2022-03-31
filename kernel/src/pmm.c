@@ -185,7 +185,6 @@ static void *G_alloc(size_t npage, size_t rd_sz){
   }
 
   spin_unlock(&G_lock);
-  assert((ROUNDDOWN((uintptr_t)p, sz)) == (uintptr_t)p);
   return (void *)(p);
 }
 
