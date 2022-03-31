@@ -173,7 +173,7 @@ static bool try_alloc(void *ret, size_t sz, bool is_slab){
   assert(meta->start == ret);
   size_t n_pg = sz / GPAGE_SZ;
   for (int i = 0; i < n_pg; ++i){
-    if (meta[i].is_alloc) return false;
+    if (meta[i].is_alloc == true) return false;
   }
   assert(meta->is_alloc == false);
   return true;
@@ -213,7 +213,6 @@ static void *G_alloc(size_t npage, bool is_slab) {
 }
 
 static void G_free(void *ptr){
-  return;
   spin_lock(&G_lock);
   assert(ROUNDDOWN(ptr, GPAGE_SZ) == (uintptr_t)ptr);
   int id = get_meta_index(ptr);
