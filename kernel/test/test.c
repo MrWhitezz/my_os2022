@@ -24,6 +24,9 @@ void do_test_1(){
       ptr[j] = pmm->alloc(j);
       printf("alloc %ld at %p\n", sz, ptr[j]);
       if (!(ROUNDUP((uintptr_t)ptr[j], nextPower_2(sz)) == (uintptr_t)ptr[j])){
+        size_t al_sz = nextPower_2(sz);
+        printf("sz = %ld, al_sz = %ld\n", sz, al_sz);
+        printf("sz = %llx, ~(sz - 1) = %llx\n", sz, ~(sz - 1));
         printf("0x%llx 0x%llx\n", ROUNDUP((uintptr_t)ptr[j], nextPower_2(sz)), (uintptr_t)ptr[j]);
       }
       assert(ROUNDUP((uintptr_t)ptr[j], nextPower_2(sz)) == (uintptr_t)ptr[j]);
