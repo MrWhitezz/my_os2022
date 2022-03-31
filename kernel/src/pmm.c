@@ -103,13 +103,7 @@ static void S_init() {
   }
 }
 
-static void *S_alloc(size_t size){
-  int cpu = cpu_current();
-  int id  = get_slab_index(size);
-  assert(cpu < cpu_count());
-  assert(size = nextPower_2(size));
-
-  S_header_t *slab = Slab[cpu][id];
+static void *slab_alloc(S_header_t *slab, size_t size){
   spinlock_t *lk   = &slab->lk;
 
   spin_lock(lk);
@@ -130,12 +124,27 @@ static void *S_alloc(size_t size){
   spin_unlock(lk);
   assert((ROUNDDOWN((uintptr_t)node, size)) == (uintptr_t)node);
 
-  if (node != NULL) return (void *)node;
+  return (void *)node;
+}
+
+static void *S_alloc(size_t size){
+  // lock is tricky
+  int cpu = cpu_current();
+  int id  = get_slab_index(size);
+  assert(cpu < cpu_count());
+  assert(size = nextPower_2(size));
+
+  S_header_t *slab = Slab[cpu][id];
+
+  void *ret = slab_alloc(slab, size);
+
+  if (ret != NULL)  return ret;
   else              return G_alloc(1, false);
 
   assert(0);
   return NULL;
 }
+
 
 static void S_free(void *ptr){
   assert(sizeof(S_node_t) <= 16);
