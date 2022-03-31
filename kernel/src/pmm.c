@@ -213,6 +213,7 @@ static void *G_alloc(size_t npage, bool is_slab) {
 }
 
 static void G_free(void *ptr){
+  return;
   spin_lock(&G_lock);
   assert(ROUNDDOWN(ptr, GPAGE_SZ) == (uintptr_t)ptr);
   int id = get_meta_index(ptr);
