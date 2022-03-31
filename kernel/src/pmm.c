@@ -242,6 +242,7 @@ static void G_free(void *ptr){
 
 static void *kalloc(size_t size) {
   // normal klloc
+  if (size > MAX_ALLOC) return NULL;
   size = nextPower_2(size);
   if (size < 16) size = 16;
   if (size <= 4096) {
