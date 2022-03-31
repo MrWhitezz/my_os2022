@@ -55,6 +55,7 @@ static void meta_init(){
   G_start   = (void *)ROUNDUP(G_start, GPAGE_SZ);
   for (int i = 0; i < META_SZ; i++) {
     if ((void *)&Meta[i + 1] > heap.end) {
+      debug("n_meta: %d\n", n_meta);
       n_meta = i;
       break;
     }
