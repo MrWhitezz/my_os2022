@@ -188,6 +188,7 @@ static void *G_alloc(size_t npage, size_t rd_sz){
         }
         p = (G_header_t *)(ret);
         assert((ROUNDDOWN(rd_target, rd_sz)) == rd_target);
+        assert_nocycle(G_head);
         break;
       }
     }
