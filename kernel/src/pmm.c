@@ -63,11 +63,11 @@ static void meta_init(){
     Meta[i].end      = NULL;
     Meta[i].is_alloc = false;
     Meta[i].is_slab  = false;
+    debug("&Meta[%d]: %p\n", i, &Meta[i]);
   }
 }
 
 static void G_init() {
-  debug("G_init\n");
   meta_init();
 }
 
@@ -246,9 +246,9 @@ static void pmm_init() {
   char *ptr  = malloc(HEAP_SIZE);
   heap.start = ptr;
   heap.end   = ptr + HEAP_SIZE;
+  printf("Got %d MiB heap: [%p, %p)\n", HEAP_SIZE >> 20, heap.start, heap.end);
   G_init();
   S_init();
-  printf("Got %d MiB heap: [%p, %p)\n", HEAP_SIZE >> 20, heap.start, heap.end);
 
 }
 #endif
