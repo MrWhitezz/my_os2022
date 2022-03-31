@@ -179,13 +179,12 @@ static bool try_alloc(void *ret, size_t sz, bool is_slab){
 
 static void* slow_alloc(void *ret, size_t sz, bool is_slab){
   int id = get_meta_index(ret);
-  debug("slow_alloc: %p, %zu, meta id: %d\n", ret, sz, id);
   assert(id >= 0 && id < n_meta);
   meta_t *meta = &Meta[id];
   assert(meta->is_alloc == false);
   size_t n_pg = sz / GPAGE_SZ;
   for (int i = 0; i < n_pg; i++) {
-    assert(meta->is_alloc == false);
+    assert(meta[i].is_alloc == false);
     meta[i].is_alloc = true;
     meta[i].is_slab  = is_slab;
     meta[i].end      = (void *)((uintptr_t)ret + sz);
