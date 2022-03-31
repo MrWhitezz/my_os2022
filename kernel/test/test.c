@@ -7,7 +7,7 @@ static void goodbye()      { printf("End.\n"); }
 int atomic_xchg(int *addr, int newval) {
   return atomic_exchange((int *)addr, newval);
 }
-int      cpu_count   (void) {return 8;}
+int      cpu_count   (void) {return 1;}
 int      cpu_current (void) {return 0;}
 Area heap = {};
 
