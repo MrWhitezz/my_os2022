@@ -129,8 +129,10 @@ static void *S_alloc(size_t size){
 
   spin_unlock(lk);
   assert((ROUNDDOWN((uintptr_t)node, size)) == (uintptr_t)node);
+
   if (node != NULL) return (void *)node;
   else              return G_alloc(1, false);
+
   assert(0);
   return NULL;
 }
@@ -142,6 +144,7 @@ static void S_free(void *ptr){
   spin_lock(lk);
   S_node_t *node = (S_node_t *)ptr;
   node->size = slab->sz;
+  node->next = NULL;
   S_node_t *node_head = slab->n_head;
   S_node_t *prev = NULL;
   if (node_head == NULL) {
