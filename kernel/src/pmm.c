@@ -174,8 +174,8 @@ static void *G_alloc(size_t npage, size_t rd_sz){
         size_t rm_sz = ret - (uintptr_t)(p);
         assert(rm_sz + GPAGE_SZ + target_sz + p_new->size == p->size);
         if (rm_sz == 0){
-          if (prev == NULL){ G_head = p_new; }
-          else { prev->next = p_new; }
+          if (prev == NULL){ G_head = p_new; assert_nocycle(G_head);}
+          else { prev->next = p_new; assert_nocycle(prev);}
         }
         else {
           assert(rm_sz > 0);
