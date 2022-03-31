@@ -172,7 +172,7 @@ static bool try_alloc(void *ret, size_t sz, bool is_slab){
   for (int i = 0; i < n_pg; ++i){
     if (meta->is_alloc) return false;
   }
-  debug("try_alloc: %p, %zu\n", ret, sz);
+  debug("try_alloc: %p, %zu, meta id: %d\n", ret, sz, id);
   return true;
 }
 
@@ -180,7 +180,7 @@ static void* slow_alloc(void *ret, size_t sz, bool is_slab){
   int id = get_meta_index(ret);
   assert(id >= 0 && id < n_meta);
   meta_t *meta = &Meta[id];
-  debug("slow_alloc: %p, %zu\n", ret, sz);
+  debug("slow_alloc: %p, %zu, meta id: %d\n", ret, sz, id);
   assert(meta->is_alloc == false);
   size_t n_pg = sz / GPAGE_SZ;
   for (int i = 0; i < n_pg; i++) {
