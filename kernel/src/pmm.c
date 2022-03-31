@@ -11,7 +11,10 @@ enum slab_index{ _16B, _32B, _64B, _128B, _256B, _512B, _1KB, _2KB, _4KB, SLAB_S
 S_header_t *Slab[8][SLAB_SIZE];
 int n_slab = 0;
 
+void      *G_start;
 spinlock_t G_lock;
+meta_t    *Meta;
+int        n_meta = 0;
 
 size_t nextPower_2(size_t x){
   x = x - 1;
@@ -33,10 +36,40 @@ static int get_slab_index(size_t x){
   return index;
 }
 
-static void G_init() {
+static int get_meta_index(void *p){
+  assert(ROUNDDOWN(p, GPAGE_SZ) == (uintptr_t)p);
+  return (p - G_start) / GPAGE_SZ;
 }
 
-void nhead_init(S_node_t *n_head, size_t size) {
+static bool is_valid_ret(void *p){
+  assert(p != NULL);
+  if (p < G_start) return false;
+  if (p > G_start + (n_meta * GPAGE_SZ)) return false;
+  return true;
+}
+
+static void meta_init(){
+  size_t sz = sizeof(meta_t) * META_SZ;
+  Meta      = (meta_t *)(heap.start);
+  G_start   = (void *)((uintptr_t)Meta + sz);
+  G_start   = (void *)ROUNDUP(G_start, GPAGE_SZ);
+  for (int i = 0; i < META_SZ; i++) {
+    if ((void *)&Meta[i + 1] > heap.end) {
+      n_meta = i;
+      break;
+    }
+    Meta[i].start    = (G_start + i * GPAGE_SZ);
+    Meta[i].end      = NULL;
+    Meta[i].is_alloc = false;
+    Meta[i].is_slab  = false;
+  }
+}
+
+static void G_init() {
+  meta_init();
+}
+
+static void nhead_init(S_node_t *n_head, size_t size) {
   n_head->next = NULL;
   n_head->size = size;
 }
@@ -45,7 +78,7 @@ static void S_init() {
   n_slab = cpu_count();
   for (int i = 0; i < n_slab; i++) {
     for (int j = 0; j < SLAB_SIZE; j++) {
-      S_header_t *slab = (S_header_t *)G_alloc(1);
+      S_header_t *slab = (S_header_t *)G_alloc(1, true);
       Slab[i][j]   = slab;
       size_t size  = (1 << (j + 4));
       slab->sz     = size;
@@ -126,7 +159,49 @@ static void S_free(void *ptr){
 // number of pages
 // struct { } page_meta[NUM_PAGES];
 
-static void *G_alloc(size_t npage){
+static bool try_alloc(void *ret, size_t sz, bool is_slab){
+  int id = get_meta_index(ret);
+  assert(id >= 0 && id < n_meta);
+  meta_t *meta = &Meta[id];
+  size_t n_pg = sz / GPAGE_SZ;
+  for (int i = 0; i < n_pg; ++i){
+    if (meta->is_alloc) return false;
+  }
+  return true;
+}
+
+static void* slow_alloc(void *ret, size_t sz, bool is_slab){
+  assert(ret != NULL);
+  assert(sz > 0 && ROUNDUP(sz, GPAGE_SZ) == sz);
+  assert(is_valid_ret(ret));
+  int id = get_meta_index(ret);
+  assert(id >= 0 && id < n_meta);
+  meta_t *meta = &Meta[id];
+  assert(meta->start == ret);
+  assert(meta->end == NULL);
+  assert(meta->is_alloc == false);
+  size_t n_pg = sz / GPAGE_SZ;
+  for (int i = 0; i < n_pg; i++) {
+    meta[i].is_alloc = true;
+    meta[i].is_slab  = is_slab;
+    meta[i].end      = (void *)((uintptr_t)ret + sz);
+  }
+  return ret;
+}
+
+static void *G_alloc(size_t npage, bool is_slab) {
+  spin_lock(&G_lock);
+  size_t sz = npage * GPAGE_SZ;
+  void *try_ret = (void *)ROUNDUP(G_start, sz);
+  for (; is_valid_ret(try_ret); try_ret += sz){
+    if (try_alloc(try_ret, sz, is_slab)) {
+      slow_alloc(try_ret, sz, is_slab);
+      spin_unlock(&G_lock);
+      return try_ret;
+    }
+  }
+  
+  spin_unlock(&G_lock);
   return NULL;
 }
 
@@ -141,12 +216,16 @@ static void *kalloc(size_t size) {
   } else {
     size_t npage = size / GPAGE_SZ;
     if (npage == 0) npage = 1;
-    return G_alloc(npage);
+    return G_alloc(npage, false);
   } 
 }
 
 static void kfree(void *ptr) {
-  S_free(ptr);
+  while (0)
+  {
+    S_free(ptr);
+  }
+  
 }
 
 #ifndef TEST

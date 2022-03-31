@@ -32,7 +32,7 @@ typedef struct meta_t {
 
 
 static void *S_alloc(size_t size);
-static void *G_alloc(size_t npage);
+static void *G_alloc(size_t npage, bool is_slab);
 
 // debug
 
