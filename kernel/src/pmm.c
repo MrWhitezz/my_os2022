@@ -241,7 +241,7 @@ static void kfree(void *ptr) {
   while (0) {
     S_free(ptr);
   }
-  // G_free(ptr);
+  G_free(ptr);
   
 }
 
