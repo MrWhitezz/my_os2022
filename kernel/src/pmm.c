@@ -37,6 +37,9 @@ static int get_slab_index(size_t x){
 }
 
 static int get_meta_index(void *p){
+  if (!(ROUNDDOWN(p, GPAGE_SZ) == (uintptr_t)p)){
+    debug("p : %p, ROUNDDOWN(p, GPAGE_SZ) : %p\n", p, ROUNDDOWN(p, GPAGE_SZ));
+  }
   assert(ROUNDDOWN(p, GPAGE_SZ) == (uintptr_t)p);
   return (p - G_start) / GPAGE_SZ;
 }
