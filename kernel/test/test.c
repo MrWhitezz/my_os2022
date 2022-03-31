@@ -52,12 +52,13 @@ void do_test_3(){
   }
 }
 
-int main() {
+int main(int argc, char *argv[]) {
   pmm->init();
-  // for (int i = 0; i < 1; i++)
-  //   create(do_test_1);
-  do_test_2();
-  do_test_3();
-  // join(goodbye);
+  if (argc < 2) exit(1);
+  switch(atoi(argv[1])) {
+    case 1: do_test_1();
+    case 2: do_test_2();
+    case 3: do_test_3();
+  }
   Log("End of main.\n");
 }
