@@ -220,6 +220,7 @@ static void G_free(void *ptr){
   for (int i = 0; i < n_pg; ++i){
     assert(meta[i].is_alloc == true);
     assert(meta[i].is_slab  == false);
+    assert(meta[i].end      == free_end);
     meta[i].is_alloc = false;
     meta[i].end      = NULL;
   }
