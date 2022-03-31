@@ -137,6 +137,7 @@ static void *G_alloc(size_t npage, size_t rd_sz){
   size_t sz = npage * GPAGE_SZ;
   debug("G_alloc: before G lock %p\n", &G_lock);
   spin_lock(&G_lock);
+  debug("Get G_lock\n");
   G_header_t *p = G_head;
   G_header_t *prev = NULL;
   while (p != NULL){
