@@ -84,7 +84,7 @@ void do_test_3(){
       size_t sz = 64 * 1024 * (rd);
       ptr[i] = pmm->alloc(sz);
       // printf("alloc 0x%ld at %p\n", sz, ptr);
-      assert(ROUNDUP((uintptr_t)ptr[i], sz) == (uintptr_t)ptr[i]);
+      assert(ROUNDUP((uintptr_t)ptr[i], nextPower_2(sz)) == (uintptr_t)ptr[i]);
       if (ptr[i] != NULL)
         tot_sz += sz;
     }
