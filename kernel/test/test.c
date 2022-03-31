@@ -25,13 +25,6 @@ void do_test_1(){
       // printf("alloc %ld at %p\n", sz, ptr[j]);
       if (!(ROUNDUP((uintptr_t)ptr[j], nextPower_2(sz)) == (uintptr_t)ptr[j])){
         size_t al_sz = nextPower_2(sz);
-        printf("fail at i = %d, j = %d, sz = %ld, al_sz = %ld, ptr = %p\n", i, j, sz, al_sz, ptr[j]);
-        printf("sz = %ld, al_sz = %ld\n", sz, al_sz);
-        printf("al_sz = %lx, ~(al_sz - 1) = %lx\n", al_sz, ~(al_sz - 1));
-        printf("((uinptr_t)ptr[j]) + (al_sz - 1) = %lx\n", ((uintptr_t)ptr[j]) + (al_sz - 1));
-        printf("(((uinptr_t)ptr[j]) + (al_sz - 1)) & ~(al_sz - 1) = %lx\n", (((uintptr_t)ptr[j]) + (al_sz - 1)) & ~(al_sz - 1));
-        printf("ROUNDUP((uintptr_t)ptr[j], al_sz) = %lx\n", ROUNDUP((uintptr_t)ptr[j], al_sz));
-        printf("round: 0x%lx prt[j]:0x%lx\n", ROUNDUP((uintptr_t)ptr[j], nextPower_2(sz)), (uintptr_t)ptr[j]);
         assert(ROUNDUP((uintptr_t)ptr[j], nextPower_2(sz)) == (uintptr_t)ptr[j]);
       }
       pmm->free(ptr[j]);
