@@ -165,7 +165,7 @@ static void *G_alloc(size_t npage, size_t rd_sz){
         p_new->size = avail_sz - target_sz;
         p_new->next = p->next;
         size_t rm_sz = ret - (uintptr_t)(p);
-        assert(rm_sz + target_sz + p_new->size == p->size);
+        assert(rm_sz + GPAGE_SZ + target_sz + p_new->size == p->size);
         if (rm_sz == 0){
           if (prev == NULL){ G_head = p_new; }
           else { prev->next = p_new; }
