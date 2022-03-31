@@ -88,7 +88,7 @@ void do_test_3(){
       if (ptr[i] != NULL)
         tot_sz += sz;
     }
-    for (int i = 0; i < arr_sz; ++i){
+    for (int i = 0; i < 4; ++i){
       pmm->free(ptr[i]);
     }
   }
