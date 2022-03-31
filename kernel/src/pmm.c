@@ -37,9 +37,6 @@ static int get_slab_index(size_t x){
 }
 
 static int get_meta_index(void *p){
-  if (!(ROUNDDOWN(p, GPAGE_SZ) == (uintptr_t)p)){
-    debug("p : %p, ROUNDDOWN(p, GPAGE_SZ) : %p\n", p, ROUNDDOWN(p, GPAGE_SZ));
-  }
   assert(ROUNDDOWN(p, GPAGE_SZ) == (uintptr_t)p);
   return (p - G_start) / GPAGE_SZ;
 }
@@ -185,6 +182,7 @@ static void* slow_alloc(void *ret, size_t sz, bool is_slab){
   meta_t *meta = &Meta[id];
   assert(meta->is_alloc == false);
   size_t n_pg = sz / GPAGE_SZ;
+  debug("alloc range: Meta[%d] to Meta[%d]\n", id, id + n_pg - 1);
   for (int i = 0; i < n_pg; i++) {
     assert(meta[i].is_alloc == false);
     meta[i].is_alloc = true;
@@ -221,6 +219,7 @@ static void G_free(void *ptr){
   void *free_end = meta->end;
   assert(free_end != NULL);
   int n_pg = (free_end - ptr) / GPAGE_SZ;
+  debug("free range: Meta[%d] to Meta[%d]\n", id, id + n_pg - 1);
   for (int i = 0; i < n_pg; ++i){
     debug("free Meta[%d] , start: %p, end: %p\n", get_meta_index((void *)(meta[i].start)), meta[i].start, meta[i].end);
     assert(meta[i].is_alloc == true);
