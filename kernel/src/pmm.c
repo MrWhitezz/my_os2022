@@ -195,6 +195,7 @@ static void *G_alloc(size_t npage, size_t rd_sz){
     p = p->next;
     assert(no_cycle(G_head));
   }
+  assert(no_cycle(G_head));
 
   // debug("G_alloc: before G unlock %p\n", &G_lock);
   assert(no_cycle(G_head));
