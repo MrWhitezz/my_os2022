@@ -206,8 +206,23 @@ static void *G_alloc(size_t npage, bool is_slab) {
   return NULL;
 }
 
-// static void G_free(void *ptr){
-// }
+static void G_free(void *ptr){
+  assert(ROUNDDOWN(ptr, GPAGE_SZ) == (uintptr_t)ptr);
+  int id = get_meta_index(ptr);
+  assert(id >= 0 && id < n_meta);
+  meta_t *meta = &Meta[id];
+  assert(meta->start == ptr);
+  void *free_end = meta->end;
+  assert(free_end != NULL);
+  for (int i = 0; i < n_meta - id; ++i){
+    if (meta[i].start != free_end){
+      assert(meta[i].is_alloc == true);
+      assert(meta[i].is_slab  == false);
+      meta[i].is_alloc = false;
+    }
+    else break;
+  }
+}
 
 static void *kalloc(size_t size) {
   size = nextPower_2(size);
@@ -225,6 +240,7 @@ static void kfree(void *ptr) {
   while (0) {
     S_free(ptr);
   }
+  G_free(ptr);
   
 }
 
