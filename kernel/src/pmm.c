@@ -142,6 +142,7 @@ static void *G_alloc(size_t npage, size_t rd_sz){
   G_header_t *p = G_head;
   G_header_t *prev = NULL;
   while (p != NULL){
+  assert(no_cycle(G_head));
     if (rd_sz == 0){
       if (p->size >= sz) {
         if (p->size == sz){
@@ -154,21 +155,18 @@ static void *G_alloc(size_t npage, size_t rd_sz){
             p_new->size = p->size - sz;
             if (prev == NULL){ G_head = p_new; assert_nocycle(G_head);}
             else{ prev->next = p_new; assert_nocycle(prev); assert_nocycle(prev->next);}
+            assert(no_cycle(G_head));
           }
-          assert(no_cycle(G_head));
-          break;
+        assert(no_cycle(G_head));
+        break;
         }
       }
     else {
-      if (!((npage - 1) * GPAGE_SZ == rd_sz)){
-        debug("npage: %ld, rd_sz: %ld\n", npage, rd_sz);
-      }
-      assert((npage - 1) * GPAGE_SZ == rd_sz);
-      
       uintptr_t rd_target = ROUNDUP((uintptr_t)(p) + GPAGE_SZ, rd_sz);
       uintptr_t ret       = rd_target - GPAGE_SZ;
       size_t    avail_sz  = (uintptr_t)(p) + p->size - rd_target;
       size_t    target_sz = (npage - 1) * GPAGE_SZ;
+      assert(no_cycle(G_head));
       if (avail_sz > target_sz){
         G_header_t *p_new = (G_header_t *)(rd_target + target_sz);
         p_new->size = avail_sz - target_sz;
