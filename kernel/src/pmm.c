@@ -244,6 +244,7 @@ static void *kalloc(size_t size) {
 }
 
 static void kfree(void *ptr) {
+  assert(ptr != NULL);
   void *p_rd = (void *)ROUNDDOWN(ptr, GPAGE_SZ);
   int id = get_meta_index(p_rd);
   assert(id >= 0 && id < n_meta);
