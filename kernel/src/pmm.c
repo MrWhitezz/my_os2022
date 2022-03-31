@@ -214,6 +214,7 @@ static void G_free(void *ptr){
       else{ prev->next = p; }
       break;
     }
+    debug("p: %p, p_head: %p, prev: %p\n", p, p_head, prev);
     prev = p_head;
     p_head = p_head->next;
   }
