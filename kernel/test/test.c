@@ -67,6 +67,7 @@ void do_test_2(){
 }
 
 void do_test_3(){
+  assert(0);
   Log("begin test 3\n"); 
   srand(time(NULL));
   size_t tot_sz = 0;
