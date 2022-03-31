@@ -129,7 +129,10 @@ static void *S_alloc(size_t size){
 
   spin_unlock(lk);
   assert((ROUNDDOWN((uintptr_t)node, size)) == (uintptr_t)node);
-  return (void *)node;
+  if (node != NULL) return (void *)node;
+  else              return G_alloc(1, false);
+  assert(0);
+  return NULL;
 }
 
 static void S_free(void *ptr){
