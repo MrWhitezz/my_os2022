@@ -199,6 +199,7 @@ static void *G_alloc(size_t npage, bool is_slab) {
     if (try_alloc(try_ret, sz, is_slab) == true) {
       slow_alloc(try_ret, sz, is_slab);
       spin_unlock(&G_lock);
+      assert(ROUNDDOWN(try_ret, sz) == (uintptr_t)try_ret);
       return try_ret;
     }
   }
