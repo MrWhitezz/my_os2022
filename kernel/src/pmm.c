@@ -208,6 +208,7 @@ static void *G_alloc(size_t npage, bool is_slab) {
 }
 
 static void G_free(void *ptr){
+  spin_lock(&G_lock);
   assert(ROUNDDOWN(ptr, GPAGE_SZ) == (uintptr_t)ptr);
   int id = get_meta_index(ptr);
   assert(id >= 0 && id < n_meta);
@@ -222,6 +223,7 @@ static void G_free(void *ptr){
     meta[i].is_alloc = false;
     meta[i].end      = NULL;
   }
+  spin_unlock(&G_lock);
 }
 
 static void *kalloc(size_t size) {
