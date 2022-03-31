@@ -215,13 +215,12 @@ static void G_free(void *ptr){
   assert(meta->start == ptr);
   void *free_end = meta->end;
   assert(free_end != NULL);
-  for (int i = 0; i < n_meta - id; ++i){
-    if (meta[i].start != free_end){
-      assert(meta[i].is_alloc == true);
-      assert(meta[i].is_slab  == false);
-      meta[i].is_alloc = false;
-    }
-    else break;
+  int n_pg = (free_end - ptr) / GPAGE_SZ;
+  for (int i = 0; i < n_pg; ++i){
+    assert(meta[i].is_alloc == true);
+    assert(meta[i].is_slab  == false);
+    meta[i].is_alloc = false;
+    meta[i].end      = NULL;
   }
 }
 
