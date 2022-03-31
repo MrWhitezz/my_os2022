@@ -59,7 +59,7 @@ void do_test_2(){
       ptr[j] = pmm->alloc(1 << j);
       if (ptr[j] != NULL){
         total_size += sz;
-        printf("alloc %ld at %p\n", sz, ptr[j]);
+        // printf("alloc %ld at %p\n", sz, ptr[j]);
       }
     }
     for (int j = 0; j < PT_SZ; ++j){
