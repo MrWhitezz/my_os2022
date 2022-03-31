@@ -190,7 +190,7 @@ static void *G_alloc(size_t npage, size_t rd_sz){
     p = p->next;
   }
 
-  debug("before unlock %p\n", &G_lock)
+  debug("before unlock %p\n", &G_lock);
   spin_unlock(&G_lock);
   return (void *)(p);
 }
