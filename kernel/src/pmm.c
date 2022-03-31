@@ -247,6 +247,7 @@ static void kfree(void *ptr) {
   while (0) {
     S_free(ptr);
   }
+  if (ptr != NULL)
   G_free(ptr);
   
 }
