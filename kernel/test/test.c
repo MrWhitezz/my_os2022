@@ -96,9 +96,9 @@ int main(int argc, char *argv[]) {
   pmm->init();
   if (argc < 2) exit(1);
   switch(atoi(argv[1])) {
-    case 1: do_test_1();
-    case 2: do_test_2();
-    case 3: do_test_3();
+    case 1: do_test_1(); break;
+    case 2: do_test_2(); break;
+    case 3: do_test_3(); break;
   }
   Log("End of main.\n");
 }
