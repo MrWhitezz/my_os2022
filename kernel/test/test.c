@@ -45,7 +45,7 @@ void do_test_3(){
     for (int i = 0; i < 4; ++i){
       size_t sz = 64 * 1024 * (1 << i);
       void *ptr = pmm->alloc(sz);
-      printf("alloc 0x%x at %p\n", sz, ptr);
+      printf("alloc 0x%ld at %p\n", sz, ptr);
       assert(ROUNDUP((uintptr_t)ptr, sz) == (uintptr_t)ptr);
       pmm->free(ptr);
     }
