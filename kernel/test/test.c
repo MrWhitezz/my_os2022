@@ -20,7 +20,7 @@ void do_test_1(){
     void *ptr[ALLOC_SZ];
     for (int j = 0; j < ALLOC_SZ; j ++){
       // Log("try alloc\n");
-      size_t sz = (size_t)(rand() % 100);
+      size_t sz = (size_t)(rand() % 1000);
       ptr[j] = pmm->alloc(j);
       printf("alloc %ld at %p\n", sz, ptr[j]);
       if (!(ROUNDUP((uintptr_t)ptr[j], nextPower_2(sz)) == (uintptr_t)ptr[j])){
