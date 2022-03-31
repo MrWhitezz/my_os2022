@@ -13,7 +13,7 @@
 void spin_lock(spinlock_t *lk) { while (atomic_xchg(lk, 1))  ; }
 void spin_unlock(spinlock_t *lk) { atomic_xchg(lk, 0); }
 
-enum slab_index{ _16B, _32B, _64B, _128B, _256B, _512B, _1KB, _2KB, SLAB_SIZE };
+enum slab_index{ _16B, _32B, _64B, _128B, _256B, _512B, _1KB, _2KB, _4KB, SLAB_SIZE };
 
 S_header_t *Slab[8][SLAB_SIZE];
 int n_slab = 0;
@@ -241,7 +241,7 @@ static void *kalloc(size_t size) {
   // normal klloc
   size = nextPower_2(size);
   if (size < 16) size = 16;
-  if (size <= 2048) {
+  if (size <= 4096) {
     return S_alloc(size);
   } else {
     size_t npage = size / GPAGE_SZ;
