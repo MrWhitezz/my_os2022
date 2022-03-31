@@ -225,7 +225,7 @@ static void *kalloc(size_t size) {
     return S_alloc(size);
   } else {
     size_t npage = size / GPAGE_SZ;
-    if (npage == 0) npage = 1; 
+    if (npage == 0) {npage = 1; size = GPAGE_SZ}
     assert(npage > 0);
     void *ptr = G_alloc(npage + 1, size);
     if (ptr != NULL) {
