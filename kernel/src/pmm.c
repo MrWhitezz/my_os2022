@@ -244,12 +244,17 @@ static void *kalloc(size_t size) {
 }
 
 static void kfree(void *ptr) {
-  while (0) {
+  void *p_rd = (void *)ROUNDDOWN(ptr, GPAGE_SZ);
+  int id = get_meta_index(p_rd);
+  assert(id >= 0 && id < n_meta);
+  meta_t *meta = &Meta[id];
+  assert(meta->start == p_rd);
+  if (meta->is_slab) {
     S_free(ptr);
+  } else {
+    assert(p_rd == ptr);
+    G_free(ptr);
   }
-  if (ptr != NULL)
-   G_free(ptr);
-  
 }
 
 #ifndef TEST
