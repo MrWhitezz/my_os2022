@@ -1,3 +1,10 @@
+// abstraction:
+// A set of [li, ri) - free, or allocated
+// 
+// Allocate sufficient space (pool)
+// number of pages
+// struct { } page_meta[NUM_PAGES];
+
 #include <common.h>
 #include <pmm.h>
 
@@ -33,6 +40,7 @@ static int get_slab_index(size_t x){
     x = x >> 1;
     index++;
   }
+  assert(index < SLAB_SIZE);
   return index;
 }
 
@@ -67,6 +75,7 @@ static void meta_init(){
 }
 
 static void G_init() {
+  G_lock = SPIN_INIT();
   meta_init();
 }
 
@@ -105,15 +114,14 @@ static void *S_alloc(size_t size){
   S_node_t *node = slab->n_head;
 
   if (node != NULL) {
-    if (node->size >= size) {
-      if (node->size == size) {
-        slab->n_head = node->next; 
-      } else {
-        S_node_t *new_node = (S_node_t *)((uintptr_t)node + size);
-        new_node->size = node->size - size;
-        new_node->next = node->next;
-        slab->n_head   = new_node; 
-      }
+    if (node->size == size) {
+      slab->n_head = node->next; 
+    } else {
+      assert(node->size > size);
+      S_node_t *new_node = (S_node_t *)((uintptr_t)node + size);
+      new_node->size = node->size - size;
+      new_node->next = node->next;
+      slab->n_head   = new_node; 
     }
   }
 
@@ -123,6 +131,7 @@ static void *S_alloc(size_t size){
 }
 
 static void S_free(void *ptr){
+  return;
   assert(sizeof(S_node_t) <= 16);
   S_header_t *slab = (S_header_t *)(ROUNDDOWN((uintptr_t)ptr, GPAGE_SZ));
   spinlock_t *lk = &slab->lk;
@@ -153,12 +162,6 @@ static void S_free(void *ptr){
   spin_unlock(lk);
 }
 
-// abstraction:
-// A set of [li, ri) - free, or allocated
-// 
-// Allocate sufficient space (pool)
-// number of pages
-// struct { } page_meta[NUM_PAGES];
 
 static bool try_alloc(void *ret, size_t sz, bool is_slab){
   assert(ROUNDDOWN(ret, sz) == (uintptr_t)ret);
