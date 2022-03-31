@@ -17,7 +17,7 @@ int n_slab = 0;
 spinlock_t G_lock;
 spinlock_t S_lock[8][SLAB_SIZE];
 
-unsigned int nextPower_2(unsigned int x){
+size_t nextPower_2(size_t x){
   x = x - 1;
   x = x | (x >> 1);
   x = x | (x >> 2);

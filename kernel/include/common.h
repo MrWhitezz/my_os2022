@@ -2,7 +2,7 @@
 #include <klib.h>
 #include <klib-macros.h>
 
-unsigned int nextPower_2(unsigned int x);
+size_t nextPower_2(size_t x);
 
 #ifdef LOCAL_DEBUG
   #define debug(...) printf(__VA_ARGS__)

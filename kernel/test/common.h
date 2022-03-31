@@ -83,4 +83,4 @@ MODULE(pmm) {
 
 #endif
 
-unsigned int nextPower_2(unsigned int x);
+size_t nextPower_2(size_t x);
