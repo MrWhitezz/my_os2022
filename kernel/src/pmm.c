@@ -212,8 +212,8 @@ static void G_free(void *ptr){
   while (p_head != NULL){
     if (addr_leq(p, p_head)){
       p->next = p_head;
-      if (prev == NULL){ G_head = p; }
-      else{ prev->next = p; }
+      if (prev == NULL){ G_head = p; assert_nocycle(G_head);}
+      else { prev->next = p; assert_nocycle(prev);}
       break;
     }
     debug("p: %p, p_head: %p, prev: %p\n", p, p_head, prev);
