@@ -27,7 +27,8 @@ void do_test_1(){
         size_t al_sz = nextPower_2(sz);
         assert(ROUNDUP((uintptr_t)ptr[j], nextPower_2(sz)) == (uintptr_t)ptr[j]);
       }
-      pmm->free(ptr[j]);
+      if (ptr[j] != NULL)
+        pmm->free(ptr[j]);
       // Log("alloc success, try to free\n");
       // pmm->free(ptr[j]);
       // printf("alloc 0x%x at %p\n", 1 << j, ptr[j]);
