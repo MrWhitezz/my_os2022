@@ -133,8 +133,6 @@ static void *S_alloc(size_t size){
 }
 
 static void S_free(void *ptr){
-  assert(0);
-  return;
   assert(sizeof(S_node_t) <= 16);
   S_header_t *slab = (S_header_t *)(ROUNDDOWN((uintptr_t)ptr, GPAGE_SZ));
   spinlock_t *lk = &slab->lk;
