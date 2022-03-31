@@ -172,7 +172,6 @@ static bool try_alloc(void *ret, size_t sz, bool is_slab){
   for (int i = 0; i < n_pg; ++i){
     if (meta->is_alloc) return false;
   }
-  debug("try_alloc: %p, %zu, meta id: %d\n", ret, sz, id);
   assert(meta->is_alloc == false);
   return true;
 }
