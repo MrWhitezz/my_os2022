@@ -54,8 +54,7 @@ static void meta_init(){
   G_start   = (void *)((uintptr_t)Meta + sz);
   G_start   = (void *)ROUNDUP(G_start, GPAGE_SZ);
   for (int i = 0; i < META_SZ; i++) {
-    if ((void *)&Meta[i + 1] > heap.end) {
-      debug("n_meta: %d\n", n_meta);
+    if (G_start + (i + 1) * GPAGE_SZ > heap.end) {
       n_meta = i;
       break;
     }
@@ -63,8 +62,8 @@ static void meta_init(){
     Meta[i].end      = NULL;
     Meta[i].is_alloc = false;
     Meta[i].is_slab  = false;
-    debug("&Meta[%d]: %p\n", i, &Meta[i]);
   }
+  assert(0);
 }
 
 static void G_init() {
