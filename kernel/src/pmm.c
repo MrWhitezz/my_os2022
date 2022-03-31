@@ -237,12 +237,6 @@ static void G_free(void *ptr){
 }
 
 static void *kalloc(size_t size) {
-  //brute force
-  size = nextPower_2(size);
-  size_t npage = size / GPAGE_SZ;
-  if (npage == 0) npage = 1;
-  return G_alloc(npage, false);
-
   // normal klloc
   size = nextPower_2(size);
   if (size < 16) size = 16;
@@ -263,8 +257,6 @@ static void kfree(void *ptr) {
   meta_t *meta = &Meta[id];
   assert(meta->start == p_rd);
   if (meta->is_slab) {
-    // brute force, should be removed
-    assert(0);
     S_free(ptr);
   } else {
     assert(p_rd == ptr);
