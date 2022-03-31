@@ -1,3 +1,5 @@
+#include<stdbool.h>
+
 #define MAX_ALLOC (16 *(1 << 20))
 #define GPAGE_SZ  (64 * 1024)
 #define GMAGIC    0xDEADBEEF
