@@ -61,7 +61,7 @@ static void S_init() {
   for (int i = 0; i < n_slab; i++) {
     for (int j = 0; j < SLAB_SIZE; j++) {
       S_lock[i][j] = SPIN_INIT();
-      Slab[i][j] = (S_header_t *)G_alloc(1);
+      Slab[i][j] = (S_header_t *)G_alloc(1, 0);
       Slab[i][j]->unit_size = (1 << (j + 4));
       // printf("Slab[%d][%d]->unit_size = %ld\n", i, j, Slab[i][j]->unit_size);
       Slab[i][j]->n_head = (S_node_t *)ROUNDUP(((uintptr_t)Slab[i][j] + sizeof(S_header_t)), Slab[i][j]->unit_size);
@@ -130,47 +130,60 @@ static void S_free(void *ptr){
   spin_unlock(lk);
 }
 
-static void *G_alloc(size_t npage){
+static void *G_alloc(size_t npage, size_t rd_sz){
   // alloc npage * GPAGE_SZ, alligned, neglect info_t
   size_t sz = npage * GPAGE_SZ;
   spin_lock(&G_lock);
   G_header_t *p = G_head;
   G_header_t *prev = NULL;
   while (p != NULL){
-    size_t avail_sz = ((uintptr_t)p + p->size) - (ROUNDUP((uintptr_t)p, sz));
-    if (avail_sz >= sz){
-      if (p->size == sz){
-        assert(p->size == avail_sz);
-        if (prev == NULL){ G_head = p->next; }
-        else{ prev->next = p->next; }
-      }else{
-        if ((uintptr_t)p == (ROUNDUP((uintptr_t)p, sz))){
-          G_header_t *p_new = (G_header_t *)((uintptr_t)p + sz);
-          p_new->next = p->next;
-          p_new->size = p->size - sz;
-          if (prev == NULL){ G_head = p_new; }
-          else{ prev->next = p_new; }
-        }
-        else {
-          if (avail_sz == sz){
-            p->size = p->size - avail_sz;
-            // for return
-          }
-          else {
-            G_header_t *p_new = (G_header_t *)(ROUNDUP((uintptr_t)p, sz) + sz);
+    if (rd_sz == 0){
+      if (p->size >= sz) {
+        if (p->size == sz){
+          if (prev == NULL){ G_head = p->next; }
+          else { prev->next = p->next; }
+        } else {
+          // if ((uintptr_t)p == (ROUNDUP((uintptr_t)p, sz))){
+            G_header_t *p_new = (G_header_t *)((uintptr_t)p + sz);
             p_new->next = p->next;
-            p_new->size = avail_sz - sz;
-            p->next = p_new;
+            p_new->size = p->size - sz;
+            if (prev == NULL){ G_head = p_new; }
+            else{ prev->next = p_new; }
           }
-          p = (G_header_t *)(ROUNDUP(p, sz));
+          break;
         }
       }
-      assert((ROUNDDOWN((uintptr_t)p, sz)) == (uintptr_t)p);
-      break;
+    else {
+      assert((npage - 1) * GPAGE_SZ == rd_sz);
+      
+      uintptr_t rd_target = ROUNDUP((uintptr_t)(p) + GPAGE_SZ, rd_sz);
+      uintptr_t ret       = rd_target - GPAGE_SZ;
+      size_t    avail_sz  = (uintptr_t)(p) + p->size - rd_target;
+      size_t    target_sz = (npage - 1) * GPAGE_SZ;
+      if (avail_sz > target_sz){
+        G_header_t *p_new = (G_header_t *)(rd_target + target_sz);
+        p_new->size = avail_sz - target_sz;
+        p_new->next = p->next;
+        size_t rm_sz = ret - (uintptr_t)(p);
+        assert(rm_sz + target_sz + p_new->size == p->size);
+        if (rm_sz == 0){
+          if (prev == NULL){ G_head = p_new; }
+          else { prev->next = p_new; }
+        }
+        else {
+          assert(rm_sz > 0);
+          p->size = rm_sz;
+          p->next = p_new;
+        }
+        p = (G_header_t *)(ret);
+        assert((ROUNDDOWN(rd_target, sz)) == rd_target);
+        break;
+      }
     }
     prev = p;
     p = p->next;
   }
+
   spin_unlock(&G_lock);
   assert((ROUNDDOWN((uintptr_t)p, sz)) == (uintptr_t)p);
   return (void *)(p);
@@ -209,7 +222,7 @@ static void *kalloc(size_t size) {
     size_t npage = size / GPAGE_SZ;
     if (npage == 0) npage = 1; 
     assert(npage > 0);
-    void *ptr = G_alloc(npage + 1);
+    void *ptr = G_alloc(npage + 1, size);
     if (ptr != NULL) {
       info_t *info  = (info_t *)ptr;
       info->G_magic = GMAGIC;
