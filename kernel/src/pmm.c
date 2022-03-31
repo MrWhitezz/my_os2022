@@ -187,6 +187,7 @@ static void* slow_alloc(void *ret, size_t sz, bool is_slab){
     meta[i].is_alloc = true;
     meta[i].is_slab  = is_slab;
     meta[i].end      = (void *)((uintptr_t)ret + sz);
+    debug("alloc meta[%d], start: %p, end: %p\n", id, meta->start, meta->end);
   }
   return ret;
 }
@@ -218,6 +219,7 @@ static void G_free(void *ptr){
   assert(free_end != NULL);
   int n_pg = (free_end - ptr) / GPAGE_SZ;
   for (int i = 0; i < n_pg; ++i){
+    debug("free meta[%d] , start: %p, end: %p\n", i, meta[i].start, meta[i].end);
     assert(meta[i].is_alloc == true);
     assert(meta[i].is_slab  == false);
     assert(meta[i].end      == free_end);
