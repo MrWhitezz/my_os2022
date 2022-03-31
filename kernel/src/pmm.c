@@ -182,7 +182,7 @@ static void* slow_alloc(void *ret, size_t sz, bool is_slab){
   debug("slow_alloc: %p, %zu, meta id: %d\n", ret, sz, id);
   assert(id >= 0 && id < n_meta);
   meta_t *meta = &Meta[id];
-  // assert(meta->is_alloc == false);
+  assert(meta->is_alloc == false);
   size_t n_pg = sz / GPAGE_SZ;
   for (int i = 0; i < n_pg; i++) {
     assert(meta->is_alloc == false);
