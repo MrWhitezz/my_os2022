@@ -13,14 +13,16 @@ Area heap = {};
 
 void do_test_1(){
   Log("begin test 1\n");
+  srand(time(NULL));
   #define ALLOC_SZ 14
   uint32_t size = 0;
   for (int i = 0; i < 10000; i++) {
     void *ptr[ALLOC_SZ];
     for (int j = 0; j < ALLOC_SZ; j ++){
       // Log("try alloc\n");
-      size_t sz = (size_t)(rand() % (1 << 20));
+      size_t sz = (size_t)(rand() % 100);
       ptr[j] = pmm->alloc(j);
+      printf("alloc %d at %p\n", sz, ptr[j]);
       assert(ROUNDUP((uintptr_t)ptr[j], nextPower_2(sz)) == (uintptr_t)ptr[j]);
       pmm->free(ptr[j]);
       // Log("alloc success, try to free\n");
