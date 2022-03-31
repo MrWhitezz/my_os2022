@@ -81,7 +81,7 @@ void do_test_3(){
   for (int j = 0; j < 10000; ++ j){
     for (int i = 0; i < arr_sz; ++i){
       size_t rd = rand() % 100;
-      size_t sz = 64 * 1024 * (rd);
+      size_t sz = 64 * 1024 * (rd + 1);
       ptr[i] = pmm->alloc(sz);
       // printf("alloc 0x%ld at %p\n", sz, ptr);
       assert(ROUNDUP((uintptr_t)ptr[i], nextPower_2(sz)) == (uintptr_t)ptr[i]);
