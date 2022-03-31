@@ -75,13 +75,19 @@ void do_test_2(){
 void do_test_3(){
   Log("begin test 3\n"); 
   size_t tot_sz = 0;
+  const int arr_sz = 4;
+  void *ptr[arr_sz];
   for (int j = 0; j < 10; ++ j){
-    for (int i = 0; i < 4; ++i){
+    for (int i = 0; i < arr_sz; ++i){
       size_t sz = 64 * 1024 * (1 << i);
-      void *ptr = pmm->alloc(sz);
+      ptr[i] = pmm->alloc(sz);
       // printf("alloc 0x%ld at %p\n", sz, ptr);
-      assert(ROUNDUP((uintptr_t)ptr, sz) == (uintptr_t)ptr);
-      pmm->free(ptr);
+      assert(ROUNDUP((uintptr_t)ptr[i], sz) == (uintptr_t)ptr[i]);
+      if (ptr[i] != NULL)
+        tot_sz += sz;
+    }
+    for (int i = 0; i < 4; ++i){
+      pmm->free(ptr[i]);
     }
   }
   printf("Total size: %ld MiB\n", tot_sz >> 20);
