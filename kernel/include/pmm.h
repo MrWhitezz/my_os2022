@@ -30,3 +30,7 @@ typedef struct S_header_t {
 static void *S_alloc(size_t size);
 static void *G_alloc(size_t npage, size_t rd_sz);
 
+// debug
+
+#define assert_nocycle(p) assert(p->next != p)
+

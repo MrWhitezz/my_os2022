@@ -144,8 +144,8 @@ static void *G_alloc(size_t npage, size_t rd_sz){
     if (rd_sz == 0){
       if (p->size >= sz) {
         if (p->size == sz){
-          if (prev == NULL){ G_head = p->next; }
-          else { prev->next = p->next; }
+          if (prev == NULL){ G_head = p->next; assert_nocycle(G_head);}
+          else { prev->next = p->next; assert_nocycle(prev);}
         } else {
           // if ((uintptr_t)p == (ROUNDUP((uintptr_t)p, sz))){
             G_header_t *p_new = (G_header_t *)((uintptr_t)p + sz);
