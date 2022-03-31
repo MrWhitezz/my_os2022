@@ -77,7 +77,7 @@ void do_test_3(){
   size_t tot_sz = 0;
   const int arr_sz = 4;
   void *ptr[arr_sz];
-  for (int j = 0; j < 10; ++ j){
+  for (int j = 0; j < 100; ++ j){
     for (int i = 0; i < arr_sz; ++i){
       size_t sz = 64 * 1024 * (1 << i);
       ptr[i] = pmm->alloc(sz);
