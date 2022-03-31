@@ -75,7 +75,7 @@ void do_test_2(){
 void do_test_3(){
   Log("begin test 3\n"); 
   size_t tot_sz = 0;
-  const int arr_sz = 4;
+  const int arr_sz = 8;
   void *ptr[arr_sz];
   for (int j = 0; j < 100; ++ j){
     for (int i = 0; i < arr_sz; ++i){
