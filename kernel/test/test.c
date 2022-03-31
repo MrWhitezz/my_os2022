@@ -23,6 +23,9 @@ void do_test_1(){
       size_t sz = (size_t)(rand() % 100);
       ptr[j] = pmm->alloc(j);
       printf("alloc %ld at %p\n", sz, ptr[j]);
+      if (!(ROUNDUP((uintptr_t)ptr[j], nextPower_2(sz)) == (uintptr_t)ptr[j])){
+        printf("%ld %ld\n", ROUNDUP((uintptr_t)ptr[j], nextPower_2(sz)), (uintptr_t)ptr[j]);
+      }
       assert(ROUNDUP((uintptr_t)ptr[j], nextPower_2(sz)) == (uintptr_t)ptr[j]);
       pmm->free(ptr[j]);
       // Log("alloc success, try to free\n");
