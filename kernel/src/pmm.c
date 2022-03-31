@@ -199,6 +199,7 @@ static void *G_alloc(size_t npage, size_t rd_sz){
 static void G_free(void *ptr){
   debug("G_free: before G lock %p\n", &G_lock);
   spin_lock(&G_lock);
+  debug("Get G_lock\n");
   assert((ROUNDDOWN((uintptr_t)ptr, GPAGE_SZ)) == (uintptr_t)ptr);
   info_t *info = (info_t *)((uintptr_t)ptr - GPAGE_SZ);
   assert(info->G_magic == GMAGIC);
