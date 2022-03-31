@@ -136,9 +136,9 @@ static void *G_alloc(size_t npage, size_t rd_sz){
   // alloc npage * GPAGE_SZ, alligned, neglect info_t
   assert(no_cycle(G_head));
   size_t sz = npage * GPAGE_SZ;
-  debug("G_alloc: before G lock %p\n", &G_lock);
+  // debug("G_alloc: before G lock %p\n", &G_lock);
   spin_lock(&G_lock);
-  debug("Get G_lock\n");
+  // debug("Get G_lock\n");
   G_header_t *p = G_head;
   G_header_t *prev = NULL;
   while (p != NULL){
@@ -194,14 +194,14 @@ static void *G_alloc(size_t npage, size_t rd_sz){
     p = p->next;
   }
 
-  debug("G_alloc: before G unlock %p\n", &G_lock);
+  // debug("G_alloc: before G unlock %p\n", &G_lock);
   assert(no_cycle(G_head));
   spin_unlock(&G_lock);
   return (void *)(p);
 }
 
 static void G_free(void *ptr){
-  debug("G_free: before G lock %p\n", &G_lock);
+  // debug("G_free: before G lock %p\n", &G_lock);
   spin_lock(&G_lock);
   assert((ROUNDDOWN((uintptr_t)ptr, GPAGE_SZ)) == (uintptr_t)ptr);
   info_t *info = (info_t *)((uintptr_t)ptr - GPAGE_SZ);
@@ -226,19 +226,17 @@ static void G_free(void *ptr){
   }
   debug("after loop\n");
   if (p_head == NULL){ assert(prev != NULL); p->next = NULL; prev->next = p; }
-  debug("G_free: before G unlock %p\n", &G_lock);
+  // debug("G_free: before G unlock %p\n", &G_lock);
   spin_unlock(&G_lock);
 }
 
 bool no_cycle(G_header_t *p){
-  debug("before no_cycle loop\n");
   while (p != NULL){
     if (p->next != NULL && !addr_leq(p, p->next)) return false;
     if (p == p->next) 
       return false;
     p = p->next;
   }
-  debug("after no_cycle loop\n");
   return true;
 }
 
