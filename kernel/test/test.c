@@ -49,11 +49,24 @@ void do_test_1(){
 
 void do_test_2(){
   // trivial test; to be modified
-  for (int i = 0; i < 10; ++i){
-    void *ptr = pmm->alloc(128 * 1024);
-    pmm->free(ptr);
+  Log("begin test 2\n");
+  #define PT_SZ 100
+  size_t total_size = 0;
+  void *ptr[PT_SZ];
+  for (int i = 0; i < 1000; ++i){
+    for (int j = 0; j < PT_SZ; ++j){
+      size_t sz = (size_t)(rand() % 1000) + 1;
+      ptr[j] = pmm->alloc(1 << j);
+      if (ptr[j] != NULL)
+        total_size += sz;
+    }
+    for (int j = 0; j < PT_SZ; ++j){
+      pmm->free(ptr[j]);
+    }
   }
+  printf("Total size: %d MiB\n", total_size >> 20);
 
+  Log("end test 2\n");
 }
 
 void do_test_3(){
