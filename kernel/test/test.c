@@ -16,7 +16,7 @@ void do_test_1(){
   srand(time(NULL));
   #define ALLOC_SZ 14
   uint32_t size = 0;
-  for (int i = 0; i < 10000000; i++) {
+  for (int i = 0; i < 1000000; i++) {
     void *ptr[ALLOC_SZ];
     for (int j = 0; j < ALLOC_SZ; j ++){
       // Log("try alloc\n");
@@ -64,7 +64,7 @@ void do_test_2(){
       pmm->free(ptr[j]);
     }
   }
-  printf("Total size: %d MiB\n", total_size >> 20);
+  printf("Total size: %ld MiB\n", total_size >> 20);
 
   Log("end test 2\n");
 }
