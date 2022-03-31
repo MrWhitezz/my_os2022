@@ -199,6 +199,9 @@ static void *G_alloc(size_t npage, bool is_slab) {
   void *try_ret = (void *)ROUNDUP(G_start, sz);
   for (; is_valid_ret(try_ret); try_ret += sz){
     if (try_alloc(try_ret, sz, is_slab) == true) {
+      int id = get_meta_index(try_ret);
+      meta_t *meta = &Meta[id];
+      assert(meta->is_alloc == false);
       slow_alloc(try_ret, sz, is_slab);
       spin_unlock(&G_lock);
       return try_ret;
