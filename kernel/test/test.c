@@ -57,8 +57,10 @@ void do_test_2(){
     for (int j = 0; j < PT_SZ; ++j){
       size_t sz = (size_t)(rand() % 1000) + 1;
       ptr[j] = pmm->alloc(1 << j);
-      if (ptr[j] != NULL)
+      if (ptr[j] != NULL){
         total_size += sz;
+        printf("alloc %ld at %p\n", sz, ptr[j]);
+      }
     }
     for (int j = 0; j < PT_SZ; ++j){
       pmm->free(ptr[j]);
