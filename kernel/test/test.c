@@ -50,6 +50,7 @@ void do_test_1(){
 }
 
 void do_test_2(){
+  // trivial test; to be modified
   for (int i = 0; i < 10; ++i){
     void *ptr = pmm->alloc(128 * 1024);
     printf("alloc 0x%x at %p\n", 128, ptr);
