@@ -199,7 +199,6 @@ static void *G_alloc(size_t npage, size_t rd_sz){
 static void G_free(void *ptr){
   debug("G_free: before G lock %p\n", &G_lock);
   spin_lock(&G_lock);
-  debug("Get G_lock\n");
   assert((ROUNDDOWN((uintptr_t)ptr, GPAGE_SZ)) == (uintptr_t)ptr);
   info_t *info = (info_t *)((uintptr_t)ptr - GPAGE_SZ);
   assert(info->G_magic == GMAGIC);
@@ -207,6 +206,7 @@ static void G_free(void *ptr){
   p->size = info->size;
   G_header_t *p_head = G_head;
   G_header_t *prev = NULL;
+  debug("before loop\n");
   while (p_head != NULL){
     if (addr_leq(p, p_head)){
       p->next = p_head;
@@ -217,6 +217,7 @@ static void G_free(void *ptr){
     prev = p_head;
     p_head = p_head->next;
   }
+  debug("after loop\n");
   if (p_head == NULL){ assert(prev != NULL); p->next = NULL; prev->next = p; }
   debug("G_free: before G unlock %p\n", &G_lock);
   spin_unlock(&G_lock);
