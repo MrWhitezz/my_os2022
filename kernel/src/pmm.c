@@ -233,7 +233,7 @@ static void G_free(void *ptr){
 bool no_cycle(G_header_t *p){
   debug("before no_cycle loop\n");
   while (p != NULL){
-    if (p->next != NULL) assert(addr_leq(p, p->next));
+    if (p->next != NULL && !addr_leq(p, p->next)) return false;
     if (p == p->next) 
       return false;
     p = p->next;
