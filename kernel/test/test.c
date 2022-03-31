@@ -29,6 +29,7 @@ void do_test_1(){
         printf("al_sz = %lx, ~(al_sz - 1) = %lx\n", al_sz, ~(al_sz - 1));
         printf("((uinptr_t)ptr[j]) + (al_sz - 1) = %lx\n", ((uintptr_t)ptr[j]) + (al_sz - 1));
         printf("(((uinptr_t)ptr[j]) + (al_sz - 1)) & ~(al_sz - 1) = %lx\n", (((uintptr_t)ptr[j]) + (al_sz - 1)) & ~(al_sz - 1));
+        printf("ROUNDUP((uintptr_t)ptr[j], al_sz) = %lx\n", ROUNDUP((uintptr_t)ptr[j], al_sz));
         printf("0x%llx 0x%llx\n", ROUNDUP((uintptr_t)ptr[j], nextPower_2(sz)), (uintptr_t)ptr[j]);
       }
       assert(ROUNDUP((uintptr_t)ptr[j], nextPower_2(sz)) == (uintptr_t)ptr[j]);
