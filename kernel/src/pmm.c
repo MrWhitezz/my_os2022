@@ -149,7 +149,7 @@ static void *G_alloc(size_t npage, size_t rd_sz){
         } else {
           // if ((uintptr_t)p == (ROUNDUP((uintptr_t)p, sz))){
             G_header_t *p_new = (G_header_t *)((uintptr_t)p + sz);
-            p_new->next = p->next;
+            p_new->next = p->next; assert_nocycle(p_new);
             p_new->size = p->size - sz;
             if (prev == NULL){ G_head = p_new; assert_nocycle(G_head);}
             else{ prev->next = p_new; assert_nocycle(prev); assert_nocycle(prev->next);}
@@ -170,7 +170,7 @@ static void *G_alloc(size_t npage, size_t rd_sz){
       if (avail_sz > target_sz){
         G_header_t *p_new = (G_header_t *)(rd_target + target_sz);
         p_new->size = avail_sz - target_sz;
-        p_new->next = p->next;
+        p_new->next = p->next; assert_nocycle(p_new);
         size_t rm_sz = ret - (uintptr_t)(p);
         assert(rm_sz + GPAGE_SZ + target_sz + p_new->size == p->size);
         if (rm_sz == 0){
@@ -211,7 +211,6 @@ static void G_free(void *ptr){
   debug("before loop\n");
   while (p_head != NULL){
     if (prev != NULL) assert(addr_leq(prev, p_head));
-
     if (addr_leq(p, p_head)){
       assert(p != p_head);
       p->next = p_head;
