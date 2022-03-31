@@ -53,6 +53,8 @@ static bool is_valid_ret(void *p){
   assert(p != NULL);
   if (p < G_start) return false;
   if (p >= G_start + (n_meta * GPAGE_SZ)) return false;
+  int idx = get_meta_index(p);
+  assert(idx >= 0 && idx < n_meta);
   return true;
 }
 
@@ -236,7 +238,7 @@ static void G_free(void *ptr){
 
 static void *kalloc(size_t size) {
   //brute force
-
+  size = nextPower_2(size);
   size_t npage = size / GPAGE_SZ;
   if (npage == 0) npage = 1;
   return G_alloc(npage, false);
@@ -290,7 +292,6 @@ static void pmm_init() {
   printf("Got %d MiB heap: [%p, %p)\n", HEAP_SIZE >> 20, heap.start, heap.end);
   G_init();
   S_init();
-
 }
 #endif
 
