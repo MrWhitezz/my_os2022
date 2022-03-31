@@ -41,8 +41,7 @@ void do_test_1(){
       if (ptr[j] != NULL)
           size += j;
     }
-    if (i % 1000 == 0) 
-      printf("ptr[0] = %p\n", ptr[0]);
+    // if (i % 100000 == 0) printf("ptr[0] = %p\n", ptr[0]);
   }
   printf("Total size: %d MiB\n", size >> 20);
   Log("end test 1\n");
@@ -52,9 +51,9 @@ void do_test_2(){
   // trivial test; to be modified
   for (int i = 0; i < 10; ++i){
     void *ptr = pmm->alloc(128 * 1024);
-    printf("alloc 0x%x at %p\n", 128, ptr);
     pmm->free(ptr);
   }
+
 }
 
 void do_test_3(){
@@ -62,7 +61,7 @@ void do_test_3(){
     for (int i = 0; i < 4; ++i){
       size_t sz = 64 * 1024 * (1 << i);
       void *ptr = pmm->alloc(sz);
-      printf("alloc 0x%ld at %p\n", sz, ptr);
+      // printf("alloc 0x%ld at %p\n", sz, ptr);
       assert(ROUNDUP((uintptr_t)ptr, sz) == (uintptr_t)ptr);
       pmm->free(ptr);
     }
