@@ -170,7 +170,7 @@ static bool try_alloc(void *ret, size_t sz, bool is_slab){
   assert(meta->start == ret);
   size_t n_pg = sz / GPAGE_SZ;
   for (int i = 0; i < n_pg; ++i){
-    if (meta->is_alloc) return false;
+    if (meta[i].is_alloc) return false;
   }
   assert(meta->is_alloc == false);
   return true;
@@ -248,7 +248,7 @@ static void kfree(void *ptr) {
     S_free(ptr);
   }
   if (ptr != NULL)
-  G_free(ptr);
+   G_free(ptr);
   
 }
 
