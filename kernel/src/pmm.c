@@ -77,6 +77,7 @@ static void *S_alloc(size_t size){
   assert(cpu < cpu_count());
   assert(size = nextPower_2(size));
   int id = get_slab_index(size);
+  debug("size: %ld, get_slab_index: %d\n", size, get_slab_index(size));
   assert(Slab[cpu][id]->S_magic == SMAGIC);
   assert(size == Slab[cpu][id]->unit_size);
   debug("Slab[%d][%d]: %p, size: %ld\n", cpu, id, Slab[cpu][id], Slab[cpu][id]->unit_size);
