@@ -67,6 +67,7 @@ static void meta_init(){
 }
 
 static void G_init() {
+  debug("G_init\n");
   meta_init();
 }
 
