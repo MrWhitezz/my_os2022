@@ -216,7 +216,7 @@ static void G_free(void *ptr){
     p_head = p_head->next;
   }
   if (p_head == NULL){ assert(prev != NULL); p->next = NULL; prev->next = p; }
-  debug("before unlock %p\n", &G_lock);
+  debug("G_free: before G unlock %p\n", &G_lock);
   spin_unlock(&G_lock);
 }
 
