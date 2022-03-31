@@ -145,14 +145,14 @@ static void *G_alloc(size_t npage, size_t rd_sz){
       if (p->size >= sz) {
         if (p->size == sz){
           if (prev == NULL){ G_head = p->next; assert_nocycle(G_head);}
-          else { prev->next = p->next; assert_nocycle(prev);}
+          else { prev->next = p->next; assert_nocycle(prev); assert_nocycle(prev->next);}
         } else {
           // if ((uintptr_t)p == (ROUNDUP((uintptr_t)p, sz))){
             G_header_t *p_new = (G_header_t *)((uintptr_t)p + sz);
             p_new->next = p->next;
             p_new->size = p->size - sz;
             if (prev == NULL){ G_head = p_new; assert_nocycle(G_head);}
-            else{ prev->next = p_new; assert_nocycle(prev);}
+            else{ prev->next = p_new; assert_nocycle(prev); assert_nocycle(prev->next);}
           }
           break;
         }
@@ -175,7 +175,7 @@ static void *G_alloc(size_t npage, size_t rd_sz){
         assert(rm_sz + GPAGE_SZ + target_sz + p_new->size == p->size);
         if (rm_sz == 0){
           if (prev == NULL){ G_head = p_new; assert_nocycle(G_head);}
-          else { prev->next = p_new; assert_nocycle(prev);}
+          else { prev->next = p_new; assert_nocycle(prev); assert_nocycle(prev->next);}
         }
         else {
           assert(rm_sz > 0);
@@ -213,7 +213,7 @@ static void G_free(void *ptr){
     if (addr_leq(p, p_head)){
       p->next = p_head;
       if (prev == NULL){ G_head = p; assert_nocycle(G_head);}
-      else { prev->next = p; assert_nocycle(prev);}
+      else { prev->next = p; assert_nocycle(prev); assert_nocycle(prev->next);}
       break;
     }
     debug("p: %p, p_head: %p, prev: %p\n", p, p_head, prev);
