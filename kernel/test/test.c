@@ -12,6 +12,7 @@ int      cpu_current (void) {return 0;}
 Area heap = {};
 
 void do_test_1(){
+  Log("begin test 1\n");
   #define ALLOC_SZ 14
   uint32_t size = 0;
   for (int i = 0; i < 10000; i++) {
@@ -30,6 +31,7 @@ void do_test_1(){
       printf("ptr[0] = %p\n", ptr[0]);
   }
   printf("Total size: %d MiB\n", size >> 20);
+  Log("end test 1\n");
 }
 
 void do_test_2(){
