@@ -74,12 +74,14 @@ void do_test_2(){
 
 void do_test_3(){
   Log("begin test 3\n"); 
+  srand(time(NULL));
   size_t tot_sz = 0;
   const int arr_sz = 8;
   void *ptr[arr_sz];
   for (int j = 0; j < 10000; ++ j){
     for (int i = 0; i < arr_sz; ++i){
-      size_t sz = 64 * 1024 * (1 << i);
+      size_t rd = rand() % 100;
+      size_t sz = 64 * 1024 * (rd);
       ptr[i] = pmm->alloc(sz);
       // printf("alloc 0x%ld at %p\n", sz, ptr);
       assert(ROUNDUP((uintptr_t)ptr[i], sz) == (uintptr_t)ptr[i]);
