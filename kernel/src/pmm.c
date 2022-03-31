@@ -187,7 +187,7 @@ static void* slow_alloc(void *ret, size_t sz, bool is_slab){
     meta[i].is_alloc = true;
     meta[i].is_slab  = is_slab;
     meta[i].end      = (void *)((uintptr_t)ret + sz);
-    debug("alloc meta[%d], start: %p, end: %p\n", id, meta->start, meta->end);
+    debug("alloc meta[%d], start: %p, end: %p\n", i, meta[i].start, meta[i].end);
   }
   return ret;
 }
