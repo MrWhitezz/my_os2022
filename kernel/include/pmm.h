@@ -33,4 +33,5 @@ static void *G_alloc(size_t npage, size_t rd_sz);
 // debug
 
 #define assert_nocycle(p) assert(p->next != p)
+bool no_cycle(G_header_t *p);
 
