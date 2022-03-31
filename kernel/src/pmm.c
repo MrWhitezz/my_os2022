@@ -214,10 +214,11 @@ static void G_free(void *ptr){
 }
 
 static void *kalloc(size_t size) {
+  debug("kalloc: %zu\n", size);
   if (size > MAX_ALLOC) return NULL;
   size = nextPower_2(size);
   if (size <= 4 * 1024) {
-    if (size < 16) size = 16;
+    if (size < 16) {size = 16;}
     return S_alloc(size);
   } else {
     size_t npage = size / GPAGE_SZ;
