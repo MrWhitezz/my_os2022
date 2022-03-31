@@ -22,7 +22,7 @@ void do_test_1(){
       // Log("try alloc\n");
       size_t sz = (size_t)(rand() % 1000) + 1;
       ptr[j] = pmm->alloc(sz);
-      printf("alloc %ld at %p\n", sz, ptr[j]);
+      // printf("alloc %ld at %p\n", sz, ptr[j]);
       if (!(ROUNDUP((uintptr_t)ptr[j], nextPower_2(sz)) == (uintptr_t)ptr[j])){
         size_t al_sz = nextPower_2(sz);
         printf("fail at i = %d, j = %d, sz = %ld, al_sz = %ld, ptr = %p\n", i, j, sz, al_sz, ptr[j]);
