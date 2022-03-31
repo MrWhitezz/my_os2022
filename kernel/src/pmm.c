@@ -233,8 +233,10 @@ static void G_free(void *ptr){
 bool no_cycle(G_header_t *p){
   debug("before no_cycle loop\n");
   while (p != NULL){
-    if (p == p->next) return false;
+    if (p == p->next) 
+      return false;
     p = p->next;
+    debug("p: %p, p->next: %p\n", p, p->next);
   }
   debug("after no_cycle loop\n");
   return true;
