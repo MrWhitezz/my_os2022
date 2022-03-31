@@ -89,7 +89,8 @@ void do_test_3(){
         tot_sz += sz;
     }
     for (int i = 0; i < arr_sz; ++i){
-      pmm->free(ptr[i]);
+      if (ptr[i] != NULL)
+        pmm->free(ptr[i]);
     }
   }
   printf("Total size: %ld MiB\n", tot_sz >> 20);
