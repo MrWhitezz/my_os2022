@@ -131,6 +131,7 @@ static void *S_alloc(size_t size){
 }
 
 static void S_free(void *ptr){
+  assert(0);
   return;
   assert(sizeof(S_node_t) <= 16);
   S_header_t *slab = (S_header_t *)(ROUNDDOWN((uintptr_t)ptr, GPAGE_SZ));
@@ -161,7 +162,6 @@ static void S_free(void *ptr){
   if (node_head == NULL) { node->next = NULL; prev->next = node; }
   spin_unlock(lk);
 }
-
 
 static bool try_alloc(void *ret, size_t sz, bool is_slab){
   assert(ROUNDDOWN(ret, sz) == (uintptr_t)ret);
@@ -235,6 +235,12 @@ static void G_free(void *ptr){
 }
 
 static void *kalloc(size_t size) {
+  //brute force
+
+  size_t npage = size / GPAGE_SZ;
+  if (npage == 0) npage = 1;
+  return G_alloc(npage, false);
+
   size = nextPower_2(size);
   if (size < 16) size = 16;
   if (size <= 4096) {
