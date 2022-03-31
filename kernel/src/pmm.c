@@ -156,6 +156,9 @@ static void *G_alloc(size_t npage, size_t rd_sz){
         }
       }
     else {
+      if (!((npage - 1) * GPAGE_SZ == rd_sz)){
+        debug("npage: %ld, rd_sz: %ld\n", npage, rd_sz);
+      }
       assert((npage - 1) * GPAGE_SZ == rd_sz);
       
       uintptr_t rd_target = ROUNDUP((uintptr_t)(p) + GPAGE_SZ, rd_sz);
