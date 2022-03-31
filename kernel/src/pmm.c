@@ -52,7 +52,7 @@ static void meta_init(){
   size_t sz = sizeof(meta_t) * META_SZ;
   Meta      = (meta_t *)(heap.start);
   G_start   = (void *)((uintptr_t)Meta + sz);
-  G_start   = (void *)ROUNDUP(G_start, GPAGE_SZ);
+  G_start   = (void *)ROUNDUP(G_start, GPAGE_SZ); // last change
   for (int i = 0; i < META_SZ; i++) {
     if (G_start + (i + 1) * GPAGE_SZ > heap.end) {
       n_meta = i;
@@ -161,9 +161,13 @@ static void S_free(void *ptr){
 // struct { } page_meta[NUM_PAGES];
 
 static bool try_alloc(void *ret, size_t sz, bool is_slab){
+  assert(ROUNDDOWN(ret, sz) == (uintptr_t)ret);
+  assert(sz > 0 && ROUNDUP(sz, GPAGE_SZ) == sz);
+  assert(is_valid_ret(ret));
   int id = get_meta_index(ret);
   assert(id >= 0 && id < n_meta);
   meta_t *meta = &Meta[id];
+  assert(meta->start == ret);
   size_t n_pg = sz / GPAGE_SZ;
   for (int i = 0; i < n_pg; ++i){
     if (meta->is_alloc) return false;
@@ -172,17 +176,13 @@ static bool try_alloc(void *ret, size_t sz, bool is_slab){
 }
 
 static void* slow_alloc(void *ret, size_t sz, bool is_slab){
-  assert(ret != NULL);
-  assert(sz > 0 && ROUNDUP(sz, GPAGE_SZ) == sz);
-  assert(is_valid_ret(ret));
   int id = get_meta_index(ret);
   assert(id >= 0 && id < n_meta);
   meta_t *meta = &Meta[id];
-  assert(meta->start == ret);
-  assert(meta->end == NULL);
   assert(meta->is_alloc == false);
   size_t n_pg = sz / GPAGE_SZ;
   for (int i = 0; i < n_pg; i++) {
+    assert(meta->is_alloc == false);
     meta[i].is_alloc = true;
     meta[i].is_slab  = is_slab;
     meta[i].end      = (void *)((uintptr_t)ret + sz);
@@ -195,13 +195,12 @@ static void *G_alloc(size_t npage, bool is_slab) {
   size_t sz = npage * GPAGE_SZ;
   void *try_ret = (void *)ROUNDUP(G_start, sz);
   for (; is_valid_ret(try_ret); try_ret += sz){
-    if (try_alloc(try_ret, sz, is_slab)) {
+    if (try_alloc(try_ret, sz, is_slab) == true) {
       slow_alloc(try_ret, sz, is_slab);
       spin_unlock(&G_lock);
       return try_ret;
     }
   }
-  
   spin_unlock(&G_lock);
   return NULL;
 }
