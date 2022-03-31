@@ -210,6 +210,8 @@ static void G_free(void *ptr){
   G_header_t *prev = NULL;
   debug("before loop\n");
   while (p_head != NULL){
+    if (prev != NULL) assert(addr_leq(prev, p_head));
+
     if (addr_leq(p, p_head)){
       assert(p != p_head);
       p->next = p_head;
