@@ -141,13 +141,13 @@ static void *S_alloc(size_t size){
 
   S_header_t *slab = Slab[cpu][id];
 
-  void *ret = slab_alloc(slab, size);
+  while (slab != NULL){
+    void *ret = slab_alloc(slab, size);
+    if (ret != NULL) return ret;
+    slab = slab->next;
+  }
 
-  if (ret != NULL)  return ret;
-  else              return G_alloc(1, false);
-
-  assert(0);
-  return NULL;
+  return G_alloc(1, false);
 }
 
 
