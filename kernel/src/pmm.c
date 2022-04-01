@@ -172,7 +172,7 @@ static void *S_alloc(size_t size){
   // fail to add slab
   if (new_slab == NULL) return NULL;
   void *ret = slab_alloc(new_slab, size);
-  // assert(ret != NULL);
+  assert(ret != NULL);
   return ret;
 }
 
