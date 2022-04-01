@@ -159,8 +159,11 @@ static void *S_alloc(size_t size){
   while (slab != NULL){
     void *ret = slab_alloc(slab, size);
     if (ret != NULL) return ret;
+    spinlock_t *lk = &(slab->lk);
+    spin_lock(lk);
     prev = slab;
     slab = slab->next;
+    spin_unlock(lk);
   }
   assert(prev != NULL && slab == NULL);
   S_header_t *new_slab = add_slab(prev);
