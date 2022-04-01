@@ -109,6 +109,7 @@ static void S_init() {
 }
 
 static S_header_t *add_slab(S_header_t *slab){
+  assert(slab != NULL);
   spinlock_t *lk = &(slab->lk);
   spin_lock(lk);
   S_header_t *ret = G_alloc(1, true);
@@ -119,6 +120,7 @@ static S_header_t *add_slab(S_header_t *slab){
   slab_init(ret, slab->sz);
   assert(slab->next == NULL);
   slab->next = ret;
+  spin_unlock(lk);
   return ret;
 }
 
@@ -170,7 +172,7 @@ static void *S_alloc(size_t size){
   // fail to add slab
   if (new_slab == NULL) return NULL;
   void *ret = slab_alloc(new_slab, size);
-  assert(ret != NULL);
+  // assert(ret != NULL);
   return ret;
 }
 
