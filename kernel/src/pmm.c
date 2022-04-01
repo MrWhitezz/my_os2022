@@ -86,6 +86,16 @@ static void nhead_init(S_node_t *n_head, size_t size) {
   n_head->size = size;
 }
 
+static void slab_init(S_header_t *slab, size_t size) {
+  slab->lk     = SPIN_INIT();
+  slab->sz     = size;
+  slab->n_head = (S_node_t *)ROUNDUP(&(slab->payload), size);
+  slab->next   = NULL;
+  uintptr_t next_pg = ((uintptr_t)slab) + GPAGE_SZ;
+  size_t n_sz  = ROUNDDOWN((next_pg - (uintptr_t)&(slab->payload)), size);
+  nhead_init(slab->n_head, n_sz);
+}
+
 static void S_init() {
   n_slab = cpu_count();
   for (int i = 0; i < n_slab; i++) {
@@ -93,12 +103,7 @@ static void S_init() {
       S_header_t *slab = (S_header_t *)G_alloc(1, true);
       Slab[i][j]   = slab;
       size_t size  = (1 << (j + 4));
-      slab->sz     = size;
-      slab->n_head = (S_node_t *)ROUNDUP(&(slab->payload), size);
-      slab->lk     = SPIN_INIT();
-      uintptr_t next_pg = ((uintptr_t)slab) + GPAGE_SZ;
-      size_t n_sz  = ROUNDDOWN((next_pg - (uintptr_t)&(slab->payload)), size);
-      nhead_init(slab->n_head, n_sz);
+      slab_init(slab, size);
     }
   }
 }

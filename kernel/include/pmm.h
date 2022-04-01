@@ -18,6 +18,7 @@ typedef struct S_node_t {
 
 typedef struct S_header_t {
   struct S_node_t *n_head;
+  struct S_header_t *next;
   size_t     sz;
   spinlock_t lk;
   char payload[0];
