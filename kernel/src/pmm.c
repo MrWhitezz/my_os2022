@@ -108,6 +108,20 @@ static void S_init() {
   }
 }
 
+static S_header_t *add_slab(S_header_t *slab){
+  spinlock_t *lk = &(slab->lk);
+  spin_lock(lk);
+  S_header_t *ret = G_alloc(1, true);
+  if (ret == NULL) {
+    spin_unlock(lk);
+    return NULL;
+  }
+  slab_init(ret, slab->sz);
+  assert(slab->next == NULL);
+  slab->next = ret;
+  return ret;
+}
+
 static void *slab_alloc(S_header_t *slab, size_t size){
   spinlock_t *lk   = &slab->lk;
 
@@ -140,14 +154,21 @@ static void *S_alloc(size_t size){
   assert(size = nextPower_2(size));
 
   S_header_t *slab = Slab[cpu][id];
+  S_header_t *prev = NULL;
 
   while (slab != NULL){
     void *ret = slab_alloc(slab, size);
     if (ret != NULL) return ret;
+    prev = slab;
     slab = slab->next;
   }
-
-  return G_alloc(1, false);
+  assert(prev != NULL && slab == NULL);
+  S_header_t *new_slab = add_slab(prev);
+  // fail to add slab
+  if (new_slab == NULL) return NULL;
+  void *ret = slab_alloc(new_slab, size);
+  assert(ret != NULL);
+  return ret;
 }
 
 
