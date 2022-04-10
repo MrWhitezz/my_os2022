@@ -30,8 +30,8 @@ int main(int argc, char *argv[]) {
 
   // char *exec_argv[] = {"ls", "ls", NULL, };
   // char *exec_envp[] = { "PATH=/bin", NULL, };
-  char **exec_argv = argvdup(argv);
-  char **exec_envp = argvdup(environ);
+  char **exec_argv = argv;
+  char *exec_envp[] = { getenv("PATH"), NULL, };
 
   char *path = getenv("PATH");
   int pid = fork();
