@@ -49,6 +49,8 @@ int main(int argc, char *argv[]) {
   char **exec_argv = strace_argv(argc, argv);
   char *path = getenv("PATH");
 
+  print_argv(exec_argv);
+
   int pid = fork();
   if (pid == 0){
     char *token;
