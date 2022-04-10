@@ -21,9 +21,10 @@ int main(int argc, char *argv[]) {
   char **exec_argv = argv;
   char **exec_envp = environ;
 
-  execve("strace",          exec_argv, exec_envp);
+  int i = execve("strace",          exec_argv, exec_envp);
   // execve("/bin/strace",     exec_argv, exec_envp);
   // execve("/usr/bin/strace", exec_argv, exec_envp);
   // perror(argv[0]);
   // exit(EXIT_FAILURE);
+  printf("execve ret = %d\n", i);
 }
