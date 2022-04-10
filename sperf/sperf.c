@@ -35,6 +35,34 @@ void call_add(char *name, float us) {
   assert(0);
 }
 
+void call_sort() {
+  int i, j;
+  for (i = 0; i < CALL_SZ; i++) {
+    for (j = i + 1; j < CALL_SZ; j++) {
+      if (Calls[i].us < Calls[j].us) {
+        call_t tmp = Calls[i];
+        Calls[i] = Calls[j];
+        Calls[j] = tmp;
+      }
+    }
+  }
+}
+
+void call_print_top5() {
+  float tot = 0;
+  for (int i = 0; i < CALL_SZ; i++) {
+    if (Calls[i].name != NULL)
+      tot += Calls[i].us;
+  }
+  int i;
+  for (i = 0; i < 5; i++) {
+    int ratio = (int)(Calls[i].us * 100 / tot);
+    printf("%s (%d)%%\n", Calls[i].name, ratio);
+  }
+  for (int i = 0; i < 80; ++i) putchar('\0');
+  // printf("\n");
+}
+
 int get_name(char *name, char *line){
   int len = 0;
   while (len < strlen(line) && line[len] != '(') {
