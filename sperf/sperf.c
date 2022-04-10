@@ -4,6 +4,7 @@
 #include <string.h>
 #include <assert.h>
 #include <regex.h>
+#include <time.h>
 #define CALL_SZ 200
 
 extern char **environ;
@@ -14,6 +15,12 @@ typedef struct call_t {
 } call_t;
 
 call_t Calls[CALL_SZ];
+
+unsigned long gettimeus() {
+  struct timespec ts;
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+  return ts.tv_sec * 1000000 + ts.tv_nsec / 1000;
+}
 
 void call_add(char *name, float us) {
   int i;
@@ -60,6 +67,7 @@ void call_print_top5() {
     printf("%s (%d%%)\n", Calls[i].name, ratio);
   }
   for (int i = 0; i < 80; ++i) putchar('\0');
+  fflush(stdout);
   // printf("\n");
 }
 
@@ -93,12 +101,12 @@ float get_us(char *line){
   return (float )atof(us);
 }
 
-void print_argv(char *argv[]){
-  for (int i = 0; argv[i] != NULL; ++i){
-    printf("%s ", argv[i]);
-  }
-  printf("\n");
-}
+// void print_argv(char *argv[]){
+//   for (int i = 0; argv[i] != NULL; ++i){
+//     printf("%s ", argv[i]);
+//   }
+//   printf("\n");
+// }
 
 char **strace_argv(int argc, char *argv[], int fd) {
   char **new_argv = malloc(sizeof(char *) * (argc + 10));
@@ -161,6 +169,7 @@ int main(int argc, char *argv[]) {
 
     char *line = malloc(sizeof(char) * 100);
     size_t len = 0;
+    unsigned long now = gettimeus();
     while (getline(&line, &len, stdin) != -1) {
       // printf("%s", line);
       char *s = line;
@@ -172,6 +181,12 @@ int main(int argc, char *argv[]) {
       call_t call = {name, us};
       // printf("%s: %f\n", name, us);
       call_add(name, us);
+      unsigned long new = gettimeus();
+      if (new - now > 1000000) {
+        call_sort();
+        call_print_top5();
+        now = new;
+      }
     }
     call_sort();
     call_print_top5();
