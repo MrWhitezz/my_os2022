@@ -4,6 +4,7 @@
 #include <string.h>
 #include <assert.h>
 #include <regex.h>
+#define CALL_SZ 200
 
 extern char **environ;
 
@@ -12,7 +13,27 @@ typedef struct call_t {
   float us;
 } call_t;
 
-call_t Calls[200];
+call_t Calls[CALL_SZ];
+
+void call_add(char *name, float us) {
+  int i;
+  for (i = 0; i < CALL_SZ; i++) {
+    if (Calls[i].name != NULL) {
+      if (strcmp(Calls[i].name, name) == 0) {
+        Calls[i].us += us;
+        return;
+      }
+    }
+  }
+  for (i = 0; i < CALL_SZ; i++) {
+    if (Calls[i].name == NULL) {
+      Calls[i].name = strdup(name);
+      Calls[i].us = us;
+      return;
+    }
+  }
+  assert(0);
+}
 
 int get_name(char *name, char *line){
   int len = 0;
@@ -122,6 +143,7 @@ int main(int argc, char *argv[]) {
         continue;
       call_t call = {name, us};
       printf("%s: %f\n", name, us);
+      call_add(name, us);
     }
   }
 
