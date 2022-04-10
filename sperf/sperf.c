@@ -42,10 +42,7 @@ int main(int argc, char *argv[]) {
       char *cmd = malloc(sizeof(char) * (strlen(token) + strlen("/strace") + 2));
       strcpy(cmd, token);
       strcat(cmd, "/strace");
-      printf("cmd: %s\n", cmd);
-      print_argv(environ);
-      int ret = execve(cmd, exec_argv, environ);
-      printf("ret: %d\n", ret);
+      int ret = execve(cmd, exec_argv, exec_envp);
       token = strtok(NULL, ":");
     } 
   }
