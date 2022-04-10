@@ -57,7 +57,7 @@ void call_print_top5() {
   int i;
   for (i = 0; i < 5; i++) {
     int ratio = (int)(Calls[i].us * 100 / tot);
-    printf("%s (%d)%%\n", Calls[i].name, ratio);
+    printf("%s (%d%%)\n", Calls[i].name, ratio);
   }
   for (int i = 0; i < 80; ++i) putchar('\0');
   // printf("\n");
@@ -162,7 +162,7 @@ int main(int argc, char *argv[]) {
     char *line = malloc(sizeof(char) * 100);
     size_t len = 0;
     while (getline(&line, &len, stdin) != -1) {
-      printf("%s", line);
+      // printf("%s", line);
       char *s = line;
 
       if (get_name(name, line) == -1) 
@@ -170,7 +170,7 @@ int main(int argc, char *argv[]) {
       if ((us = get_us(line)) == 0) 
         continue;
       call_t call = {name, us};
-      printf("%s: %f\n", name, us);
+      // printf("%s: %f\n", name, us);
       call_add(name, us);
     }
     call_sort();
