@@ -34,6 +34,7 @@ int main(int argc, char *argv[]) {
   char *path = getenv("PATH");
 
   char *exec_envp[] = { getenv("PATH"), NULL, };
+  print_argv(exec_envp);
   int pid = fork();
   if (pid == 0){
     char *token;
