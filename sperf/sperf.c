@@ -31,9 +31,9 @@ int main(int argc, char *argv[]) {
   // char *exec_argv[] = {"ls", "ls", NULL, };
   // char *exec_envp[] = { "PATH=/bin", NULL, };
   char **exec_argv = argv;
-  char *exec_envp[] = { getenv("PATH"), NULL, };
-
   char *path = getenv("PATH");
+
+  char *exec_envp[] = { getenv("PATH"), NULL, };
   int pid = fork();
   if (pid == 0){
     char *token;
@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
       char *cmd = malloc(sizeof(char) * (strlen(token) + strlen("/strace") + 2));
       strcpy(cmd, token);
       strcat(cmd, "/strace");
-      print_argv(exec_argv);
+      print_argv(exec_envp);
       int ret = execve(cmd, exec_argv, exec_envp);
       token = strtok(NULL, ":");
     } 
