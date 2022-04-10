@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
   } else {
     dup2(fildes[0], 0);
     char tmp[100];
-    while (fgets(tmp, 100, stdin) != EOF){
+    while (getline(&tmp, sizeof(tmp), stdin) != -1) {
       printf("%s", tmp);
     }
   }
