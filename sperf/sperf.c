@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
   // char *exec_argv[] = { "strace", "ls", NULL, };
   argv[0] = "strace";
   // char *exec_argv[] = {"ls", "ls", NULL, };
-  char *exec_argv[] = argv;
+  char **exec_argv = argv;
   char *exec_envp[] = { "PATH=/bin", NULL, };
 
   execve("strace",          exec_argv, exec_envp);
