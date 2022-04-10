@@ -33,6 +33,7 @@ int main(int argc, char *argv[]) {
       strcpy(cmd, token);
       strcat(cmd, "/strace");
       printf("cmd: %s\n", cmd);
+      print_argv(environ);
       int ret = execve(cmd, exec_argv, environ);
       printf("ret: %d\n", ret);
       token = strtok(NULL, ":");
