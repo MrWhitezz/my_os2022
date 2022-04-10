@@ -157,9 +157,7 @@ int main(int argc, char *argv[]) {
   }
 
 
-  if (pid == 0){
-    // child
-  } else {
+  if (pid != 0) {
     dup2(fildes[0], 0);
     close(fildes[1]);
 
@@ -181,5 +179,4 @@ int main(int argc, char *argv[]) {
     }
     call_print_top5();
   }
-
 }
