@@ -173,6 +173,8 @@ int main(int argc, char *argv[]) {
       printf("%s: %f\n", name, us);
       call_add(name, us);
     }
+    call_sort();
+    call_print_top5();
   }
 
 
