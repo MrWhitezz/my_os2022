@@ -40,7 +40,6 @@ float get_us(char *line){
     pos++; i++;
   }
   us[i] = '\0';
-  printf("us :%s\n", us);
   return (float )atof(us);
 }
 
@@ -121,6 +120,7 @@ int main(int argc, char *argv[]) {
       if ((us = get_us(line)) == 0) 
         continue;
       call_t call = {name, us};
+      printf("%s: %f\n", name, us);
     }
   }
 
