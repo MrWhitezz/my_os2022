@@ -107,6 +107,7 @@ int main(int argc, char *argv[]) {
     dup2(fildes[0], 0);
     close(fildes[1]);
     char name[64];
+    float us;
 
     char *line = malloc(sizeof(char) * 100);
     size_t len = 0;
@@ -114,14 +115,13 @@ int main(int argc, char *argv[]) {
       printf("%s", line);
       char *s = line;
 
-      if (get_name(name, line) == -1) {
+      if (get_name(name, line) == -1) 
         continue;
-      }
-
+      if ((us = get_us(line)) == 0) 
+        continue;
+      call_t call = {name, us};
     }
   }
-
-
 
 
   // execve("strace",          exec_argv, exec_envp);
