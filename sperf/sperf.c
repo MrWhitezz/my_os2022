@@ -26,15 +26,6 @@ unsigned long gettimeus() {
   return ts.tv_sec * 1000000 + ts.tv_nsec / 1000;
 }
 
-void print_argv(char **argv) {
-  int i;
-  for (i = 0; argv[i]; i++) {
-    printf("%s ", argv[i]);
-  }
-  printf("\n");
-}
-
-
 void call_add(char *name, float us) {
   int i;
   for (i = 0; i < CALL_SZ; i++) {
@@ -44,15 +35,12 @@ void call_add(char *name, float us) {
         return;
       }
     }
-  }
-  for (i = 0; i < CALL_SZ; i++) {
-    if (Calls[i].name == NULL) {
+    else {
       Calls[i].name = strdup(name);
       Calls[i].us = us;
       return;
     }
   }
-  return;
   assert(0);
 }
 
