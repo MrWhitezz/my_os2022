@@ -2,8 +2,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void print_argv(int argc, char *argv[]){
-  for (int i = 0; i < argc; ++i){
+extern char **environ;
+
+void print_argv(char *argv[]){
+  for (int i = 0; argv[i] != NULL; ++i){
     printf("%s\n", argv[i]);
   }
 }
@@ -11,6 +13,8 @@ void print_argv(int argc, char *argv[]){
 int main(int argc, char *argv[]) {
   // char *exec_argv[] = { "strace", "ls", NULL, };
   argv[0] = "strace";
+  print_argv(argv);
+  print_argv(environ);
   // char *exec_argv[] = {"ls", "ls", NULL, };
   char **exec_argv = argv;
   char *exec_envp[] = { "PATH=/bin", NULL, };
