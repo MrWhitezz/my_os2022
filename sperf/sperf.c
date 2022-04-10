@@ -67,9 +67,9 @@ int main(int argc, char *argv[]) {
     // child
   } else {
     dup2(fildes[0], 0);
-    char tmp[100];
-    while (getline(&tmp, sizeof(tmp), stdin) != -1) {
-      printf("%s", tmp);
+    char *line = malloc(sizeof(char) * 100);
+    while (getline(&line, sizeof(line), stdin) != -1) {
+      printf("%s", line);
     }
   }
 
