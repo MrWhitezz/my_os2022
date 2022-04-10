@@ -28,7 +28,7 @@ int get_name(char *name, char *line){
 }
 
 float get_us(char *line){
-  int pos = sizeof(line) - 1;
+  int pos = strlen(line) - 1;
   while (pos >= 0 && line[pos] != '<') {
     pos--;
   }
