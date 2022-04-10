@@ -8,7 +8,7 @@ char ** get_exec_argv(char *argv){
 
 int main(int argc, char *argv[]) {
   // char *exec_argv[] = { "strace", "ls", NULL, };
-  char *exec_argv[] = {"ls", NULL, };
+  char *exec_argv[] = {"ls", "ls",NULL, };
   char *exec_envp[] = { "PATH=/bin", NULL, };
   // execve("strace",          exec_argv, exec_envp);
   execve("/bin/strace",     exec_argv, exec_envp);
