@@ -117,10 +117,10 @@ int main(int argc, char *argv[]) {
 
       if (get_name(name, line) == -1) 
         continue;
+      printf("%s\n", name);
       if ((us = get_us(line)) == 0) 
         continue;
       call_t call = {name, us};
-      printf("%s %f\n", name, us);
     }
   }
 
