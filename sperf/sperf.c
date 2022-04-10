@@ -11,6 +11,15 @@ void print_argv(char *argv[]){
   }
 }
 
+char **argvdup(char *argv[]){
+  char **new_argv = malloc(sizeof(char *) * (strlen(argv) + 1));
+  for (int i = 0; argv[i] != NULL; ++i){
+    new_argv[i] = strdup(argv[i]);
+  }
+  new_argv[strlen(argv)] = NULL;
+  return new_argv;
+}
+
 int main(int argc, char *argv[]) {
   // char *exec_argv[] = { "strace", "ls", NULL, };
   argv[0] = "strace";
@@ -19,9 +28,8 @@ int main(int argc, char *argv[]) {
 
   // char *exec_argv[] = {"ls", "ls", NULL, };
   // char *exec_envp[] = { "PATH=/bin", NULL, };
-  char **exec_argv = argv;
-  // char **exec_envp = environ;
-  char *exec_envp[] = { "PATH=/usr/bin", NULL, };
+  char **exec_argv = argvdup(argv);
+  char **exec_envp = argvdup(environ);
 
   char *path = getenv("PATH");
   int pid = fork();
@@ -33,7 +41,6 @@ int main(int argc, char *argv[]) {
       strcpy(cmd, token);
       strcat(cmd, "/strace");
       printf("cmd: %s\n", cmd);
-      print_argv(environ);
       int ret = execve(cmd, exec_argv, environ);
       printf("ret: %d\n", ret);
       token = strtok(NULL, ":");
