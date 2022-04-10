@@ -6,6 +6,7 @@
 #include <regex.h>
 #include <time.h>
 #define CALL_SZ 500
+#define NAME_SZ 100
 
 extern char **environ;
 
@@ -73,13 +74,12 @@ void call_print_top5() {
 
 int get_name(char *name, char *line){
   int len = 0;
-  while (len < strlen(line) && line[len] != '(') {
+  while (len < strlen(line) && len < NAME_SZ && line[len] != '(') {
     name[len] = line[len];
     len++;
   }
-  if (len == strlen(line))
+  if (len == strlen(line) || len == NAME_SZ) 
     return -1;
-  assert(len < 64);
   name[len] = '\0';
   return 0;
 }
@@ -89,9 +89,9 @@ float get_us(char *line){
   while (pos >= 0 && line[pos] != '<') {
     pos--;
   }
-  char us[512]; 
   if (line[pos] != '<') return 0;
-  ++pos;
+  char us[512]; 
+  // ++pos;
   int i = 0;
   while (pos < strlen(line) && line[pos] != '>') {
     us[i] = line[pos];
@@ -126,7 +126,6 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
-  argv[0] = "strace";
   char *path = getenv("PATH");
 
   int pid = fork();
@@ -156,10 +155,11 @@ int main(int argc, char *argv[]) {
   } else {
     dup2(fildes[0], 0);
     close(fildes[1]);
-    char name[64];
+
+    char name[NAME_SZ];
     float us;
 
-    char *line = malloc(sizeof(char) * 1024);
+    char *line = malloc(sizeof(char) * 4096);
     size_t len = 0;
     unsigned long now = gettimeus();
     while (getline(&line, &len, stdin) != -1) {
