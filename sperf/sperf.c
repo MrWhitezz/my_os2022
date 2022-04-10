@@ -5,7 +5,7 @@
 #include <assert.h>
 #include <regex.h>
 #include <time.h>
-#define CALL_SZ 500
+#define CALL_SZ 1000
 #define NAME_SZ 100
 
 extern char **environ;
