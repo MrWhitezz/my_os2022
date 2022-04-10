@@ -33,13 +33,17 @@ int main(int argc, char *argv[]) {
   char **exec_argv = argv;
   char *path = getenv("PATH");
 
-  char *exec_envp[] = { getenv("PATH"), NULL, };
-  print_argv(exec_envp);
+  char *exec_envp[] = { NULL, NULL, };
+  printf("PATH: %s\n", getenv("PATH"));
   int pid = fork();
   if (pid == 0){
+    printf("PATH: %s\n", getenv("PATH"));
     char *token;
-    token = strtok(path, ":");
+    char *path_copy = strdup(path);
+    token = strtok(path_copy, ":");
+    printf("before loop\n");
     while (token != NULL){
+      printf("PATH: %s\n", getenv("PATH"));
       char *cmd = malloc(sizeof(char) * (strlen(token) + strlen("/strace") + 2));
       strcpy(cmd, token);
       strcat(cmd, "/strace");
