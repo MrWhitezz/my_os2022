@@ -13,12 +13,14 @@ void print_argv(char *argv[]){
   printf("\n");
 }
 
-char **strace_argv(int argc, char *argv[]) {
+char **strace_argv(int argc, char *argv[], int fd) {
   char **new_argv = malloc(sizeof(char *) * (argc + 10));
   new_argv[0] = strdup("strace");
   new_argv[1] = strdup("-T");
   new_argv[2] = strdup("-o");
-  new_argv[3] = strdup("strace.log");
+  char strace_file[100];
+  sprintf(strace_file, "/proc/self/fd/%d", fd);
+  new_argv[3] = strdup(strace_file);
   int pos = 4;
   for (int i = 1; i < argc; ++i) {
     new_argv[pos] = strdup(argv[i]);
@@ -29,16 +31,22 @@ char **strace_argv(int argc, char *argv[]) {
 }
 
 int main(int argc, char *argv[]) {
+  int fildes[2];
+  if (pipe(fildes) == -1) {
+    perror("pipe");
+    exit(1);
+  }
+
   argv[0] = "strace";
   // char *exec_argv[] = { "strace", "ls", NULL, };
   // char *exec_envp[] = { "PATH=/bin", NULL, };
-  char **exec_argv = strace_argv(argc, argv);
   char *path = getenv("PATH");
-
-  print_argv(exec_argv);
 
   int pid = fork();
   if (pid == 0){
+    char **exec_argv = strace_argv(argc, argv, fildes[1]);
+    close(1);
+    close(2);
     char *token;
     char *path_copy = strdup(path);
     token = strtok(path_copy, ":");
@@ -52,6 +60,13 @@ int main(int argc, char *argv[]) {
     // should not reach here
     perror("execve");
     assert(0);
+  }
+
+
+  if (pid == 0){
+    // child
+  } else {
+    // parent
   }
 
 
