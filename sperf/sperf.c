@@ -93,11 +93,11 @@ float get_us(char *line){
   char us[512]; 
   ++pos;
   int i = 0;
-  while (pos < strlen(line) && line[pos] != '>') {
+  while (pos < strlen(line) && i < 512 && line[pos] != '>') {
     us[i] = line[pos];
     pos++; i++;
   }
-  if (line[pos] != '>') return 0;
+  if (line[pos] != '>' || i == 512) return 0;
   us[i] = '\0';
   return (float )atof(us);
 }
