@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <assert.h>
 
 extern char **environ;
 
@@ -11,30 +12,43 @@ void print_argv(char *argv[]){
   }
 }
 
-char **argvdup(char *argv[]){
-  int sz = 0;
-  while (argv[sz] != NULL) sz++;
-  char **new_argv = malloc(sizeof(char *) * (sz + 1));
-  for (int i = 0; argv[i] != NULL; ++i){
-    new_argv[i] = strdup(argv[i]);
+// char **argvdup(char *argv[]){
+//   int sz = 0;
+//   while (argv[sz] != NULL) sz++;
+//   char **new_argv = malloc(sizeof(char *) * (sz + 1));
+//   for (int i = 0; argv[i] != NULL; ++i){
+//     new_argv[i] = strdup(argv[i]);
+//   }
+//   new_argv[sz] = NULL;
+//   return new_argv;
+// }
+
+char **strace_argv(int argc, char *argv[]) {
+  char **new_argv = malloc(sizeof(char *) * (argc + 10));
+  new_argv[0] = strdup("strace");
+  new_argv[1] = strdup("-T");
+  new_argv[2] = strdup("-o");
+  new_argv[3] = strdup("strace.log");
+  int pos = 4;
+  for (int i = 1; i < argc; ++i) {
+    new_argv[pos] = strdup(argv[i]);
+    pos++;
   }
-  new_argv[sz] = NULL;
+  new_argv[pos++] = strdup(">");
+  new_argv[pos++] = strdup("/dev/null");
+  new_argv[pos++] = strdup("2>");
+  new_argv[pos++] = strdup("/dev/null");
+  new_argv[pos++] = NULL;
   return new_argv;
 }
 
 int main(int argc, char *argv[]) {
-  // char *exec_argv[] = { "strace", "ls", NULL, };
   argv[0] = "strace";
-  // print_argv(argv);
-  // print_argv(environ);
-
-  // char *exec_argv[] = {"ls", "ls", NULL, };
+  // char *exec_argv[] = { "strace", "ls", NULL, };
   // char *exec_envp[] = { "PATH=/bin", NULL, };
   char **exec_argv = argv;
   char *path = getenv("PATH");
 
-  // char *exec_envp[] = { NULL, NULL, };
-  // printf("PATH: %s\n", getenv("PATH"));
   int pid = fork();
   if (pid == 0){
     char *token;
@@ -44,9 +58,12 @@ int main(int argc, char *argv[]) {
       char *cmd = malloc(sizeof(char) * (strlen(token) + strlen("/strace") + 2));
       strcpy(cmd, token);
       strcat(cmd, "/strace");
-      int ret = execve(cmd, exec_argv, environ);
+      execve(cmd, exec_argv, environ);
       token = strtok(NULL, ":");
     } 
+    // should not reach here
+    perror("execve");
+    assert(0);
   }
 
   // execve("strace",          exec_argv, exec_envp);
