@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 extern char **environ;
 
@@ -20,12 +21,24 @@ int main(int argc, char *argv[]) {
   // char *exec_envp[] = { "PATH=/bin", NULL, };
   char **exec_argv = argv;
   char **exec_envp = environ;
-  printf("PATH  =  %s\n", getenv("PATH"));
 
-  int i = execve("strace",          exec_argv, exec_envp);
+  char *path = getenv("PATH");
+  int pid = fork();
+  if (pid == 0){
+    char *token;
+    token = strtok(path, ":");
+    while (token != NULL){
+      char *cmd = malloc(sizeof(char) * (strlen(token) + strlen("/strace") + 2));
+      strcpy(cmd, token);
+      strcat(cmd, "/strace");
+      execve(cmd, exec_argv, exec_envp);
+      token = strtok(NULL, ":");
+    } 
+  }
+
+  // execve("strace",          exec_argv, exec_envp);
   // execve("/bin/strace",     exec_argv, exec_envp);
   // execve("/usr/bin/strace", exec_argv, exec_envp);
   // perror(argv[0]);
   // exit(EXIT_FAILURE);
-  printf("execve ret = %d\n", i);
 }
