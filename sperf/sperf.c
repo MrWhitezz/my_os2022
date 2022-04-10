@@ -40,7 +40,7 @@ float get_us(char *line){
     pos++; i++;
   }
   us[i] = '\0';
-  printf("%s\n", us);
+  printf("us :%s\n", us);
   return (float )atof(us);
 }
 
