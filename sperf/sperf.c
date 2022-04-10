@@ -12,11 +12,13 @@ void print_argv(char *argv[]){
 }
 
 char **argvdup(char *argv[]){
-  char **new_argv = malloc(sizeof(char *) * (strlen(argv) + 1));
+  int sz = 0;
+  while (argv[sz] != NULL) sz++;
+  char **new_argv = malloc(sizeof(char *) * (sz + 1));
   for (int i = 0; argv[i] != NULL; ++i){
     new_argv[i] = strdup(argv[i]);
   }
-  new_argv[strlen(argv)] = NULL;
+  new_argv[sz] = NULL;
   return new_argv;
 }
 
