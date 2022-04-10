@@ -35,7 +35,7 @@ float get_us(char *line){
   char us[64]; 
   ++pos;
   int i = 0;
-  while (pos < sizeof(line) && line[pos] != '>') {
+  while (pos < strlen(line) && line[pos] != '>') {
     us[i] = line[pos];
     pos++; i++;
   }
@@ -118,7 +118,6 @@ int main(int argc, char *argv[]) {
 
       if (get_name(name, line) == -1) 
         continue;
-      printf("%s\n", name);
       if ((us = get_us(line)) == 0) 
         continue;
       call_t call = {name, us};
