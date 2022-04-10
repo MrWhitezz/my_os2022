@@ -5,6 +5,9 @@
 #include <assert.h>
 #include <regex.h>
 #include <time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #define CALL_SZ 1000
 #define NAME_SZ 100
 
@@ -145,7 +148,8 @@ int main(int argc, char *argv[]) {
   if (pid == 0){
     char **exec_argv = strace_argv(argc, argv, fildes[1]);
     close(fildes[0]);
-    close(1);
+    int fd = open("/dev/null", O_WRONLY);
+    dup2(fd, 1);
     close(2);
     char *token;
     char *path_copy = strdup(path);
@@ -154,8 +158,6 @@ int main(int argc, char *argv[]) {
       char *cmd = malloc(sizeof(char) * (strlen(token) + strlen("/strace") + 2));
       strcpy(cmd, token);
       strcat(cmd, "/strace");
-
-      print_argv(exec_argv);
 
       execve(cmd, exec_argv, environ);
       token = strtok(NULL, ":");
