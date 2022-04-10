@@ -3,8 +3,45 @@
 #include <unistd.h>
 #include <string.h>
 #include <assert.h>
+#include <regex.h>
 
 extern char **environ;
+
+typedef struct call_t {
+  char *name;
+  float us;
+} call_t;
+
+call_t Calls[200];
+
+int get_name(char *name, char *line){
+  int len = 0;
+  while (len < strlen(line) && line[len] != '(') {
+    name[len] = line[len];
+    len++;
+  }
+  if (len == strlen(line))
+    return -1;
+  assert(len < 64);
+  name[len] = '\0';
+  return 0;
+}
+
+float get_us(char *line){
+  int pos = sizeof(line) - 1;
+  while (pos >= 0 && line[pos] != '<') {
+    pos--;
+  }
+  char us[64]; 
+  ++pos;
+  int i = 0;
+  while (pos < sizeof(line) && line[pos] != '>') {
+    us[i] = line[pos];
+    pos++; i++;
+  }
+  us[i] = '\0';
+  return (float )atof(us);
+}
 
 void print_argv(char *argv[]){
   for (int i = 0; argv[i] != NULL; ++i){
@@ -68,11 +105,19 @@ int main(int argc, char *argv[]) {
     // child
   } else {
     dup2(fildes[0], 0);
-    // close(fildes[1]);
+    close(fildes[1]);
+    char name[64];
+
     char *line = malloc(sizeof(char) * 100);
     size_t len = 0;
     while (getline(&line, &len, stdin) != -1) {
       printf("%s", line);
+      char *s = line;
+
+      if (get_name(name, line) == -1) {
+        continue;
+      }
+
     }
   }
 
