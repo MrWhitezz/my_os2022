@@ -113,7 +113,7 @@ int main(int argc, char *argv[]) {
     char *line = malloc(sizeof(char) * 100);
     size_t len = 0;
     while (getline(&line, &len, stdin) != -1) {
-      printf("%s", line);
+      // printf("%s", line);
       char *s = line;
 
       if (get_name(name, line) == -1) 
