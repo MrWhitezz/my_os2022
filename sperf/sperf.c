@@ -33,6 +33,7 @@ float get_us(char *line){
     pos--;
   }
   char us[64]; 
+  if (line[pos] != '<') return 0;
   ++pos;
   int i = 0;
   while (pos < strlen(line) && line[pos] != '>') {
