@@ -32,6 +32,7 @@ int main(int argc, char *argv[]) {
       strcpy(cmd, token);
       strcat(cmd, "/strace");
       printf("cmd: %s\n", cmd);
+      argv[0] = cmd;
       int ret = execve(cmd, exec_argv, exec_envp);
       printf("ret: %d\n", ret);
       token = strtok(NULL, ":");
