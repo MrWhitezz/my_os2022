@@ -23,6 +23,15 @@ unsigned long gettimeus() {
   return ts.tv_sec * 1000000 + ts.tv_nsec / 1000;
 }
 
+void print_argv(char **argv) {
+  int i;
+  for (i = 0; argv[i]; i++) {
+    printf("%s ", argv[i]);
+  }
+  printf("\n");
+}
+
+
 void call_add(char *name, float us) {
   int i;
   for (i = 0; i < CALL_SZ; i++) {
@@ -145,6 +154,7 @@ int main(int argc, char *argv[]) {
       char *cmd = malloc(sizeof(char) * (strlen(token) + strlen("/strace") + 2));
       strcpy(cmd, token);
       strcat(cmd, "/strace");
+      print_argv(exec_argv);
       execve(cmd, exec_argv, environ);
       token = strtok(NULL, ":");
     } 
