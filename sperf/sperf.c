@@ -101,13 +101,6 @@ float get_us(char *line){
   return (float )atof(us);
 }
 
-// void print_argv(char *argv[]){
-//   for (int i = 0; argv[i] != NULL; ++i){
-//     printf("%s ", argv[i]);
-//   }
-//   printf("\n");
-// }
-
 char **strace_argv(int argc, char *argv[], int fd) {
   char **new_argv = malloc(sizeof(char *) * (argc + 10));
   new_argv[0] = strdup("strace");
