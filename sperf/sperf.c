@@ -5,7 +5,7 @@
 #include <assert.h>
 #include <regex.h>
 #include <time.h>
-#define CALL_SZ 200
+#define CALL_SZ 500
 
 extern char **environ;
 
@@ -63,12 +63,12 @@ void call_print_top5() {
   }
   int i;
   for (i = 0; i < 5; i++) {
+    if (Calls[i].name == NULL) break;
     int ratio = (int)(Calls[i].us * 100 / tot);
     printf("%s (%d%%)\n", Calls[i].name, ratio);
   }
   for (int i = 0; i < 80; ++i) putchar('\0');
   fflush(stdout);
-  // printf("\n");
 }
 
 int get_name(char *name, char *line){
@@ -126,8 +126,6 @@ int main(int argc, char *argv[]) {
   }
 
   argv[0] = "strace";
-  // char *exec_argv[] = { "strace", "ls", NULL, };
-  // char *exec_envp[] = { "PATH=/bin", NULL, };
   char *path = getenv("PATH");
 
   int pid = fork();
@@ -160,19 +158,13 @@ int main(int argc, char *argv[]) {
     char name[64];
     float us;
 
-    char *line = malloc(sizeof(char) * 100);
+    char *line = malloc(sizeof(char) * 1024);
     size_t len = 0;
     unsigned long now = gettimeus();
     while (getline(&line, &len, stdin) != -1) {
-      // printf("%s", line);
-      char *s = line;
-
-      if (get_name(name, line) == -1) 
-        continue;
-      if ((us = get_us(line)) == 0) 
-        continue;
+      if (get_name(name, line) == -1) continue;
+      if ((us = get_us(line)) == 0)   continue;
       call_t call = {name, us};
-      // printf("%s: %f\n", name, us);
       call_add(name, us);
       unsigned long new = gettimeus();
       if (new - now > 1000000) {
@@ -185,10 +177,4 @@ int main(int argc, char *argv[]) {
     call_print_top5();
   }
 
-
-  // execve("strace",          exec_argv, exec_envp);
-  // execve("/bin/strace",     exec_argv, exec_envp);
-  // execve("/usr/bin/strace", exec_argv, exec_envp);
-  // perror(argv[0]);
-  // exit(EXIT_FAILURE);
 }
