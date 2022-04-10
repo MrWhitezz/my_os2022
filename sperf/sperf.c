@@ -3,7 +3,7 @@
 #include <unistd.h>
 
 char ** get_exec_argv(char *argv){
-
+  return NULL;
 }
 
 int main(int argc, char *argv[]) {
