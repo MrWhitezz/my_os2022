@@ -18,9 +18,9 @@ int main(int argc, char *argv[]) {
   // print_argv(environ);
 
   // char *exec_argv[] = {"ls", "ls", NULL, };
-  char *exec_envp[] = { "PATH=/bin", NULL, };
+  // char *exec_envp[] = { "PATH=/bin", NULL, };
   char **exec_argv = argv;
-  // char **exec_envp = environ;
+  char **exec_envp = environ;
 
   char *path = getenv("PATH");
   int pid = fork();
@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
       strcpy(cmd, token);
       strcat(cmd, "/strace");
       printf("cmd: %s\n", cmd);
-      int ret = execve(cmd, exec_argv, exec_envp);
+      int ret = execve(cmd, exec_argv, environ);
       printf("ret: %d\n", ret);
       token = strtok(NULL, ":");
     } 
