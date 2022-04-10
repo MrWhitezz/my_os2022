@@ -31,8 +31,9 @@ int main(int argc, char *argv[]) {
       char *cmd = malloc(sizeof(char) * (strlen(token) + strlen("/strace") + 2));
       strcpy(cmd, token);
       strcat(cmd, "/strace");
+      printf("cmd: %s", cmd);
       int ret = execve(cmd, exec_argv, exec_envp);
-      printf("ret = %d, cmd = %s\n", ret, cmd);
+      printf("ret: %d\n", ret);
       token = strtok(NULL, ":");
     } 
   }
