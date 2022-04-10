@@ -8,20 +8,10 @@ extern char **environ;
 
 void print_argv(char *argv[]){
   for (int i = 0; argv[i] != NULL; ++i){
-    printf("%s\n", argv[i]);
+    printf("%s ", argv[i]);
   }
+  printf("\n");
 }
-
-// char **argvdup(char *argv[]){
-//   int sz = 0;
-//   while (argv[sz] != NULL) sz++;
-//   char **new_argv = malloc(sizeof(char *) * (sz + 1));
-//   for (int i = 0; argv[i] != NULL; ++i){
-//     new_argv[i] = strdup(argv[i]);
-//   }
-//   new_argv[sz] = NULL;
-//   return new_argv;
-// }
 
 char **strace_argv(int argc, char *argv[]) {
   char **new_argv = malloc(sizeof(char *) * (argc + 10));
