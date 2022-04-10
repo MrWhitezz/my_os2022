@@ -66,7 +66,11 @@ int main(int argc, char *argv[]) {
   if (pid == 0){
     // child
   } else {
-    // parent
+    dup2(fildes[0], 0);
+    char tmp[100];
+    while (fgets(tmp, 100, stdin) != NULL){
+      printf("%s", tmp);
+    }
   }
 
 
