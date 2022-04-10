@@ -24,10 +24,6 @@ char **strace_argv(int argc, char *argv[]) {
     new_argv[pos] = strdup(argv[i]);
     pos++;
   }
-  new_argv[pos++] = strdup(">");
-  new_argv[pos++] = strdup("/dev/null");
-  new_argv[pos++] = strdup("2>");
-  new_argv[pos++] = strdup("/dev/null");
   new_argv[pos++] = NULL;
   return new_argv;
 }
