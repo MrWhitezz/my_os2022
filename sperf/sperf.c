@@ -43,11 +43,10 @@ int main(int argc, char *argv[]) {
     token = strtok(path_copy, ":");
     printf("before loop\n");
     while (token != NULL){
-      printf("PATH: %s\n", getenv("PATH"));
       char *cmd = malloc(sizeof(char) * (strlen(token) + strlen("/strace") + 2));
       strcpy(cmd, token);
       strcat(cmd, "/strace");
-      print_argv(exec_envp);
+      printf("PATH: %s\n", getenv("PATH"));
       int ret = execve(cmd, exec_argv, exec_envp);
       token = strtok(NULL, ":");
     } 
