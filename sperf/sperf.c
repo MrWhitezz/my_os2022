@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void print_argv(int argc, char *argv){
+void print_argv(int argc, char *argv[]){
   for (int i = 0; i < argc; ++i){
     printf("%s\n", argv[i]);
   }
@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
   print_argv(argc, argv);
   char *exec_argv[] = {"ls", "ls", NULL, };
   char *exec_envp[] = { "PATH=/bin", NULL, };
-  
+
   // execve("strace",          exec_argv, exec_envp);
   // execve("/bin/strace",     exec_argv, exec_envp);
   // execve("/usr/bin/strace", exec_argv, exec_envp);
