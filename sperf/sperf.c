@@ -40,6 +40,7 @@ void call_add(char *name, float us) {
       return;
     }
   }
+  return;
   assert(0);
 }
 
@@ -57,6 +58,7 @@ void call_sort() {
 }
 
 void call_print_top5() {
+  call_sort();
   float tot = 0;
   for (int i = 0; i < CALL_SZ; i++) {
     if (Calls[i].name != NULL)
@@ -120,6 +122,7 @@ char **strace_argv(int argc, char *argv[], int fd) {
 }
 
 int main(int argc, char *argv[]) {
+  memset(Calls, 0, sizeof(Calls));
   int fildes[2];
   if (pipe(fildes) == -1) {
     perror("pipe");
@@ -165,16 +168,13 @@ int main(int argc, char *argv[]) {
     while (getline(&line, &len, stdin) != -1) {
       if (get_name(name, line) == -1) continue;
       if ((us = get_us(line)) == 0)   continue;
-      call_t call = {name, us};
       call_add(name, us);
       unsigned long new = gettimeus();
       if (new - now > 1000000) {
-        call_sort();
         call_print_top5();
         now = new;
       }
     }
-    call_sort();
     call_print_top5();
   }
 
