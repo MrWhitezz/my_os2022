@@ -70,6 +70,7 @@ void call_print_top5() {
     int ratio = (int)(Calls[i].us * 100 / tot);
     printf("%s (%d%%)\n", Calls[i].name, ratio);
   }
+  printf("\n");
   for (int i = 0; i < 80; ++i) putchar('\0');
   fflush(stdout);
 }
