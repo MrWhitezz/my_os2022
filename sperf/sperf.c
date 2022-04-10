@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
   argv[0] = "strace";
   // char *exec_argv[] = { "strace", "ls", NULL, };
   // char *exec_envp[] = { "PATH=/bin", NULL, };
-  char **exec_argv = argv;
+  char **exec_argv = strace_argv(argc, argv);
   char *path = getenv("PATH");
 
   int pid = fork();
@@ -65,6 +65,9 @@ int main(int argc, char *argv[]) {
     perror("execve");
     assert(0);
   }
+
+
+
 
   // execve("strace",          exec_argv, exec_envp);
   // execve("/bin/strace",     exec_argv, exec_envp);
