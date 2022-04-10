@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
       strcpy(cmd, token);
       strcat(cmd, "/strace");
       printf("PATH: %s\n", getenv("PATH"));
-      int ret = execve(cmd, exec_argv, exec_envp);
+      int ret = execve(cmd, exec_argv, environ);
       token = strtok(NULL, ":");
     } 
   }
