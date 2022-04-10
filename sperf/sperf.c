@@ -45,6 +45,7 @@ int main(int argc, char *argv[]) {
   int pid = fork();
   if (pid == 0){
     char **exec_argv = strace_argv(argc, argv, fildes[1]);
+    close(fildes[0]);
     close(1);
     close(2);
     char *token;
