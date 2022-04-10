@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
   } else {
     dup2(fildes[0], 0);
     char tmp[100];
-    while (fgets(tmp, 100, stdin) != NULL){
+    while (fgets(tmp, 100, stdin) != EOF){
       printf("%s", tmp);
     }
   }
