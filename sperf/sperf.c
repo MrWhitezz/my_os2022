@@ -20,6 +20,7 @@ int main(int argc, char *argv[]) {
   // char *exec_envp[] = { "PATH=/bin", NULL, };
   char **exec_argv = argv;
   char **exec_envp = environ;
+  printf("PATH  =  %s\n", getenv("PATH"));
 
   int i = execve("strace",          exec_argv, exec_envp);
   // execve("/bin/strace",     exec_argv, exec_envp);
