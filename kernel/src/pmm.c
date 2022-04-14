@@ -10,8 +10,8 @@
 
 // Spin lock
 
-void spin_lock(spinlock_t *lk) { while (atomic_xchg(lk, 1))  ; }
-void spin_unlock(spinlock_t *lk) { atomic_xchg(lk, 0); }
+void spin_lock(spinlock_nt *lk) { while (atomic_xchg(lk, 1))  ; }
+void spin_unlock(spinlock_nt *lk) { atomic_xchg(lk, 0); }
 
 enum slab_index{ _16B, _32B, _64B, _128B, _256B, _512B, _1KB, _2KB, _4KB, SLAB_SIZE };
 
@@ -19,7 +19,7 @@ S_header_t *Slab[8][SLAB_SIZE];
 int n_slab = 0;
 
 void      *G_start;
-spinlock_t G_lock;
+spinlock_nt G_lock;
 meta_t    *Meta;
 int        n_meta = 0;
 
@@ -110,7 +110,7 @@ static void S_init() {
 
 static S_header_t *add_slab(S_header_t *slab){
   assert(slab != NULL);
-  spinlock_t *lk = &(slab->lk);
+  spinlock_nt *lk = &(slab->lk);
   spin_lock(lk);
   S_header_t *ret = G_alloc(1, true);
   if (ret == NULL) {
@@ -125,7 +125,7 @@ static S_header_t *add_slab(S_header_t *slab){
 }
 
 static void *slab_alloc(S_header_t *slab, size_t size){
-  spinlock_t *lk   = &slab->lk;
+  spinlock_nt *lk   = &slab->lk;
 
   spin_lock(lk);
   S_node_t *node = slab->n_head;
@@ -161,7 +161,7 @@ static void *S_alloc(size_t size){
   while (slab != NULL){
     void *ret = slab_alloc(slab, size);
     if (ret != NULL) return ret;
-    spinlock_t *lk = &(slab->lk);
+    spinlock_nt *lk = &(slab->lk);
     spin_lock(lk);
     prev = slab;
     slab = slab->next;
@@ -180,7 +180,7 @@ static void *S_alloc(size_t size){
 static void S_free(void *ptr){
   assert(sizeof(S_node_t) <= 16);
   S_header_t *slab = (S_header_t *)(ROUNDDOWN((uintptr_t)ptr, GPAGE_SZ));
-  spinlock_t *lk = &slab->lk;
+  spinlock_nt *lk = &slab->lk;
   spin_lock(lk);
   S_node_t *node = (S_node_t *)ptr;
   node->size = slab->sz;
