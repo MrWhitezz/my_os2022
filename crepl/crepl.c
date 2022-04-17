@@ -3,7 +3,7 @@
 #include <stdbool.h>
 
 static bool is_func(char *str) {
-  while (*str && *str != ' ') str++;
+  while (*str && *str == ' ') str++;
   if (!str[0] || str[0] != 'i') return false; 
   if (!str[1] || str[1] != 'n') return false; 
   if (!str[2] || str[2] != 't') return false; 
