@@ -37,7 +37,8 @@ bool is_valid(char *line){
   fclose(fp);
   int pid = fork();
   if (pid == 0) {
-    execl("/usr/bin/gcc", "gcc", "-fPIC", "-shared", arch, "-o", "/dev/null", "-x", "c", filetmp, NULL);
+    // execl("/usr/bin/gcc", "gcc", "-fPIC", "-shared", arch, "-o", "/dev/null", "-x", "c", filetmp, NULL);
+    execlp("gcc", "gcc", "-fPIC", "-shared", arch, "-o", "/dev/null", "-x", "c", filetmp, NULL);
   }
   int wstatus = 0;
   waitpid(pid, &wstatus, 0);
@@ -67,7 +68,8 @@ bool func_handler(char *line){
   };
   int pid = fork();
   if (pid == 0) {
-    execvp("/usr/bin/gcc", argv);
+    // execvp("/usr/bin/gcc", argv);
+    execvp("gcc", argv);
   }
   wait(NULL);
   return true;
