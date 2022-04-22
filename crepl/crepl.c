@@ -67,6 +67,7 @@ int main(int argc, char *argv[]) {
     printf("Got %zu chars.\n", strlen(line)); // ??
     if (is_func(line)) {
       printf("It's a function.\n");
+      func_handler(line);
     } else {
       printf("It's not a function.\n");
     }
