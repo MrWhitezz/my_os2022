@@ -1,6 +1,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
+
+#ifdef __X86_64__
+char arch[] = "-m64";
+#else
+char arch[] = "-m32";
+#endif
+
 
 static bool is_func(char *str) {
   while (*str && *str == ' ') str++;
@@ -12,6 +20,22 @@ static bool is_func(char *str) {
 }
 
 int main(int argc, char *argv[]) {
+  int dir = chdir("/tmp");
+  if (dir != 0) {
+    printf("[-] chdir failed\n");
+    return 1;
+  }
+
+  char filename[] = "fuckXXXXXX";
+  int fd = mkstemp(filename);
+  if (fd == -1) {
+    printf("[-] mkstemp failed\n");
+    return 1;
+  }
+  else{
+    dprintf(fd, "hello\n");
+  }
+
   static char line[4096];
   while (1) {
     printf("crepl> ");
