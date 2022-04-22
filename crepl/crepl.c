@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <assert.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #ifdef __X86_64__
 char arch[] = "-m64";
@@ -25,7 +27,8 @@ static bool is_func(char *str) {
 
 void func_handler(char *line){
   // omit error handling
-  fprintf(filename, "%s\n", line);
+  FILE *fp = fopen(filename, "a");
+  fprintf(fp, "%s\n", line);
   char *argv[] = {
     "gcc ",
     "-fPIC ",
@@ -41,6 +44,7 @@ void func_handler(char *line){
     execvp("gcc", argv);
   }
   wait(NULL);
+  fclose(fp);
 }
 
 int main(int argc, char *argv[]) {
