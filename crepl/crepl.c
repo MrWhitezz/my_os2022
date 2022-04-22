@@ -26,12 +26,12 @@ static bool is_func(char *str) {
   return true;
 }
 
+int wstatus = 0;
 bool is_valid(char *line){
   char filetmp[] = "tmpXXXXXX";
   mkstemp(filetmp);
   FILE *fp = fopen(filetmp, "w");
   fprintf(fp, "%s\n", line);
-  int wstatus = 0;
   int pid = fork();
   if (pid == 0) {
     execlp("/usr/bin/gcc", "gcc", "-fPIC", "-shared", arch, "-o", "/dev/null", "-x", "c", filetmp, NULL);
