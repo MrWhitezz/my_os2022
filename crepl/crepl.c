@@ -88,8 +88,12 @@ void expr_handler(char *line){
     }
     int (*func)();
     func = dlsym(handle, name);
-    assert(func);
+    if (!func) {
+      printf("%s\n", dlerror());
+      return;
+    }
     printf("%d\n", func());
+    dlclose(handle);
   }
 }
 
