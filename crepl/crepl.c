@@ -3,13 +3,16 @@
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <assert.h>
 
 #ifdef __X86_64__
 char arch[] = "-m64";
 #else
 char arch[] = "-m32";
 #endif
+char CFLAGS[] = "-fPIC -shared";
 
+char filename[] = "fuckXXXXXX";
 
 static bool is_func(char *str) {
   while (*str && *str == ' ') str++;
@@ -20,6 +23,26 @@ static bool is_func(char *str) {
   return true;
 }
 
+void func_handler(char *line){
+  // omit error handling
+  fprintf(filename, "%s\n", line);
+  char *argv[] = {
+    "gcc ",
+    "-fPIC ",
+    "-shared ",
+    arch,
+    "-o ",
+    "libcrepl.so",
+    filename,
+    NULL,
+  };
+  int pid = fork();
+  if (pid == 0) {
+    execvp("gcc", argv);
+  }
+  wait(NULL);
+}
+
 int main(int argc, char *argv[]) {
   int dir = chdir("/tmp");
   if (dir != 0) {
@@ -27,16 +50,8 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  char filename[] = "fuckXXXXXX";
   int fd = mkstemp(filename);
-  if (fd == -1) {
-    printf("[-] mkstemp failed\n");
-    return 1;
-  }
-  else{
-    dprintf(fd, "hello\n");
-    printf("%s\n", filename);
-  }
+  assert(fd >= 0);
 
   static char line[4096];
   while (1) {
