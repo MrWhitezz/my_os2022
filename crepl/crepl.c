@@ -38,7 +38,7 @@ bool is_valid(char *line){
   int wstatus = 0;
   wait(&wstatus);
   fclose(fp);
-  if (WEXITSTATUS(wstatus) != 0){
+  if (WIFEXITED(wstatus) != 0){
     printf("something wrong\n");
     return false;
   }
