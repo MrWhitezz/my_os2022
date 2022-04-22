@@ -78,9 +78,9 @@ void expr_handler(char *line){
   char expr[1024];
   char name[128];
   sprintf(name, "__expr_wrapper_%d", nexp++);
-  sprintf(expr, "int %s(){return %s;}", name, line);
+  sprintf(expr, "int %s(){return %s;}", name, name);
   if (func_handler(expr)){
-    printf("ready to call %s\n", expr);
+    printf("ready to call %s\n", name);
     void *handle = dlopen("/tmp/libcrepl.so", RTLD_LAZY);
     if (!handle) {
       printf("%s\n", dlerror());
