@@ -26,7 +26,8 @@ static bool is_func(char *str) {
   return true;
 }
 
-int wstatus = 0;
+int exp = 0;
+
 bool is_valid(char *line){
   char filetmp[] = "tmpXXXXXX";
   mkstemp(filetmp);
@@ -37,26 +38,21 @@ bool is_valid(char *line){
   if (pid == 0) {
     execl("/usr/bin/gcc", "gcc", "-fPIC", "-shared", arch, "-o", "/dev/null", "-x", "c", filetmp, NULL);
   }
-  // if (wait(&wstatus) == -1) {
-  //   fclose(fp);
-  //   assert(0);
-  // }
+  int wstatus = 0;
   waitpid(pid, &wstatus, 0);
-  printf("wstatus = %d\n", wstatus);
   if (WEXITSTATUS(wstatus)){
-    printf("gcc failed\n");
-    int es = WEXITSTATUS(wstatus);
-    printf("%d\n", es);
+    assert(WIFEXITED(wstatus));
     return false;
   }
   printf("gcc success\n");
   return true;
 }
 
-void func_handler(char *line){
-  if (!is_valid(line)) return;
+bool func_handler(char *line){
+  if (!is_valid(line)) return false;
   FILE *fp = fopen(filename, "a");
   fprintf(fp, "%s\n", line);
+  fclose(fp);
   char *argv[] = {
     "gcc",
     "-fPIC",
@@ -74,7 +70,17 @@ void func_handler(char *line){
     execvp("/usr/bin/gcc", argv);
   }
   wait(NULL);
-  fclose(fp);
+  return true;
+}
+
+void expr_handler(char *line){
+  char expr[1024];
+  char name[1024];
+  sprintf(name, "__expr_wrapper_%d", exp++);
+  sprintf(expr, "int %s(){return %s;}", name, line);
+  if (func_handler(expr)){
+    printf("ready to call %s\n", expr);
+  }
 }
 
 int main(int argc, char *argv[]) {
@@ -100,6 +106,7 @@ int main(int argc, char *argv[]) {
       func_handler(line);
     } else {
       printf("It's not a function.\n");
+      expr_handler(line);
     }
   }
 }
