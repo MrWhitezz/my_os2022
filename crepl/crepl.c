@@ -36,10 +36,11 @@ bool is_valid(char *line){
   if (pid == 0) {
     execlp("/usr/bin/gcc", "gcc", "-fPIC", "-shared", arch, "-o", "/dev/null", "-x", "c", filetmp, NULL);
   }
-  if (wait(&wstatus) == -1) {
-    fclose(fp);
-    assert(0);
-  }
+  // if (wait(&wstatus) == -1) {
+  //   fclose(fp);
+  //   assert(0);
+  // }
+  waitpid(pid, &wstatus, 0);
   fclose(fp);
   printf("wstatus = %d\n", wstatus);
   if (WEXITSTATUS(wstatus)){
