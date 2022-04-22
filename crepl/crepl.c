@@ -6,6 +6,7 @@
 #include <assert.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <stdbool.h>
 
 #ifdef __X86_64__
 char arch[] = "-m64";
@@ -25,8 +26,27 @@ static bool is_func(char *str) {
   return true;
 }
 
+bool is_valid(char *line){
+  char filetmp[] = "tmpXXXXXX";
+  mkstemp(filetmp);
+  FILE *fp = fopen(filetmp, "w");
+  fprintf(fp, "%s\n", line);
+  int pid = fork();
+  if (pid == 0) {
+    execlp("gcc", "gcc", "-x", "c", "-o", filename, "-", arch, CFLAGS, NULL);
+  }
+  int wstatus = 0;
+  wait(&wstatus);
+  fclose(fp);
+  if (WEXITSTATUS(wstatus) != 0){
+    printf("something wrong\n");
+    return false;
+  }
+  return true;
+}
+
 void func_handler(char *line){
-  // omit error handling
+  if (!is_func(line)) return;
   FILE *fp = fopen(filename, "a");
   fprintf(fp, "%s\n", line);
   char *argv[] = {
