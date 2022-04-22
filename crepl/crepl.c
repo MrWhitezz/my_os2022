@@ -41,7 +41,7 @@ void func_handler(char *line){
   };
   int pid = fork();
   if (pid == 0) {
-    execvp("gcc", argv);
+    execvp("/usr/bin/gcc", argv);
   }
   wait(NULL);
   fclose(fp);
