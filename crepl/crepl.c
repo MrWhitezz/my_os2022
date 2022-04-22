@@ -75,7 +75,7 @@ bool func_handler(char *line){
 
 void expr_handler(char *line){
   char expr[1024];
-  char name[1024];
+  char name[128];
   sprintf(name, "__expr_wrapper_%d", nexp++);
   sprintf(expr, "int %s(){return %s;}", name, line);
   if (func_handler(expr)){
