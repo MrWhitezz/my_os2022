@@ -82,7 +82,11 @@ void expr_handler(char *line){
   if (func_handler(expr)){
     printf("ready to call %s\n", expr);
     void *handle = dlopen("./libcrepl.so", RTLD_LAZY);
-    //TODO
+    assert(handle);
+    int (*func)();
+    func = dlsym(handle, name);
+    assert(func);
+    printf("%d\n", func());
   }
 }
 
