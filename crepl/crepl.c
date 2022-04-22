@@ -33,12 +33,12 @@ bool is_valid(char *line){
   fprintf(fp, "%s\n", line);
   int pid = fork();
   if (pid == 0) {
-    execlp("gcc", "gcc", "-x", "c", "-o", filename, "-", arch, CFLAGS, NULL);
+    execlp("/usr/bin/gcc", "gcc", "-x", "c", "-o", filename, "-", arch, CFLAGS, NULL);
   }
   int wstatus = 0;
   wait(&wstatus);
   fclose(fp);
-  if (WIFEXITED(wstatus) == 0){
+  if (WIFEXITED(wstatus)){
     printf("something wrong\n");
     return false;
   }
