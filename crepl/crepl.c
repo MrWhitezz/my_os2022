@@ -45,7 +45,6 @@ bool is_valid(char *line){
     assert(WIFEXITED(wstatus));
     return false;
   }
-  printf("gcc success\n");
   return true;
 }
 
@@ -106,7 +105,6 @@ int main(int argc, char *argv[]) {
 
   int fd = mkstemp(filename);
   assert(fd >= 0);
-  printf("[+] filename: %s\n", filename);
 
   static char line[4096];
   while (1) {
@@ -116,10 +114,8 @@ int main(int argc, char *argv[]) {
       break;
     }
     if (is_func(line)) {
-      printf("It's a function.\n");
       func_handler(line);
     } else {
-      printf("It's not a function.\n");
       expr_handler(line);
     }
   }
