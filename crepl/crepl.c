@@ -31,7 +31,7 @@ bool is_valid(char *line){
   mkstemp(filetmp);
   FILE *fp = fopen(filetmp, "w");
   fprintf(fp, "%s\n", line);
-  int wstatus = -1;
+  int wstatus = 0;
   int pid = fork();
   if (pid == 0) {
     execlp("/usr/bin/gcc", "gcc", "-fPIC", "-shared", arch, "-o", "/dev/null", filename, NULL);
@@ -43,12 +43,11 @@ bool is_valid(char *line){
     printf("%d\n", es);
     return false;
   }
-  printf("return true\n");
   return true;
 }
 
 void func_handler(char *line){
-  if (!is_func(line)) return;
+  if (!is_valid(line)) return;
   FILE *fp = fopen(filename, "a");
   fprintf(fp, "%s\n", line);
   char *argv[] = {
