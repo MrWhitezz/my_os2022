@@ -31,7 +31,7 @@ bool is_valid(char *line){
   mkstemp(filetmp);
   FILE *fp = fopen(filetmp, "w");
   fprintf(fp, "%s\n", line);
-  int wstatus = 0;
+  int wstatus = -1;
   int pid = fork();
   if (pid == 0) {
     execlp("/usr/bin/gcc", "gcc", "-fPIC", "-shared", arch, "-o", "/dev/null", filename, NULL);
@@ -39,9 +39,11 @@ bool is_valid(char *line){
   wait(&wstatus);
   fclose(fp);
   if (WIFEXITED(wstatus)){
-    printf("something wrong\n");
+    int es = WEXITSTATUS(wstatus);
+    printf("%d\n", es);
     return false;
   }
+  printf("return true\n");
   return true;
 }
 
