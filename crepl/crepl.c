@@ -30,11 +30,11 @@ void func_handler(char *line){
   FILE *fp = fopen(filename, "a");
   fprintf(fp, "%s\n", line);
   char *argv[] = {
-    "gcc ",
-    "-fPIC ",
-    "-shared ",
+    "gcc",
+    "-fPIC",
+    "-shared",
     arch,
-    "-o ",
+    "-o",
     "libcrepl.so",
     filename,
     NULL,
