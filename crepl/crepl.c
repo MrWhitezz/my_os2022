@@ -26,7 +26,7 @@ static bool is_func(char *str) {
   return true;
 }
 
-int exp = 0;
+int nexp = 0;
 
 bool is_valid(char *line){
   char filetmp[] = "tmpXXXXXX";
@@ -76,7 +76,7 @@ bool func_handler(char *line){
 void expr_handler(char *line){
   char expr[1024];
   char name[1024];
-  sprintf(name, "__expr_wrapper_%d", exp++);
+  sprintf(name, "__expr_wrapper_%d", nexp++);
   sprintf(expr, "int %s(){return %s;}", name, line);
   if (func_handler(expr)){
     printf("ready to call %s\n", expr);
