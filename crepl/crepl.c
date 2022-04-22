@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <stdbool.h>
+#include <dlfcn.h>
 
 #ifdef __X86_64__
 char arch[] = "-m64";
@@ -80,6 +81,8 @@ void expr_handler(char *line){
   sprintf(expr, "int %s(){return %s;}", name, line);
   if (func_handler(expr)){
     printf("ready to call %s\n", expr);
+    void *handle = dlopen("./libcrepl.so", RTLD_LAZY);
+    //TODO
   }
 }
 
