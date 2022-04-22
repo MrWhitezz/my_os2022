@@ -34,7 +34,7 @@ bool is_valid(char *line){
   int wstatus = 0;
   int pid = fork();
   if (pid == 0) {
-    execlp("/usr/bin/gcc", "gcc", "-fPIC", "-shared", arch, "-o", "/dev/null", filename, NULL);
+    execlp("/usr/bin/gcc", "gcc", "-fPIC", "-shared", arch, "-o", "/dev/null", "-x", filename, NULL);
   }
   wait(&wstatus);
   fclose(fp);
@@ -57,6 +57,7 @@ void func_handler(char *line){
     arch,
     "-o",
     "libcrepl.so",
+    "-x",
     filename,
     NULL,
   };
