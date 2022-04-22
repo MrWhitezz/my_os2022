@@ -31,11 +31,11 @@ bool is_valid(char *line){
   mkstemp(filetmp);
   FILE *fp = fopen(filetmp, "w");
   fprintf(fp, "%s\n", line);
+  int wstatus = 0;
   int pid = fork();
   if (pid == 0) {
-    execlp("/usr/bin/gcc", "gcc", "-x", "c", "-o", filename, "-", arch, CFLAGS, NULL);
+    execlp("/usr/bin/gcc", "gcc", "-fPIC", "-shared", arch, "-o", "/dev/null", filename, NULL);
   }
-  int wstatus = 0;
   wait(&wstatus);
   fclose(fp);
   if (WIFEXITED(wstatus)){
