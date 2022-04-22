@@ -35,6 +35,7 @@ int main(int argc, char *argv[]) {
   }
   else{
     dprintf(fd, "hello\n");
+    printf("%s\n", filename);
   }
 
   static char line[4096];
