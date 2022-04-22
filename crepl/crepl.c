@@ -13,7 +13,7 @@ char arch[] = "-m64";
 #else
 char arch[] = "-m32";
 #endif
-char CFLAGS[] = "-fPIC -shared";
+// char CFLAGS[] = "-fPIC -shared";
 
 char filename[] = "fuckXXXXXX";
 
@@ -36,13 +36,18 @@ bool is_valid(char *line){
   if (pid == 0) {
     execlp("/usr/bin/gcc", "gcc", "-fPIC", "-shared", arch, "-o", "/dev/null", "-x", "c", filetmp, NULL);
   }
-  wait(&wstatus);
+  if (wait(&wstatus) == -1) {
+    fclose(fp);
+    assert(0);
+  }
   fclose(fp);
   if (WIFEXITED(wstatus)){
+    printf("gcc failed\n");
     int es = WEXITSTATUS(wstatus);
     printf("%d\n", es);
     return false;
   }
+  printf("gcc success\n");
   return true;
 }
 
