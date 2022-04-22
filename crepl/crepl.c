@@ -9,7 +9,7 @@
 #include <stdbool.h>
 #include <dlfcn.h>
 
-#ifdef __X86_64__
+#ifdef __x86_64__
 char arch[] = "-m64";
 #else
 char arch[] = "-m32";
