@@ -56,6 +56,7 @@ int main(int argc, char *argv[]) {
 
   int fd = mkstemp(filename);
   assert(fd >= 0);
+  printf("[+] filename: %s\n", filename);
 
   static char line[4096];
   while (1) {
