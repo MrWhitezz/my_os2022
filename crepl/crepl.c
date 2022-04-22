@@ -41,6 +41,7 @@ bool is_valid(char *line){
     assert(0);
   }
   fclose(fp);
+  printf("wstatus = %d\n", wstatus);
   if (WEXITSTATUS(wstatus)){
     printf("gcc failed\n");
     int es = WEXITSTATUS(wstatus);
