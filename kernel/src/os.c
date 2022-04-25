@@ -2,6 +2,7 @@
 
 
 static void os_init() {
+  printf("os_init\n");
   // single processor
   pmm->init();
   kmt->init();
