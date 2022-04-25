@@ -4,6 +4,7 @@
 static void os_init() {
   // single processor
   pmm->init();
+  kmt->init();
 }
 
 
