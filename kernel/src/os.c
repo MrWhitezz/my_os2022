@@ -2,9 +2,9 @@
 
 
 static void os_init() {
-  // printf("os_init\n");
   // single processor
   pmm->init();
+  // should segfault
   kmt->init();
 }
 
