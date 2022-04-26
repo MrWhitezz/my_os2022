@@ -8,7 +8,7 @@ struct task {
 };
 
 struct spinlock {
-  unsigned locked;       // Is the lock held?
+  int locked;       // Is the lock held?
 
   // For debugging:
   const char *name;        // Name of lock.
@@ -18,3 +18,4 @@ struct spinlock {
 struct semaphore {
   // TODO
 };
+

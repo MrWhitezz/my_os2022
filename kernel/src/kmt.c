@@ -1,12 +1,42 @@
 #include <os.h>
+#include <cpu.h>
+#include <defs.h>
+
 
 // Check whether this cpu is holding the lock.
 // Interrupts must be off.
-// static int holding(spinlock_t *lk) {
-//   int r;
-//   r = (lk->locked && lk->cpu == mycpu());
-//   return r;
+static int holding(spinlock_t *lk) {
+  int r;
+  r = (lk->locked && lk->cpu == cpu_current());
+  return r;
+}
+
+// push_off/pop_off are like intr_off()/intr_on() except that they are matched:
+// it takes two pop_off()s to undo two push_off()s.  Also, if interrupts
+// are initially off, then push_off, pop_off leaves them off.
+
+
+
+static void push_off(void) {
+  int old = ienabled();
+
+  iset(false);
+  if(mycpu()->noff == 0)
+    mycpu()->intena = old;
+  mycpu()->noff += 1;
+}
+
+// static void pop_off(void) {
+//   struct cpu *c = mycpu();
+//   if(ienabled())
+//     panic("pop_off - interruptible");
+//   if(c->noff < 1)
+//     panic("pop_off");
+//   c->noff -= 1;
+//   if(c->noff == 0 && c->intena)
+//     iset(true);
 // }
+
 
 static void spin_init(spinlock_t *lk, const char *name){
   lk->locked = 0;
@@ -14,12 +44,20 @@ static void spin_init(spinlock_t *lk, const char *name){
   lk->cpu = -1; // no cpu holding the lock
 }
 
-// void spin_lock(spinlock_t *lk){
+static void spin_lock(spinlock_t *lk){
+  push_off(); // disable interrupts to avoid deadlock.
+  if(holding(lk))
+    panic("acquire(spin_lock)");
 
-   
-// }
+  while(atomic_xchg(&lk->locked, 1))
+    ;
+
+  // Record info about lock acquisition for holding() and debugging.
+  lk->cpu = cpu_current();
+}
 
 MODULE_DEF(kmt) = {
  // TODO
  .spin_init = spin_init,
+ .spin_lock = spin_lock,
 };
