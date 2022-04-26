@@ -3,20 +3,9 @@
 #include <defs.h>
 
 
-// Check whether this cpu is holding the lock.
-// Interrupts must be off.
-static int holding(spinlock_t *lk) {
-  int r;
-  r = (lk->locked && lk->cpu == cpu_current());
-  return r;
-}
-
 // push_off/pop_off are like intr_off()/intr_on() except that they are matched:
 // it takes two pop_off()s to undo two push_off()s.  Also, if interrupts
 // are initially off, then push_off, pop_off leaves them off.
-
-
-
 static void push_off(void) {
   int old = ienabled();
 
