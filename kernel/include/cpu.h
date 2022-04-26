@@ -1,6 +1,10 @@
 #include <common.h>
 
 // Per-CPU state.
+
+#ifndef __CPU_H__
+#define __CPU_H__
+
 struct cpu {
   // struct proc *proc;          // The process running on this cpu, or null.
   // struct context context;     // swtch() here to enter scheduler().
@@ -9,3 +13,5 @@ struct cpu {
 };
 
 extern struct cpu cpus[NCPU];
+
+#endif
