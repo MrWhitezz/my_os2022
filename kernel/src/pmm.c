@@ -15,7 +15,7 @@ void spin_unlock(spinlock_nt *lk) { atomic_xchg(lk, 0); }
 
 enum slab_index{ _16B, _32B, _64B, _128B, _256B, _512B, _1KB, _2KB, _4KB, SLAB_SIZE };
 
-S_header_t *Slab[8][SLAB_SIZE];
+S_header_t *Slab[NCPU][SLAB_SIZE];
 int n_slab = 0;
 
 void      *G_start;
