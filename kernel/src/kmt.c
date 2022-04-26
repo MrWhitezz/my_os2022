@@ -8,11 +8,11 @@
 //   return r;
 // }
 
-// static void spin_init(spinlock_t *lk, const char *name){
-//   lk->locked = 0;
-//   lk->name = name;
-//   lk->cpu = -1; // no cpu holding the lock
-// }
+static void spin_init(spinlock_t *lk, const char *name){
+  lk->locked = 0;
+  lk->name = name;
+  lk->cpu = -1; // no cpu holding the lock
+}
 
 // void spin_lock(spinlock_t *lk){
 
@@ -21,4 +21,5 @@
 
 MODULE_DEF(kmt) = {
  // TODO
+ .spin_init = spin_init,
 };

@@ -11,7 +11,7 @@ struct spinlock {
   unsigned locked;       // Is the lock held?
 
   // For debugging:
-  char *name;        // Name of lock.
+  const char *name;        // Name of lock.
   int  cpu;   // The cpu holding the lock.
 };
 
