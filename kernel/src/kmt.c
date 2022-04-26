@@ -26,16 +26,16 @@ static void push_off(void) {
   mycpu()->noff += 1;
 }
 
-// static void pop_off(void) {
-//   struct cpu *c = mycpu();
-//   if(ienabled())
-//     panic("pop_off - interruptible");
-//   if(c->noff < 1)
-//     panic("pop_off");
-//   c->noff -= 1;
-//   if(c->noff == 0 && c->intena)
-//     iset(true);
-// }
+static void pop_off(void) {
+  struct cpu *c = mycpu();
+  if(ienabled())
+    panic("pop_off - interruptible");
+  if(c->noff < 1)
+    panic("pop_off");
+  c->noff -= 1;
+  if(c->noff == 0 && c->intena)
+    iset(true);
+}
 
 
 static void spin_init(spinlock_t *lk, const char *name){
@@ -56,8 +56,22 @@ static void spin_lock(spinlock_t *lk){
   lk->cpu = cpu_current();
 }
 
+// Release the lock.
+static void spin_unlock(spinlock_t *lk) {
+  if(!holding(lk))
+    panic("release");
+
+  lk->cpu = -1;
+
+  // Release the lock, and restore interrupts.
+  atomic_xchg(&lk->locked, 0);
+
+  pop_off();
+}
+
 MODULE_DEF(kmt) = {
  // TODO
  .spin_init = spin_init,
  .spin_lock = spin_lock,
+ .spin_unlock = spin_unlock,
 };
