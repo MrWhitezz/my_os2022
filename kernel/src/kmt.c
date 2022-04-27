@@ -27,6 +27,8 @@ static void pop_off(void) {
 }
 
 
+// spin lock
+
 static void spin_init(spinlock_t *lk, const char *name){
   lk->locked = 0;
   lk->name = name;
@@ -38,17 +40,16 @@ static void spin_lock(spinlock_t *lk){
   if(holding(lk))
     panic("acquire(spin_lock)");
 
-  while(atomic_xchg(&lk->locked, 1))
-    ;
+  while(atomic_xchg(&lk->locked, 1)) {
+    yield();
+  }
 
-  // Record info about lock acquisition for holding() and debugging.
   lk->cpu = cpu_current();
 }
 
-// Release the lock.
 static void spin_unlock(spinlock_t *lk) {
   if(!holding(lk))
-    panic("release");
+    panic("release(spin_unlock)");
 
   lk->cpu = -1;
 
@@ -58,9 +59,17 @@ static void spin_unlock(spinlock_t *lk) {
   pop_off();
 }
 
+
+static void sem_init(sem_t *sem, const char *name, int value) {
+  sem->value = value;
+  spin_init(&sem->lock, name);
+  sem->name = name;
+}
+
 MODULE_DEF(kmt) = {
  // TODO
  .spin_init = spin_init,
  .spin_lock = spin_lock,
  .spin_unlock = spin_unlock,
+ .sem_init = sem_init,
 };
