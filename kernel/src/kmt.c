@@ -59,11 +59,31 @@ static void spin_unlock(spinlock_t *lk) {
   pop_off();
 }
 
-
 static void sem_init(sem_t *sem, const char *name, int value) {
   sem->value = value;
   spin_init(&sem->lock, name);
   sem->name = name;
+}
+
+
+static void sem_wait(sem_t *sem) {
+  // seems bug here
+  spin_lock(&sem->lock);
+  sem->value--;
+  while (sem->value < 0) {
+    assert(ienabled() == false);
+    assert(sem->value < 0);
+    spin_unlock(&sem->lock);
+    yield();
+    spin_lock(&sem->lock);
+  }
+}
+
+static void sem_signal(sem_t *sem) {
+  // how to get thread id ?
+  spin_lock(&sem->lock);
+  sem->value++;
+  spin_unlock(&sem->lock);
 }
 
 MODULE_DEF(kmt) = {
@@ -72,4 +92,6 @@ MODULE_DEF(kmt) = {
  .spin_lock = spin_lock,
  .spin_unlock = spin_unlock,
  .sem_init = sem_init,
+ .sem_wait = sem_wait,
+ .sem_signal = sem_signal,
 };
