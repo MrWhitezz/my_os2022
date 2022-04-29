@@ -105,18 +105,27 @@ static void sem_signal(sem_t *sem) {
 
 static int kmt_create(task_t *task, const char *name, void (*entry)(void *arg), void *arg) {
   // TODO
+  task->stack = pmm->alloc(STK_SZ);
+  task->name  = name;
+  task->entry = entry;
+  task->arg   = arg;
+  task->stat  = T_CREAT;
+  return 0;
+}
 
-  return -1;
+static void teardown(task_t *task) {
+  assert(task->stat == T_CREAT);
+  pmm->free(task->stack);
 }
 
 MODULE_DEF(kmt) = {
  // TODO
- .create = kmt_create,
- 
- .spin_init = spin_init,
- .spin_lock = spin_lock,
+ .create      = kmt_create,
+ .teardown    = teardown,
+ .spin_init   = spin_init,
+ .spin_lock   = spin_lock,
  .spin_unlock = spin_unlock,
- .sem_init = sem_init,
- .sem_wait = sem_wait,
- .sem_signal = sem_signal,
+ .sem_init    = sem_init,
+ .sem_wait    = sem_wait,
+ .sem_signal  = sem_signal,
 };

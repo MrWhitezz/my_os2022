@@ -32,18 +32,19 @@ size_t nextPower_2(size_t x);
 // os related structs and variables
 
 #define STK_SZ (1 << 10)
-enum tstat { T_RUNNABLE, T_RUNNING, T_BLOCKED, T_ZOMBIE, };
+enum tstat { T_RUNNABLE, T_RUNNING, T_BLOCKED, T_CREAT, };
 
 struct task {
   union {
     struct {
-      int id;
+      // int id; // temprorarily useless
+      // task_t *next; // in thread-os.c to schedule, useless here
       enum tstat stat;
       const char *name;
       void (*entry)(void *arg);
       void *arg;
     };
-  uint8_t stack[STK_SZ];
+    uint8_t *stack;
   };
 };
 
