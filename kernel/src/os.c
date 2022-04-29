@@ -1,9 +1,12 @@
 #include <common.h>
 
 
-task_t tasks[NTSK];
+task_t *tasks[NTSK];
+int tid = 0;
+spinlock_t tlk;
 
-task_t *currents[NCPU];
+task_t *currents[NCPU]; // this need no lks
+
 // sem_t empty, fill;
 // #define P kmt->sem_wait
 // #define V kmt->sem_signal
@@ -14,8 +17,9 @@ task_t *currents[NCPU];
 static void os_init() {
   // single processor
   pmm->init();
-  // should segfault
   kmt->init();
+  kmt->spin_init(&tlk, "tasks");
+
 #ifdef TEST_LOCAL
   kmt->sem_init(&empty, "empty", 5);  // 缓冲区大小为 5
   kmt->sem_init(&fill,  "fill",  0);
@@ -35,7 +39,16 @@ static void os_run() {
   while (1) ;
 }
 
+static Context *os_trap(Event ev, Context *context) {
+  // ATTENTION: you should consider concurrency here.
+  if (tcurrent != NULL) {
+
+  }
+  return NULL;
+}
+
 MODULE_DEF(os) = {
   .init = os_init,
   .run  = os_run,
+  .trap = os_trap,
 };

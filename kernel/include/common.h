@@ -66,7 +66,9 @@ struct semaphore {
   const char *name;
 };
 
-extern task_t tasks[NTSK];
+extern task_t *tasks[NTSK];
+extern int tid;
+extern spinlock_t tlk;
 extern task_t *currents[NCPU];
 
 #define tcurrent currents[cpu_current()]
