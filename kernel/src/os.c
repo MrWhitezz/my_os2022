@@ -2,6 +2,8 @@
 
 
 task_t tasks[NTSK];
+
+task_t *currents[NCPU];
 // sem_t empty, fill;
 // #define P kmt->sem_wait
 // #define V kmt->sem_signal

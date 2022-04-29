@@ -1,5 +1,4 @@
 // C program for array implementation of queue
-#include <limits.h>
 #include <common.h>
 #include <dsa.h>
 
@@ -24,8 +23,8 @@ struct Queue* createQueue(unsigned capacity)
 
 	// This is important, see the enqueue
 	queue->rear = capacity - 1;
-	queue->array = (int*)dalloc(
-		queue->capacity * sizeof(int));
+	queue->array = (void **)dalloc(
+		queue->capacity * sizeof(void *));
 	return queue;
 }
 
@@ -44,7 +43,7 @@ int isEmpty(struct Queue* queue)
 
 // Function to add an item to the queue.
 // It changes rear and size
-void enqueue(struct Queue* queue, int item)
+void enqueue(struct Queue* queue, void *item)
 {
 	if (isFull(queue))
 		return;
@@ -56,11 +55,11 @@ void enqueue(struct Queue* queue, int item)
 
 // Function to remove an item from queue.
 // It changes front and size
-int dequeue(struct Queue* queue)
+void *dequeue(struct Queue* queue)
 {
 	if (isEmpty(queue))
-		return INT_MIN;
-	int item = queue->array[queue->front];
+		return NULL;
+	void *item = queue->array[queue->front];
 	queue->front = (queue->front + 1)
 				% queue->capacity;
 	queue->size = queue->size - 1;
@@ -68,17 +67,17 @@ int dequeue(struct Queue* queue)
 }
 
 // Function to get front of queue
-int front(struct Queue* queue)
+void *front(struct Queue* queue)
 {
 	if (isEmpty(queue))
-		return INT_MIN;
+		return NULL;
 	return queue->array[queue->front];
 }
 
 // Function to get rear of queue
-int rear(struct Queue* queue)
+void *rear(struct Queue* queue)
 {
 	if (isEmpty(queue))
-		return INT_MIN;
+		return NULL;
 	return queue->array[queue->rear];
 }

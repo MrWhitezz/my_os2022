@@ -61,22 +61,35 @@ static void spin_unlock(spinlock_t *lk) {
 
 static void sem_init(sem_t *sem, const char *name, int value) {
   sem->value = value;
-  spin_init(&sem->lock, name);
   sem->name = name;
+  spin_init(&sem->lock, name);
+  sem->wait_list = createQueue(32);
 }
 
 
 static void sem_wait(sem_t *sem) {
   // seems bug here
+  int acquire = 0;
   spin_lock(&sem->lock);
+  assert(ienabled() == false);
   sem->value--;
-  while (sem->value < 0) {
-    assert(ienabled() == false);
-    assert(sem->value < 0);
-    spin_unlock(&sem->lock);
-    yield();
-    spin_lock(&sem->lock);
+  if (sem->value < 0) {
+    enqueue(sem->wait_list, tcurrent);
+    tcurrent->stat = T_BLOCKED;
+  } else {
+    acquire = 1;
   }
+
+  spin_unlock(&sem->lock);
+  if (!acquire) { yield(); }
+
+  // while (sem->value < 0) {
+  //   assert(ienabled() == false);
+  //   assert(sem->value < 0);
+  //   spin_unlock(&sem->lock);
+  //   yield();
+  //   spin_lock(&sem->lock);
+  // }
 }
 
 static void sem_signal(sem_t *sem) {

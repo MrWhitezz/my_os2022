@@ -4,6 +4,7 @@
 #include <kernel.h>
 #include <klib.h>
 #include <klib-macros.h>
+#include <dsa.h>
 
 size_t nextPower_2(size_t x);
 
@@ -58,11 +59,14 @@ struct semaphore {
   // TODO
   int value;
   spinlock_t lock;
-
+  queue_t *wait_list;
   // For debugging:
   const char *name;
 };
 
 extern task_t tasks[NTSK];
+extern task_t *currents[NCPU];
+
+#define tcurrent currents[cpu_current()]
 
 #endif
