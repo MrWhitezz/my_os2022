@@ -125,8 +125,13 @@ static void teardown(task_t *task) {
   del_task(task);
 }
 
+static void kmt_init() {
+
+}
+
 MODULE_DEF(kmt) = {
  // TODO
+ .init        = kmt_init,
  .create      = kmt_create,
  .teardown    = teardown,
  .spin_init   = spin_init,
