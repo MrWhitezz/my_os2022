@@ -40,11 +40,12 @@ task_t *task_alloc() { return (task_t *)pmm->alloc(sizeof(task_t)); }
 
 static void os_init() {
   // single processor
+  printf("start os_init\n");
+
   pmm->init();
   kmt->init();
   kmt->spin_init(&tlk, "tasks");
 
-  printf("start os_init\n");
 
 #ifdef TEST_LOCAL
   kmt->sem_init(&empty, "empty", 5);  // 缓冲区大小为 5
