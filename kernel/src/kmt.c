@@ -41,6 +41,7 @@ static void spin_lock(spinlock_t *lk){
     panic("acquire(spin_lock)");
 
   while(atomic_xchg(&lk->locked, 1)) {
+    debug("%s: locked by %d\n", lk->name, lk->cpu);
     yield();
   }
 
