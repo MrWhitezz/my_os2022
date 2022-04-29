@@ -1,10 +1,10 @@
+#ifndef __COMMON_H__
+#define __COMMON_H__
+
 #include <kernel.h>
 #include <klib.h>
 #include <klib-macros.h>
 #include <os.h>
-
-#ifndef __COMMON_H__
-#define __COMMON_H__
 
 size_t nextPower_2(size_t x);
 
