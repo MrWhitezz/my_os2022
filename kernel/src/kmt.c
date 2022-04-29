@@ -96,6 +96,10 @@ static void sem_signal(sem_t *sem) {
   // how to get thread id ?
   spin_lock(&sem->lock);
   sem->value++;
+  if (!isEmpty(sem->wait_list)) {
+    task_t *t = dequeue(sem->wait_list);
+    t->stat = T_RUNNABLE;
+  }
   spin_unlock(&sem->lock);
 }
 
