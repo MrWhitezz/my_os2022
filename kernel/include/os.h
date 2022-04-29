@@ -2,12 +2,16 @@
 #define STK_SZ (1 << 10)
 
 struct task {
-  int32_t id;
-  const char *name;
-  void (*entry)(void *arg);
-  void *arg;
-  // TODO
+  union {
+    struct {
+      int id;
+      int status;
+      const char *name;
+      void (*entry)(void *arg);
+      void *arg;
+    };
   uint8_t stack[STK_SZ];
+  };
 };
 
 struct spinlock {

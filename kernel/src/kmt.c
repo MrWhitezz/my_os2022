@@ -86,8 +86,16 @@ static void sem_signal(sem_t *sem) {
   spin_unlock(&sem->lock);
 }
 
+static int kmt_create(task_t *task, const char *name, void (*entry)(void *arg), void *arg) {
+  // TODO
+
+  return -1;
+}
+
 MODULE_DEF(kmt) = {
  // TODO
+ .create = kmt_create,
+ 
  .spin_init = spin_init,
  .spin_lock = spin_lock,
  .spin_unlock = spin_unlock,
