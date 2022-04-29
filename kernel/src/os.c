@@ -59,12 +59,31 @@ static void os_run() {
   while (1) ;
 }
 
+// static Context *input_notify(Event ev, Context *context) {
+//   // kmt->sem_signal(&sem_kbdirq); // 在IO设备中断到来时，执行V操作唤醒一个线程
+//   return NULL;
+// }
+
+static Context *kmt_sched(Event ev, Context *context) {
+  kmt->spin_lock(&tlk);
+  while (tasks[tid] == NULL) {
+    tid = (tid + 1) % NTSK;
+  }
+  tcurrent = tasks[tid];
+  Context *next = tcurrent->context;
+  kmt->spin_unlock(&tlk);
+  return next;
+}
+
 static Context *os_trap(Event ev, Context *context) {
   // ATTENTION: you should consider concurrency here.
   if (tcurrent != NULL) {
-
+    kmt->spin_lock(&tlk);
+    tcurrent->context = context; 
+    kmt->spin_unlock(&tlk);
   }
-  return NULL;
+
+  return kmt_sched(ev, context);
 }
 
 MODULE_DEF(os) = {
