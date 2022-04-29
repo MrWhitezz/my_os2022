@@ -73,6 +73,7 @@ static void os_run() {
 // }
 
 static Context *kmt_sched(Event ev, Context *context) {
+  debug("sched begin\n");
   kmt->spin_lock(&tlk);
   task_t *t = NULL;
   do {
