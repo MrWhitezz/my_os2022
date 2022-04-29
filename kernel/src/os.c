@@ -1,6 +1,7 @@
 #include <common.h>
 
 
+task_t tasks[NTSK];
 // sem_t empty, fill;
 // #define P kmt->sem_wait
 // #define V kmt->sem_signal

@@ -4,13 +4,13 @@
 #include <kernel.h>
 #include <klib.h>
 #include <klib-macros.h>
-#include <os.h>
 
 size_t nextPower_2(size_t x);
 
 // parameters
 
 #define NCPU 8
+#define NTSK 128
 
 // debug
 
@@ -27,5 +27,41 @@ size_t nextPower_2(size_t x);
   #define TRACE_ENTRY ((void)0)
   #define TRACE_EXIT  ((void)0)
 #endif
+
+// os related structs and variables
+
+#define STK_SZ (1 << 10)
+
+struct task {
+  union {
+    struct {
+      int id;
+      int status;
+      const char *name;
+      void (*entry)(void *arg);
+      void *arg;
+    };
+  uint8_t stack[STK_SZ];
+  };
+};
+
+struct spinlock {
+  int locked;       // Is the lock held?
+
+  // For debugging:
+  const char *name;        // Name of lock.
+  int  cpu;   // The cpu holding the lock.
+};
+
+struct semaphore {
+  // TODO
+  int value;
+  spinlock_t lock;
+
+  // For debugging:
+  const char *name;
+};
+
+extern task_t tasks[NTSK];
 
 #endif
