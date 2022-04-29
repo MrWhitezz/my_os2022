@@ -83,6 +83,7 @@ static Context *kmt_sched(Event ev, Context *context) {
     t = tasks[tid];
   } while (t->stat == T_CREAT || t->stat == T_RUNNABLE);
   if (t->stat == T_CREAT) { t->stat = T_RUNNABLE; }
+  debug("[sched] %s -> %s\n", tcurrent->name, t->name);
   tcurrent = t;
   Context *next = tcurrent->context;
   kmt->spin_unlock(&tlk);
