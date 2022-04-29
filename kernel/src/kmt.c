@@ -75,7 +75,9 @@ static void sem_wait(sem_t *sem) {
   sem->value--;
   if (sem->value < 0) {
     enqueue(sem->wait_list, tcurrent);
+    spin_lock(&tlk);
     tcurrent->stat = T_BLOCKED;
+    spin_unlock(&tlk);
   } else {
     acquire = 1;
   }
@@ -98,7 +100,9 @@ static void sem_signal(sem_t *sem) {
   sem->value++;
   if (!isEmpty(sem->wait_list)) {
     task_t *t = dequeue(sem->wait_list);
+    spin_lock(&tlk);
     t->stat = T_RUNNABLE;
+    spin_unlock(&tlk);
   }
   spin_unlock(&sem->lock);
 }

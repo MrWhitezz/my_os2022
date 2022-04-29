@@ -43,11 +43,8 @@ static void os_init() {
   printf("start os_init\n");
 
   pmm->init();
-  debug("pmm init done\n");
   kmt->init();
-  debug("kmt init done\n");
   kmt->spin_init(&tlk, "tasks");
-  debug("tlk init done\n");
 
 
 #ifdef TEST_LOCAL
@@ -85,6 +82,7 @@ static Context *kmt_sched(Event ev, Context *context) {
     // tcurrent = tasks[tid];
     t = tasks[tid];
   } while (t->stat == T_CREAT || t->stat == T_RUNNABLE);
+  if (t->stat == T_CREAT) { t->stat = T_RUNNABLE; }
   tcurrent = t;
   Context *next = tcurrent->context;
   kmt->spin_unlock(&tlk);
