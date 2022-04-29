@@ -43,8 +43,11 @@ static void os_init() {
   printf("start os_init\n");
 
   pmm->init();
+  debug("pmm init done\n");
   kmt->init();
+  debug("kmt init done\n");
   kmt->spin_init(&tlk, "tasks");
+  debug("tlk init done\n");
 
 
 #ifdef TEST_LOCAL
