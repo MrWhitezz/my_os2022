@@ -104,12 +104,17 @@ static void sem_signal(sem_t *sem) {
 }
 
 static int kmt_create(task_t *task, const char *name, void (*entry)(void *arg), void *arg) {
-  // TODO
-  task->stack = pmm->alloc(STK_SZ);
-  task->name  = name;
-  task->entry = entry;
-  task->arg   = arg;
-  task->stat  = T_CREAT;
+
+  task->stack   = pmm->alloc(STK_SZ);
+  task->name    = name;
+  task->entry   = entry;
+  task->arg     = arg;
+  task->stat    = T_CREAT;
+
+  // must be called after task->stack is set
+  Area tstack   = RANGE(task->stack, (void *)task->stack + STK_SZ);
+  Context *c    = kcontext(tstack, entry, arg);
+  task->context = c;
   return 0;
 }
 
