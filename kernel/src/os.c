@@ -27,12 +27,19 @@ void del_task(task_t *task) {
   kmt->spin_unlock(&tlk);
 }
 
-// sem_t empty, fill;
-// #define P kmt->sem_wait
-// #define V kmt->sem_signal
+#ifdef TEST_LOCAL
+sem_t empty, fill;
+#define P kmt->sem_wait
+#define V kmt->sem_signal
 
-// void producer(void *arg) { while (1) { P(&empty); putch('('); V(&fill);  } }
-// void consumer(void *arg) { while (1) { P(&fill);  putch(')'); V(&empty); } }
+void producer(void *arg) { while (1) { P(&empty); putch('('); V(&fill);  } }
+void consumer(void *arg) { while (1) { P(&fill);  putch(')'); V(&empty); } }
+
+task_t *task_alloc() {
+  return pmm->alloc(sizeof(task_t));
+}
+
+#endif
 
 static void os_init() {
   // single processor
@@ -48,6 +55,7 @@ static void os_init() {
   for (int i = 0; i < 5; i++) // 5 个消费者
     kmt->create(task_alloc(), "consumer", consumer, NULL);
 #endif
+  printf("os_init() done.\n");
 }
 
 
