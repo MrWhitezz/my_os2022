@@ -1,4 +1,8 @@
+#ifndef __OS_H__
+#define __OS_H__
+
 #include <common.h>
+
 #define STK_SZ (1 << 10)
 
 struct task {
@@ -31,3 +35,4 @@ struct semaphore {
   const char *name;
 };
 
+#endif

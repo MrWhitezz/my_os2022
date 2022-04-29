@@ -1,5 +1,7 @@
-#include <kernel.h>
 #include <klib.h>
+#include <am.h>
+#include <klib-macros.h>
+#include <common.h>
 
 int main() {
   ioe_init();
