@@ -77,10 +77,15 @@ static void os_run() {
 
 static Context *kmt_sched(Event ev, Context *context) {
   kmt->spin_lock(&tlk);
-  while (tasks[tid] == NULL) {
-    tid = (tid + 1) % NTSK;
-  }
-  tcurrent = tasks[tid];
+  task_t *t = NULL;
+  do {
+    while (tasks[tid] == NULL) {
+      tid = (tid + 1) % NTSK;
+    }
+    // tcurrent = tasks[tid];
+    t = tasks[tid];
+  } while (t->stat == T_CREAT || t->stat == T_RUNNABLE);
+  tcurrent = t;
   Context *next = tcurrent->context;
   kmt->spin_unlock(&tlk);
   return next;
