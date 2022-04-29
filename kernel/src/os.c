@@ -73,7 +73,7 @@ static void os_run() {
 // }
 
 static Context *kmt_sched(Event ev, Context *context) {
-  debug("sched begin\n");
+  // debug("sched begin\n");
   kmt->spin_lock(&tlk);
   task_t *t = NULL;
   do {
@@ -82,9 +82,9 @@ static Context *kmt_sched(Event ev, Context *context) {
     }
     // tcurrent = tasks[tid];
     t = tasks[tid];
-  } while (t->stat == T_CREAT || t->stat == T_RUNNABLE);
+  } while (!(t->stat == T_CREAT || t->stat == T_RUNNABLE));
   if (t->stat == T_CREAT) { t->stat = T_RUNNABLE; }
-  debug("[sched] %s -> %s\n", tcurrent->name, t->name);
+  // debug("[sched] %s -> %s\n", tcurrent->name, t->name);
   tcurrent = t;
   Context *next = tcurrent->context;
   kmt->spin_unlock(&tlk);
