@@ -35,10 +35,7 @@ sem_t empty, fill;
 void producer(void *arg) { while (1) { P(&empty); putch('('); V(&fill);  } }
 void consumer(void *arg) { while (1) { P(&fill);  putch(')'); V(&empty); } }
 
-task_t *task_alloc() {
-  return pmm->alloc(sizeof(task_t));
-}
-
+task_t *task_alloc() { return (task_t *)pmm->alloc(sizeof(task_t)); }
 #endif
 
 static void os_init() {
@@ -46,6 +43,8 @@ static void os_init() {
   pmm->init();
   kmt->init();
   kmt->spin_init(&tlk, "tasks");
+
+  printf("start os_init\n");
 
 #ifdef TEST_LOCAL
   kmt->sem_init(&empty, "empty", 5);  // 缓冲区大小为 5
