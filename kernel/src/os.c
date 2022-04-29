@@ -7,6 +7,26 @@ spinlock_t tlk;
 
 task_t *currents[NCPU]; // this need no lks
 
+void add_task(task_t *task) {
+  kmt->spin_lock(&tlk);
+  while (tasks[tid] != NULL) {
+    tid = (tid + 1) % NTSK;
+  }
+  assert(tasks[tid] == NULL);
+  tasks[tid] = task; 
+  kmt->spin_unlock(&tlk);
+}
+
+void del_task(task_t *task) {
+  kmt->spin_lock(&tlk);
+  while (tasks[tid] != task) {
+    tid = (tid + 1) % NTSK;
+  }
+  assert(tasks[tid] == task);
+  tasks[tid] = NULL; 
+  kmt->spin_unlock(&tlk);
+}
+
 // sem_t empty, fill;
 // #define P kmt->sem_wait
 // #define V kmt->sem_signal

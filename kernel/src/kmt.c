@@ -115,12 +115,14 @@ static int kmt_create(task_t *task, const char *name, void (*entry)(void *arg), 
   Area tstack   = RANGE(task->stack, (void *)task->stack + STK_SZ);
   Context *c    = kcontext(tstack, entry, arg);
   task->context = c;
+  add_task(task);
   return 0;
 }
 
 static void teardown(task_t *task) {
   assert(task->stat == T_CREAT);
   pmm->free(task->stack);
+  del_task(task);
 }
 
 MODULE_DEF(kmt) = {

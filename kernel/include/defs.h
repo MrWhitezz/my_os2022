@@ -1,6 +1,10 @@
 // cpu.c
-struct cpu*     mycpu(void);
-int     holding(spinlock_t *lk);
+struct cpu   *mycpu(void);
+int           holding(spinlock_t *lk);
+
+// os.c
+void          add_task(task_t *task);
+void          del_task(task_t *task);
 
 // dsa.c
 #include <dsa.h>
