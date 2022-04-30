@@ -83,7 +83,7 @@ static void os_run() {
 // }
 
 static Context *kmt_sched(Event ev, Context *context) {
-  TRACE_ENTRY;
+  // TRACE_ENTRY;
   // debug("sched begin on cpu %d\n", cpu_current());
   kmt->spin_lock(&tlk);
   // debug("get lock on cpu %d\n", cpu_current());
