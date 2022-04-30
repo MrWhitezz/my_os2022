@@ -64,7 +64,7 @@ static void sem_init(sem_t *sem, const char *name, int value) {
   sem->value = value;
   sem->name = name;
   spin_init(&sem->lock, name);
-  sem->wait_list = createQueue(32);
+  sem->wait_list = createQueue(32); // 32 to be modified
 }
 
 
@@ -83,6 +83,7 @@ static void sem_wait(sem_t *sem) {
     acquire = 1;
   }
 
+  debug("%s try to acquire(%d) on cpu %d\n", sem->name, acquire, cpu_current());
   spin_unlock(&sem->lock);
   if (!acquire) { yield(); }
 
