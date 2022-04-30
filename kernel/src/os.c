@@ -33,12 +33,12 @@ sem_t empty, fill;
 #define P kmt->sem_wait
 #define V kmt->sem_signal
 
-void producer(void *arg) { while (1) { ; P(&empty); putch('('); V(&fill);  yield();} }
-void consumer(void *arg) { while (1) { ; P(&fill);  putch(')'); V(&empty); yield();} }
+void producer(void *arg) { while (1) { yield(); P(&empty); putch('('); V(&fill);  yield();} }
+void consumer(void *arg) { while (1) { yield(); P(&fill);  putch(')'); V(&empty); yield();} }
 
 task_t *task_alloc() { 
   task_t *ret = (task_t *)pmm->alloc(sizeof(task_t)); 
-  debug("task_alloc: %p with sz 0x%x\n", ret, sizeof(task_t));
+  // debug("task_alloc: %p with sz 0x%x\n", ret, sizeof(task_t));
   assert(ret != NULL);
   return ret;
 }
