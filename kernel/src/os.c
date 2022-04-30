@@ -14,6 +14,7 @@ void add_task(task_t *task) {
   }
   assert(tasks[tid] == NULL);
   tasks[tid] = task; 
+  tid = (tid + 1) % NTSK;
   kmt->spin_unlock(&tlk);
 }
 
@@ -94,7 +95,7 @@ static Context *kmt_sched(Event ev, Context *context) {
       tid = (tid + 1) % NTSK;
     }
     t = tasks[tid];
-    tid ++;
+    tid = (tid + 1) % NTSK;
     assert(t != NULL);
   } while (!(t->stat == T_CREAT || t->stat == T_RUNNABLE));
   // debug("out of sched loop on cpu %d\n", cpu_current());
