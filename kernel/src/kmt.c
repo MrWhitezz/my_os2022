@@ -116,6 +116,7 @@ static void sem_signal(sem_t *sem) {
 static int kmt_create(task_t *task, const char *name, void (*entry)(void *arg), void *arg) {
   assert(task != NULL);
 
+  debug("before alloc: %s: stack at %p\n", name, (void *)task->stack);
   task->stack   = pmm->alloc(STK_SZ);
   task->name    = name;
   task->entry   = entry;
@@ -124,7 +125,7 @@ static int kmt_create(task_t *task, const char *name, void (*entry)(void *arg), 
 
   // must be called after task->stack is set
   assert(task->stack != NULL);
-  debug("%s: stack at %p\n", name, (void *)task->stack);
+  debug("after alloc: %s: stack at %p\n", name, (void *)task->stack);
   Area tstack   = RANGE(task->stack, (void *)task->stack + STK_SZ);
   Context *c    = kcontext(tstack, entry, arg);
   task->context = c;
