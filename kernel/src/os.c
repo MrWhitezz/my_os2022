@@ -32,8 +32,8 @@ sem_t empty, fill;
 #define P kmt->sem_wait
 #define V kmt->sem_signal
 
-void producer(void *arg) { while (1) { P(&empty); putch('('); V(&fill);  } }
-void consumer(void *arg) { while (1) { P(&fill);  putch(')'); V(&empty); } }
+void producer(void *arg) { while (1) { TRACE_ENTRY; P(&empty); putch('('); V(&fill);  TRACE_EXIT;} }
+void consumer(void *arg) { while (1) { TRACE_ENTRY; P(&fill);  putch(')'); V(&empty); TRACE_EXIT;} }
 
 task_t *task_alloc() { 
   task_t *ret = (task_t *)pmm->alloc(sizeof(task_t)); 
@@ -60,7 +60,11 @@ static void os_init() {
     kmt->create(task_alloc(), name, producer, NULL);
   }
   for (int i = 0; i < 5; i++) // 5 个消费者
-    kmt->create(task_alloc(), "consumer", consumer, NULL);
+  {
+    char *name = (char *)pmm->alloc(16);
+    sprintf(name, "consumer-%d", i);
+    kmt->create(task_alloc(), name, consumer, NULL);
+  }
 #endif
 }
 
