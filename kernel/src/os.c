@@ -5,7 +5,7 @@ task_t *tasks[NTSK] = {};
 int tid = 0;
 spinlock_t tlk;
 
-task_t *currents[NCPU]; // this need no lks
+task_t *currents[NCPU] = {}; // this need no lks ??
 
 void add_task(task_t *task) {
   kmt->spin_lock(&tlk);
@@ -38,6 +38,7 @@ void consumer(void *arg) { while (1) { TRACE_ENTRY; P(&fill);  putch(')'); V(&em
 
 task_t *task_alloc() { 
   task_t *ret = (task_t *)pmm->alloc(sizeof(task_t)); 
+  debug("task_alloc: %p\n", ret);
   assert(ret != NULL);
   return ret;
 }
