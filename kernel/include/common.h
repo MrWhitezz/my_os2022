@@ -35,18 +35,16 @@ size_t nextPower_2(size_t x);
 enum tstat { T_RUNNABLE, T_RUNNING, T_BLOCKED, T_CREAT, };
 
 struct task {
-  union {
-    struct {
-      // int id; // temprorarily useless
-      // task_t *next; // in thread-os.c to schedule, useless here
-      enum tstat stat;
-      const char *name;
-      void (*entry)(void *arg);
-      void *arg;
-      Context *context;
-    };
-    uint8_t *stack;
+  struct {
+    // int id; // temprorarily useless
+    // task_t *next; // in thread-os.c to schedule, useless here
+    enum tstat stat;
+    const char *name;
+    void (*entry)(void *arg);
+    void *arg;
+    Context *context;
   };
+  uint8_t *stack;
 };
 
 struct spinlock {
