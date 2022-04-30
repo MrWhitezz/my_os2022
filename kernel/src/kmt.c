@@ -43,6 +43,7 @@ static void spin_lock(spinlock_t *lk){
   }
 
   while(atomic_xchg(&lk->locked, 1)) {
+    assert(ienabled() == false);
     yield();
   }
 
@@ -57,6 +58,7 @@ static void spin_unlock(spinlock_t *lk) {
 
   // Release the lock, and restore interrupts.
   atomic_xchg(&lk->locked, 0);
+  assert(ienabled() == false);
 
   pop_off();
 }
