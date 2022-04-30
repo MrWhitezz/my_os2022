@@ -75,27 +75,28 @@ static void os_run() {
 // }
 
 static Context *kmt_sched(Event ev, Context *context) {
-  debug("sched begin on cpu %d\n", cpu_current());
+  TRACE_ENTRY;
+  // debug("sched begin on cpu %d\n", cpu_current());
   kmt->spin_lock(&tlk);
-  debug("get lock on cpu %d\n", cpu_current());
+  // debug("get lock on cpu %d\n", cpu_current());
   assert(ienabled() == false);
   task_t *t = NULL;
   do {
     while (tasks[tid] == NULL) {
       tid = (tid + 1) % NTSK;
     }
-    // tcurrent = tasks[tid];
     t = tasks[tid];
     tid ++;
     assert(t != NULL);
   } while (!(t->stat == T_CREAT || t->stat == T_RUNNABLE));
-  debug("out of sched loop on cpu %d\n", cpu_current());
+  // debug("out of sched loop on cpu %d\n", cpu_current());
   if (t->stat == T_CREAT) { t->stat = T_RUNNABLE; }
   // debug("[sched] %s -> %s on cpu %d\n", tcurrent->name, t->name, cpu_current());
   tcurrent = t;
   debug("sched to %s on cpu %d\n", t->name, cpu_current());
   Context *next = tcurrent->context;
   kmt->spin_unlock(&tlk);
+  TRACE_EXIT;
   return next;
 }
 

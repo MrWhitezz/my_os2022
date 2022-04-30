@@ -70,6 +70,7 @@ static void sem_init(sem_t *sem, const char *name, int value) {
 
 static void sem_wait(sem_t *sem) {
   // seems bug here
+  TRACE_ENTRY;
   int acquire = 0;
   spin_lock(&sem->lock);
   assert(ienabled() == false);
@@ -94,9 +95,11 @@ static void sem_wait(sem_t *sem) {
   //   yield();
   //   spin_lock(&sem->lock);
   // }
+  TRACE_EXIT;
 }
 
 static void sem_signal(sem_t *sem) {
+  TRACE_ENTRY;
   // how to get thread id ?
   spin_lock(&sem->lock);
   sem->value++;
@@ -107,6 +110,7 @@ static void sem_signal(sem_t *sem) {
     spin_unlock(&tlk);
   }
   spin_unlock(&sem->lock);
+  TRACE_EXIT;
 }
 
 static int kmt_create(task_t *task, const char *name, void (*entry)(void *arg), void *arg) {
