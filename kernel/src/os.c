@@ -88,7 +88,7 @@ static Context *kmt_sched(Event ev, Context *context) {
   debug("??????????????\n");
   if (t->stat == T_CREAT) { t->stat = T_RUNNABLE; }
   debug("!!!!!!!!!!!!\n");
-  debug("[sched] %s -> %s on cpu %d\n", tcurrent->name, t->name, cpu_current());
+  // debug("[sched] %s -> %s on cpu %d\n", tcurrent->name, t->name, cpu_current());
   tcurrent = t;
   Context *next = tcurrent->context;
   kmt->spin_unlock(&tlk);
