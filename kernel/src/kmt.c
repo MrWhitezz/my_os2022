@@ -124,7 +124,7 @@ static int kmt_create(task_t *task, const char *name, void (*entry)(void *arg), 
 
   // must be called after task->stack is set
   assert(task->stack != NULL);
-  debug("%s: stack at %p\n", name, task->stack);
+  debug("%s: stack at %x\n", name, (void *)task->stack);
   Area tstack   = RANGE(task->stack, (void *)task->stack + STK_SZ);
   Context *c    = kcontext(tstack, entry, arg);
   task->context = c;
