@@ -78,6 +78,7 @@ static void sem_wait(sem_t *sem) {
   if (sem->value < 0) {
     enqueue(sem->wait_list, tcurrent);
     spin_lock(&tlk);
+    assert(tcurrent != NULL && tcurrent->stat == T_RUNNABLE);
     tcurrent->stat = T_BLOCKED;
     spin_unlock(&tlk);
   } else {
@@ -99,18 +100,19 @@ static void sem_wait(sem_t *sem) {
 }
 
 static void sem_signal(sem_t *sem) {
-  TRACE_ENTRY;
+  // TRACE_ENTRY;
   // how to get thread id ?
   spin_lock(&sem->lock);
   sem->value++;
   if (!isEmpty(sem->wait_list)) {
     task_t *t = dequeue(sem->wait_list);
     spin_lock(&tlk);
+    assert(t != NULL && t->stat == T_BLOCKED);
     t->stat = T_RUNNABLE;
     spin_unlock(&tlk);
   }
   spin_unlock(&sem->lock);
-  TRACE_EXIT;
+  // TRACE_EXIT;
 }
 
 static int kmt_create(task_t *task, const char *name, void (*entry)(void *arg), void *arg) {
@@ -119,7 +121,7 @@ static int kmt_create(task_t *task, const char *name, void (*entry)(void *arg), 
   // void *play = pmm->alloc(1<<10);
   // debug("play: %p\n", play);
 
-  debug("before alloc: %s: stack at %p\n", name, (void *)task->stack);
+  // debug("before alloc: %s: stack at %p\n", name, (void *)task->stack);
   task->stack   = (uint8_t *)pmm->alloc(STK_SZ);
   task->name    = name;
   task->entry   = entry;
@@ -128,7 +130,7 @@ static int kmt_create(task_t *task, const char *name, void (*entry)(void *arg), 
 
   // must be called after task->stack is set
   assert(task->stack != NULL);
-  debug("after  alloc: %s: stack at %p\n", name, (void *)task->stack);
+  // debug("after  alloc: %s: stack at %p\n", name, (void *)task->stack);
   Area tstack   = RANGE(task->stack, (void *)task->stack + STK_SZ);
   Context *c    = kcontext(tstack, entry, arg);
   task->context = c;
