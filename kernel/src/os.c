@@ -33,8 +33,8 @@ sem_t empty, fill;
 #define P kmt->sem_wait
 #define V kmt->sem_signal
 
-void producer(void *arg) { while (1) { ; P(&empty); putch('('); V(&fill);  ;} }
-void consumer(void *arg) { while (1) { ; P(&fill);  putch(')'); V(&empty); ;} }
+void producer(void *arg) { while (1) { ; P(&empty); putch('('); V(&fill);  yield();} }
+void consumer(void *arg) { while (1) { ; P(&fill);  putch(')'); V(&empty); yield();} }
 
 task_t *task_alloc() { 
   task_t *ret = (task_t *)pmm->alloc(sizeof(task_t)); 
@@ -116,6 +116,10 @@ static Context *os_trap(Event ev, Context *context) {
     kmt->spin_lock(&tlk);
     tcurrent->context = context; 
     kmt->spin_unlock(&tlk);
+  }
+
+  if (ev.event == EVENT_YIELD) {
+
   }
 
   return kmt_sched(ev, context);
