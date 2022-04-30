@@ -38,7 +38,7 @@ void consumer(void *arg) { while (1) { TRACE_ENTRY; P(&fill);  putch(')'); V(&em
 
 task_t *task_alloc() { 
   task_t *ret = (task_t *)pmm->alloc(sizeof(task_t)); 
-  debug("task_alloc: %p\n", ret);
+  debug("task_alloc: %p with sz 0x%x\n", ret, sizeof(task_t));
   assert(ret != NULL);
   return ret;
 }
