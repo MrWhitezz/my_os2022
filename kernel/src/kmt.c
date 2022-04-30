@@ -8,11 +8,12 @@
 // are initially off, then push_off, pop_off leaves them off.
 static void push_off(void) {
   int old = ienabled();
-
   iset(false);
-  if(mycpu()->noff == 0)
-    mycpu()->intena = old;
-  mycpu()->noff += 1;
+  
+  struct cpu *c = mycpu();
+  if(c->noff == 0)
+    c->intena = old;
+  c->noff += 1;
 }
 
 static void pop_off(void) {
