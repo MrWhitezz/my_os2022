@@ -1,7 +1,7 @@
 #include <common.h>
 
 
-task_t *tasks[NTSK];
+task_t *tasks[NTSK] = {};
 int tid = 0;
 spinlock_t tlk;
 
@@ -40,7 +40,6 @@ task_t *task_alloc() { return (task_t *)pmm->alloc(sizeof(task_t)); }
 
 static void os_init() {
   // single processor
-  printf("start os_init\n");
 
   pmm->init();
   kmt->init();
@@ -55,7 +54,6 @@ static void os_init() {
   for (int i = 0; i < 5; i++) // 5 个消费者
     kmt->create(task_alloc(), "consumer", consumer, NULL);
 #endif
-  printf("os_init() done.\n");
 }
 
 
@@ -84,12 +82,11 @@ static Context *kmt_sched(Event ev, Context *context) {
     }
     // tcurrent = tasks[tid];
     t = tasks[tid];
+    assert(t != NULL);
   } while (!(t->stat == T_CREAT || t->stat == T_RUNNABLE));
   debug("out of sched loop on cpu %d\n", cpu_current());
-  debug("??????????????\n");
   if (t->stat == T_CREAT) { t->stat = T_RUNNABLE; }
-  debug("!!!!!!!!!!!!\n");
-  // debug("[sched] %s -> %s on cpu %d\n", tcurrent->name, t->name, cpu_current());
+  debug("[sched] %s -> %s on cpu %d\n", tcurrent->name, t->name, cpu_current());
   tcurrent = t;
   Context *next = tcurrent->context;
   kmt->spin_unlock(&tlk);
