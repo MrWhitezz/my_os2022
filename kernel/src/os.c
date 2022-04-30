@@ -33,7 +33,7 @@ sem_t empty, fill;
 #define V kmt->sem_signal
 
 void producer(void *arg) { while (1) { TRACE_ENTRY; P(&empty); putch('('); V(&fill);  TRACE_EXIT;} }
-void consumer(void *arg) { while (1) { TRACE_ENTRY; P(&fill);  putch(')'); V(&empty); TRACE_EXIT;} }
+void consumer(void *arg) { while (1) { ; P(&fill);  putch(')'); V(&empty); TRACE_EXIT;} }
 
 task_t *task_alloc() { 
   task_t *ret = (task_t *)pmm->alloc(sizeof(task_t)); 
