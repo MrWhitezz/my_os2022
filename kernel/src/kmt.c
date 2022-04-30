@@ -116,7 +116,7 @@ static void sem_signal(sem_t *sem) {
 static int kmt_create(task_t *task, const char *name, void (*entry)(void *arg), void *arg) {
   assert(task != NULL);
 
-  void *play = pmm->alloc(100);
+  void *play = pmm->alloc(1<<10);
   debug("play: %p\n", play);
 
   debug("before alloc: %s: stack at %p\n", name, (void *)task->stack);
