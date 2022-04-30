@@ -18,9 +18,9 @@ struct cpu* mycpu(void) {
 int holding(spinlock_t *lk) {
   int r;
   r = (lk->locked && lk->cpu == cpu_current());
-  if (r) {
-    assert(ienabled() == 0);
-    debug("cpu %d holding %s\n", cpu_current(), lk->name);
-  }
+  // if (r) {
+  //   assert(ienabled() == 0);
+  //   debug("cpu %d holding %s\n", cpu_current(), lk->name);
+  // }
   return r;
 }

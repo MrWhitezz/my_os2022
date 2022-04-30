@@ -37,8 +37,10 @@ static void spin_init(spinlock_t *lk, const char *name){
 
 static void spin_lock(spinlock_t *lk){
   push_off(); // disable interrupts to avoid deadlock.
-  if(holding(lk))
+  if(holding(lk)) {
+    debug("cpu %d spin_lock %s\n", cpu_current(), lk->name);
     panic("acquire(spin_lock)");
+  }
 
   while(atomic_xchg(&lk->locked, 1)) {
     yield();
