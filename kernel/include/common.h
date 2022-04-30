@@ -35,7 +35,7 @@ size_t nextPower_2(size_t x);
 enum tstat { T_RUNNABLE, T_RUNNING, T_BLOCKED, T_CREAT, };
 
 struct task {
-  struct {
+  // struct {
     // int id; // temprorarily useless
     // task_t *next; // in thread-os.c to schedule, useless here
     enum tstat stat;
@@ -43,7 +43,7 @@ struct task {
     void (*entry)(void *arg);
     void *arg;
     Context *context;
-  };
+  // };
   uint8_t *stack;
 };
 
