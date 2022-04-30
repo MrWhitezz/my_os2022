@@ -85,7 +85,7 @@ static void sem_wait(sem_t *sem) {
     acquire = 1;
   }
 
-  debug("%s try to acquire(%d) on cpu %d\n", sem->name, acquire, cpu_current());
+  debug("%s try to acquire(%d) on cpu %d, with sem->val: %d\n", tcurrent->name, acquire, cpu_current(), sem->value);
   spin_unlock(&sem->lock);
   if (!acquire) { yield(); }
 
