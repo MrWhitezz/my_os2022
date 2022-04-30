@@ -35,7 +35,11 @@ sem_t empty, fill;
 void producer(void *arg) { while (1) { P(&empty); putch('('); V(&fill);  } }
 void consumer(void *arg) { while (1) { P(&fill);  putch(')'); V(&empty); } }
 
-task_t *task_alloc() { return (task_t *)pmm->alloc(sizeof(task_t)); }
+task_t *task_alloc() { 
+  task_t *ret = (task_t *)pmm->alloc(sizeof(task_t)); 
+  assert(ret != NULL);
+  return ret;
+}
 #endif
 
 static void os_init() {
