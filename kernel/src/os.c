@@ -41,7 +41,6 @@ void waste_time(void *arg) { while (1) { yield(); } }
 
 task_t *task_alloc() { 
   task_t *ret = (task_t *)pmm->alloc(sizeof(task_t)); 
-  // debug("task_alloc: %p with sz 0x%x\n", ret, sizeof(task_t));
   assert(ret != NULL);
   return ret;
 }
@@ -98,7 +97,7 @@ static Context *kmt_sched(Event ev, Context *context) {
   // debug("sched begin on cpu %d\n", cpu_current());
   // kmt->spin_lock(&tlk);
   // debug("get lock on cpu %d\n", cpu_current());
-  assert(ienabled() == false);
+  assert(ienabled() == false); // because lock is held
   task_t *t = NULL;
   do {
     while (tasks[tid] == NULL) {
@@ -142,8 +141,15 @@ static Context *os_trap(Event ev, Context *context) {
   return c;
 }
 
+
+
+static void os_irq(int seq, int event, handler_t handler) {
+  assert(0);
+}
+
 MODULE_DEF(os) = {
   .init = os_init,
   .run  = os_run,
   .trap = os_trap,
+  .on_irq = os_irq,
 };
