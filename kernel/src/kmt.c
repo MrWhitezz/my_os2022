@@ -60,6 +60,8 @@ static void spin_unlock(spinlock_t *lk) {
 
   // Release the lock, and restore interrupts.
   atomic_xchg(&lk->locked, 0);
+  __sync_synchronize();
+
   assert(ienabled() == false);
 
   pop_off();
