@@ -120,6 +120,12 @@ static Context *os_trap(Event ev, Context *context) {
       tcurrent->stat = T_RUNNABLE;
     }
     else {
+      if (tcurrent->stat == T_CREAT){
+        debug("[os_trap] %s only created on cpu %d\n", tcurrent->name, cpu_current());
+      }
+      else if (tcurrent->stat == T_RUNNABLE) {
+        debug("[os_trap] %s only runnable on cpu %d\n", tcurrent->name, cpu_current());
+      }
       assert(tcurrent->stat == T_BLOCKED);
     }
     kmt->spin_unlock(&tlk);
