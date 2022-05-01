@@ -9,8 +9,10 @@ task_t *currents[NCPU] = {}; // this need no lks ??
 
 void add_task(task_t *task) {
   kmt->spin_lock(&tlk);
+  int oldtid = tid;
   while (tasks[tid] != NULL) {
     tid = (tid + 1) % NTSK;
+    assert(tid != oldtid);
   }
   assert(tasks[tid] == NULL);
   tasks[tid] = task; 
