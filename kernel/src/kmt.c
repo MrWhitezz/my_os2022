@@ -53,8 +53,11 @@ static void spin_lock(spinlock_t *lk){
 }
 
 static void spin_unlock(spinlock_t *lk) {
-  if(!holding(lk))
+  if(!holding(lk)) {
+    debug("lk %s : %d is held by %d\n", lk->name, lk->locked, lk->cpu);
+    debug("this cpu %d is trying to unlock\n", cpu_current());
     panic("release(spin_unlock)");
+  }
 
   lk->cpu = -1;
 
