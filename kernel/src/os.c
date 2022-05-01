@@ -98,7 +98,7 @@ static Context *kmt_sched(Event ev, Context *context) {
     t = tasks[tid];
     tid = (tid + 1) % NTSK;
     assert(t != NULL);
-  } while (!(t->stat == T_CREAT || t->stat == T_RUNNABLE) && t->is_run == false);
+  } while (!((t->stat == T_CREAT || t->stat == T_RUNNABLE) && t->is_run == false));
   // debug("out of sched loop on cpu %d\n", cpu_current());
   // if (t->stat == T_CREAT) { t->stat = T_RUNNABLE; }
   assert(t->is_run == false);
