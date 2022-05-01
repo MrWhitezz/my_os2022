@@ -116,8 +116,12 @@ static Context *os_trap(Event ev, Context *context) {
   if (tcurrent != NULL) {
     kmt->spin_lock(&tlk);
     tcurrent->context = context; 
-    assert(tcurrent->stat == T_RUNNING);
-    tcurrent->stat = T_RUNNABLE;
+    if (tcurrent->stat == T_RUNNING) {
+      tcurrent->stat = T_RUNNABLE;
+    }
+    else {
+      assert(tcurrent->stat == T_BLOCKED);
+    }
     kmt->spin_unlock(&tlk);
   }
 
