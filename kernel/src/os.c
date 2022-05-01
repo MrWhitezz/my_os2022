@@ -100,7 +100,8 @@ static Context *kmt_sched(Event ev, Context *context) {
     assert(t != NULL);
   } while (!(t->stat == T_CREAT || t->stat == T_RUNNABLE));
   // debug("out of sched loop on cpu %d\n", cpu_current());
-  if (t->stat == T_CREAT) { t->stat = T_RUNNABLE; }
+  // if (t->stat == T_CREAT) { t->stat = T_RUNNABLE; }
+  t->stat = T_RUNNING;
   // debug("[sched] %s -> %s on cpu %d\n", tcurrent->name, t->name, cpu_current());
   tcurrent = t;
   // debug("sched to %s on cpu %d\n", t->name, cpu_current());
@@ -115,6 +116,8 @@ static Context *os_trap(Event ev, Context *context) {
   if (tcurrent != NULL) {
     kmt->spin_lock(&tlk);
     tcurrent->context = context; 
+    assert(tcurrent->stat == T_RUNNING);
+    tcurrent->stat = T_RUNNABLE;
     kmt->spin_unlock(&tlk);
   }
 

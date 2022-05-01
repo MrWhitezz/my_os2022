@@ -82,7 +82,7 @@ static void sem_wait(sem_t *sem) {
   if (sem->value < 0) {
     enqueue(sem->wait_list, tcurrent);
     spin_lock(&tlk);
-    assert(tcurrent != NULL && tcurrent->stat == T_RUNNABLE);
+    assert(tcurrent != NULL && tcurrent->stat == T_RUNNING);
     tcurrent->stat = T_BLOCKED;
     spin_unlock(&tlk);
   } else {
