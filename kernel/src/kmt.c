@@ -44,9 +44,10 @@ static void spin_lock(spinlock_t *lk){
   }
 
   while(atomic_xchg(&lk->locked, 1)) {
-    assert(ienabled() == false);
+    // assert(ienabled() == false);
     // yield();
   }
+  __sync_synchronize();
 
   lk->cpu = cpu_current();
 }
