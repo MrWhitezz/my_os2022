@@ -87,7 +87,7 @@ static void os_run() {
 static Context *kmt_sched(Event ev, Context *context) {
   // TRACE_ENTRY;
   // debug("sched begin on cpu %d\n", cpu_current());
-  kmt->spin_lock(&tlk);
+  // kmt->spin_lock(&tlk);
   // debug("get lock on cpu %d\n", cpu_current());
   assert(ienabled() == false);
   task_t *t = NULL;
@@ -106,15 +106,16 @@ static Context *kmt_sched(Event ev, Context *context) {
   tcurrent = t;
   // debug("sched to %s on cpu %d\n", t->name, cpu_current());
   Context *next = tcurrent->context;
-  kmt->spin_unlock(&tlk);
+  // kmt->spin_unlock(&tlk);
   // TRACE_EXIT;
   return next;
 }
 
 static Context *os_trap(Event ev, Context *context) {
   // ATTENTION: you should consider concurrency here.
+  kmt->spin_lock(&tlk);
   if (tcurrent != NULL) {
-    kmt->spin_lock(&tlk);
+    // kmt->spin_lock(&tlk);
     tcurrent->context = context; 
     if (tcurrent->stat == T_RUNNING) {
       tcurrent->stat = T_RUNNABLE;
@@ -128,14 +129,16 @@ static Context *os_trap(Event ev, Context *context) {
       }
       assert(tcurrent->stat == T_BLOCKED);
     }
-    kmt->spin_unlock(&tlk);
+    // kmt->spin_unlock(&tlk);
   }
 
   if (ev.event == EVENT_YIELD) {
 
   }
 
-  return kmt_sched(ev, context);
+  Context *c = kmt_sched(ev, context);
+  kmt->spin_unlock(&tlk);
+  return c;
 }
 
 MODULE_DEF(os) = {
