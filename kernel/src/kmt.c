@@ -76,7 +76,7 @@ static void sem_init(sem_t *sem, const char *name, int value) {
   sem->value = value;
   sem->name = name;
   spin_init(&sem->lock, name);
-  sem->wait_list = createQueue(32); // 32 to be modified
+  sem->wait_list = createQueue(NTSK); // 32 to be modified
 }
 
 
