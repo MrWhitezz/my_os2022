@@ -82,7 +82,7 @@ static void sem_wait(sem_t *sem) {
   if (sem->value < 0) {
     enqueue(sem->wait_list, tcurrent);
     spin_lock(&tlk);
-    assert(tcurrent != NULL && tcurrent->stat == T_RUNNING);
+    assert(tcurrent != NULL && tcurrent->stat == T_RUNNABLE);
     tcurrent->stat = T_BLOCKED;
     spin_unlock(&tlk);
   } else {
@@ -131,6 +131,7 @@ static int kmt_create(task_t *task, const char *name, void (*entry)(void *arg), 
   task->entry   = entry;
   task->arg     = arg;
   task->stat    = T_CREAT;
+  task->is_run  = false;
 
   // must be called after task->stack is set
   assert(task->stack != NULL);

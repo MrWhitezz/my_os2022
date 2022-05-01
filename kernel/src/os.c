@@ -98,10 +98,11 @@ static Context *kmt_sched(Event ev, Context *context) {
     t = tasks[tid];
     tid = (tid + 1) % NTSK;
     assert(t != NULL);
-  } while (!(t->stat == T_CREAT || t->stat == T_RUNNABLE));
+  } while (!(t->stat == T_CREAT || t->stat == T_RUNNABLE) && t->is_run == false);
   // debug("out of sched loop on cpu %d\n", cpu_current());
   // if (t->stat == T_CREAT) { t->stat = T_RUNNABLE; }
-  t->stat = T_RUNNING;
+  t->stat = T_RUNNABLE;
+  t->is_run = true;
   // debug("[sched] %s -> %s on cpu %d\n", tcurrent->name, t->name, cpu_current());
   tcurrent = t;
   // debug("sched to %s on cpu %d\n", t->name, cpu_current());
@@ -117,18 +118,8 @@ static Context *os_trap(Event ev, Context *context) {
   if (tcurrent != NULL) {
     // kmt->spin_lock(&tlk);
     tcurrent->context = context; 
-    if (tcurrent->stat == T_RUNNING) {
-      tcurrent->stat = T_RUNNABLE;
-    }
-    else {
-      if (tcurrent->stat == T_CREAT){
-        debug("[os_trap] %s only created on cpu %d\n", tcurrent->name, cpu_current());
-      }
-      else if (tcurrent->stat == T_RUNNABLE) {
-        debug("[os_trap] %s only runnable on cpu %d\n", tcurrent->name, cpu_current());
-      }
-      assert(tcurrent->stat == T_BLOCKED);
-    }
+    assert(tcurrent->is_run == true);
+    tcurrent->is_run = false;
     // kmt->spin_unlock(&tlk);
   }
 
