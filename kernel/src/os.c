@@ -101,6 +101,7 @@ static Context *kmt_sched(Event ev, Context *context) {
   } while (!(t->stat == T_CREAT || t->stat == T_RUNNABLE) && t->is_run == false);
   // debug("out of sched loop on cpu %d\n", cpu_current());
   // if (t->stat == T_CREAT) { t->stat = T_RUNNABLE; }
+  assert(t->is_run == false);
   t->stat = T_RUNNABLE;
   t->is_run = true;
   // debug("[sched] %s -> %s on cpu %d\n", tcurrent->name, t->name, cpu_current());
