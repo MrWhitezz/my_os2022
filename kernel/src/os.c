@@ -57,7 +57,7 @@ static void os_init() {
 #ifdef TEST_LOCAL
   kmt->sem_init(&empty, "empty", 1);  // 缓冲区大小为 5
   kmt->sem_init(&fill,  "fill",  0);
-  for (int i = 0; i < 10; i++) // 4 个生产者
+  for (int i = 0; i < 50; i++) // 4 个生产者
   {
     char *name = (char *)pmm->alloc(16);
     sprintf(name, "producer-%d", i);
