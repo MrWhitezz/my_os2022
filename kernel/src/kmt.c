@@ -18,6 +18,9 @@ static void push_off(void) {
 
 static void pop_off(void) {
   struct cpu *c = mycpu();
+
+  assert(ienabled() == false);
+  
   if(ienabled())
     panic("pop_off - interruptible");
   if(c->noff < 1)
@@ -44,8 +47,7 @@ static void spin_lock(spinlock_t *lk){
   }
 
   while(atomic_xchg(&lk->locked, 1)) {
-    // assert(ienabled() == false);
-    // yield();
+    ;
   }
   __sync_synchronize();
 
