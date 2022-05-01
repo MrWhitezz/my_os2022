@@ -39,6 +39,7 @@ struct task {
     // int id; // temprorarily useless
     // task_t *next; // in thread-os.c to schedule, useless here
     enum tstat stat;
+    bool is_run;
     const char *name;
     void (*entry)(void *arg);
     void *arg;
