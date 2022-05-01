@@ -37,6 +37,7 @@ sem_t empty, fill;
 
 void producer(void *arg) { while (1) { yield(); P(&empty); putch('('); V(&fill);  yield();} }
 void consumer(void *arg) { while (1) { yield(); P(&fill);  putch(')'); V(&empty); yield();} }
+void waste_time(void *arg) { while (1) { yield(); } }
 
 task_t *task_alloc() { 
   task_t *ret = (task_t *)pmm->alloc(sizeof(task_t)); 
@@ -57,17 +58,23 @@ static void os_init() {
 #ifdef TEST_LOCAL
   kmt->sem_init(&empty, "empty", 1);  // 缓冲区大小为 5
   kmt->sem_init(&fill,  "fill",  0);
-  for (int i = 0; i < 50; i++) // 4 个生产者
+  for (int i = 0; i < 4; i++) // 4 个生产者
   {
     char *name = (char *)pmm->alloc(16);
     sprintf(name, "producer-%d", i);
     kmt->create(task_alloc(), name, producer, NULL);
   }
-  for (int i = 0; i < 20; i++) // 5 个消费者
+  for (int i = 0; i < 5; i++) // 5 个消费者
   {
     char *name = (char *)pmm->alloc(16);
     sprintf(name, "consumer-%d", i);
     kmt->create(task_alloc(), name, consumer, NULL);
+  }
+  for (int i = 0; i < 10; i++) // 10 个空转
+  {
+    char *name = (char *)pmm->alloc(16);
+    sprintf(name, "waste-%d", i);
+    kmt->create(task_alloc(), name, waste_time, NULL);
   }
 #endif
 }
