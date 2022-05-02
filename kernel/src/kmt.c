@@ -84,19 +84,19 @@ static void sem_init(sem_t *sem, const char *name, int value) {
 
 
 static void sem_wait(sem_t *sem) {
-  // for debug
-  struct cpu *c1 = mycpu();
-  int off1 = c1->noff;
-  if (off1) {
-    debug("off1 : %d on cpu %d\n", off1, cpu_current());
-    debug("ienabled : %d\n", ienabled());
-    debug("tlk is held by %d\n", tlk.cpu);
-    debug("sem fill is held by %d\n", fill.lock.cpu);
-    debug("sem empty is held by %d\n", empty.lock.cpu);
-  }
+  // for debug // struct cpu *c1 = mycpu();
+  // int off1 = c1->noff;
+  // if (off1) {
+  //   debug("off1 : %d on cpu %d\n", off1, cpu_current());
+  //   debug("ienabled : %d\n", ienabled());
+  //   debug("tlk is held by %d\n", tlk.cpu);
+  //   debug("sem fill is held by %d\n", fill.lock.cpu);
+  //   debug("sem empty is held by %d\n", empty.lock.cpu);
+  // }
   assert(!holding(&sem->lock));
   assert(!holding(&tlk));
-  assert(c1->noff == 0);
+  assert(mycpu()->noff == 0);
+  // assert(c1->noff == 0);
   // seems bug here
   // TRACE_ENTRY;
   int acquire = 0;
@@ -124,7 +124,11 @@ static void sem_wait(sem_t *sem) {
   struct cpu *c = mycpu();
   int off = c->noff;
   if (off) {
-    debug("off : %d\n", off);
+    debug("off : %d on cpu %d\n", off, cpu_current());
+    debug("ienabled : %d\n", ienabled());
+    debug("tlk is held by %d\n", tlk.cpu);
+    debug("sem fill is held by %d\n", fill.lock.cpu);
+    debug("sem empty is held by %d\n", empty.lock.cpu);
   }
   assert(c->noff == 0);
   iset(true);
