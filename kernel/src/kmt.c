@@ -105,6 +105,10 @@ static void sem_wait(sem_t *sem) {
   assert(!holding(&sem->lock));
   assert(!holding(&tlk));
   struct cpu *c = mycpu();
+  int off = c->noff;
+  if (!off) {
+    debug("off : %d\n", off);
+  }
   assert(c->noff == 0);
   if (!acquire) { 
     yield(); 
