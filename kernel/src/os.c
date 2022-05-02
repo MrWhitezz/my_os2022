@@ -112,17 +112,19 @@ static Context *kmt_sched(Event ev, Context *context) {
   // debug("get lock on cpu %d\n", cpu_current());
   assert(ienabled() == false); // because lock is held
   task_t *t = NULL;
-  int oldtid = tid;
+  int tid_inc = 0;
   do {
     while (tasks[tid] == NULL) {
       tid = (tid + 1) % NTSK;
+      tid_inc++;
     }
     t = tasks[tid];
-    if (tid == oldtid) {
-      print_tasks();
-      panic_on(tid == oldtid, "tid loop forever");
-    }
     tid = (tid + 1) % NTSK;
+    tid_inc++;
+    if (tid_inc > NTSK) {
+      print_tasks();  
+      panic("tid_inc > NTSK");
+    }
     assert(t != NULL);
   } while (!((t->stat == T_CREAT || t->stat == T_RUNNABLE) && t->is_run == false));
   // debug("out of sched loop on cpu %d\n", cpu_current());
