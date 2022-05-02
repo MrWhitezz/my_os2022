@@ -59,13 +59,12 @@ static void spin_lock(spinlock_t *lk){
   while(atomic_xchg(&lk->locked, 1)) {
     // debug("cpu %d spin_lock %s\n", cpu_current(), lk->name);
     cnt++;
+    panic_on(cnt > 1000000000LL, "spin_lock deadlock");
     if (cnt > 100000000LL && prt == 0) {
-      assert(0);
       debug("spinlk %s is held by cpu %d\n", lk->name, lk->cpu);
       debug("this cpu is %d cannot acquire\n", cpu_current());
       prt = 1;
     }
-    ;
   }
   __sync_synchronize();
 

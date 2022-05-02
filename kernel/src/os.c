@@ -24,6 +24,7 @@ void add_task(task_t *task) {
 }
 
 void del_task(task_t *task) {
+  panic("del_task not implemented");
   kmt->spin_lock(&tlk);
   while (tasks[tid] != task) {
     tid = (tid + 1) % NTSK;
@@ -52,7 +53,6 @@ task_t *task_alloc() {
 static void os_init() {
   // single processor
 
-  assert(0);
   pmm->init();
   kmt->init();
   kmt->spin_init(&tlk, "tasks");
@@ -73,12 +73,12 @@ static void os_init() {
     sprintf(name, "consumer-%d", i);
     kmt->create(task_alloc(), name, consumer, NULL);
   }
-  // for (int i = 0; i < 30; i++) // 10 个空转
-  // {
-  //   char *name = (char *)pmm->alloc(16);
-  //   sprintf(name, "waste-%d", i);
-  //   kmt->create(task_alloc(), name, waste_time, NULL);
-  // }
+  for (int i = 0; i < 10; i++) // 10 个空转
+  {
+    char *name = (char *)pmm->alloc(16);
+    sprintf(name, "waste-%d", i);
+    kmt->create(task_alloc(), name, waste_time, NULL);
+  }
 #endif
 }
 
@@ -110,10 +110,7 @@ static Context *kmt_sched(Event ev, Context *context) {
     }
     t = tasks[tid];
     tid = (tid + 1) % NTSK;
-    if (tid == oldtid) {
-      assert(0);
-      debug("no task to run on cpu %d\n", cpu_current());
-    }
+    panic_on(tid == oldtid, "tid loop forever");
     assert(t != NULL);
   } while (!((t->stat == T_CREAT || t->stat == T_RUNNABLE) && t->is_run == false));
   // debug("out of sched loop on cpu %d\n", cpu_current());
