@@ -2,10 +2,6 @@
 #include <cpu.h>
 #include <defs.h>
 
-
-
-// task_t *tasks[NTSK] = {};
-int tid = 0;
 spinlock_t tlk;
 
 task_t *currents[NCPU] = {}; // this need no lks ??
@@ -62,7 +58,6 @@ static void os_init() {
   kmt->init();
   kmt->spin_init(&tlk, "tasks");
 
-
 #ifdef TEST_LOCAL
   kmt->sem_init(&empty, "empty", 5);  // 缓冲区大小为 5
   kmt->sem_init(&fill,  "fill",  0);
@@ -101,9 +96,7 @@ static void os_run() {
     putch(*s == '*' ? '0' + cpu_current() : *s);
   }
   iset(true);
-  while (1) {
-    yield();
-  }
+  yield();
 }
 
 // static Context *input_notify(Event ev, Context *context) {
