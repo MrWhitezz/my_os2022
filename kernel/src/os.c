@@ -61,24 +61,24 @@ static void os_init() {
 #ifdef TEST_LOCAL
   kmt->sem_init(&empty, "empty", 5);  // 缓冲区大小为 5
   kmt->sem_init(&fill,  "fill",  0);
-  for (int i = 0; i < 1; i++) // 4 个生产者
+  for (int i = 0; i < 4; i++) // 4 个生产者
   {
     char *name = (char *)pmm->alloc(16);
     sprintf(name, "producer-%d", i);
     kmt->create(task_alloc(), name, producer, NULL);
   }
-  for (int i = 0; i < 15; i++) // 5 个消费者
+  for (int i = 0; i < 1; i++) // 5 个消费者
   {
     char *name = (char *)pmm->alloc(16);
     sprintf(name, "consumer-%d", i);
     kmt->create(task_alloc(), name, consumer, NULL);
   }
-  // for (int i = 0; i < 50; i++) // 10 个空转
-  // {
-  //   char *name = (char *)pmm->alloc(16);
-  //   sprintf(name, "waste-%d", i);
-  //   kmt->create(task_alloc(), name, waste_time, NULL);
-  // }
+  for (int i = 0; i < 10; i++) // 10 个空转
+  {
+    char *name = (char *)pmm->alloc(16);
+    sprintf(name, "waste-%d", i);
+    kmt->create(task_alloc(), name, waste_time, NULL);
+  }
 
   // kmt->spin_init(&slk, "sum");
   // for (int i = 0; i < 100; i++) {
@@ -106,9 +106,6 @@ static void os_run() {
 
 static Context *kmt_sched(Event ev, Context *context) {
   // TRACE_ENTRY;
-  // debug("sched begin on cpu %d\n", cpu_current());
-  // kmt->spin_lock(&tlk);
-  // debug("get lock on cpu %d\n", cpu_current());
   assert(ienabled() == false); // because lock is held
   while (isEmpty(qtsks)) {
     assert(0);
@@ -120,11 +117,8 @@ static Context *kmt_sched(Event ev, Context *context) {
   
   t->stat = T_RUNNABLE;
   t->is_run = true;
-  // debug("[sched] %s -> %s on cpu %d\n", tcurrent->name, t->name, cpu_current());
   tcurrent = t;
-  // debug("sched to %s on cpu %d\n", t->name, cpu_current());
   Context *next = tcurrent->context;
-  // kmt->spin_unlock(&tlk);
   // TRACE_EXIT;
   return next;
 }
