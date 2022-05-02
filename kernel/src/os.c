@@ -66,13 +66,13 @@ static void os_init() {
 #ifdef TEST_LOCAL
   kmt->sem_init(&empty, "empty", 5);  // 缓冲区大小为 5
   kmt->sem_init(&fill,  "fill",  0);
-  for (int i = 0; i < 4; i++) // 4 个生产者
+  for (int i = 0; i < 0; i++) // 4 个生产者
   {
     char *name = (char *)pmm->alloc(16);
     sprintf(name, "producer-%d", i);
     kmt->create(task_alloc(), name, producer, NULL);
   }
-  for (int i = 0; i < 5; i++) // 5 个消费者
+  for (int i = 0; i < 0; i++) // 5 个消费者
   {
     char *name = (char *)pmm->alloc(16);
     sprintf(name, "consumer-%d", i);
@@ -85,12 +85,12 @@ static void os_init() {
   //   kmt->create(task_alloc(), name, waste_time, NULL);
   // }
 
-  // kmt->spin_init(&slk, "sum");
-  // for (int i = 0; i < 100; i++) {
-  //   char *name = (char *)pmm->alloc(16);
-  //   sprintf(name, "get_sum-%d", i);
-  //   kmt->create(task_alloc(), name, get_sum, NULL);
-  // }
+  kmt->spin_init(&slk, "sum");
+  for (int i = 0; i < 100; i++) {
+    char *name = (char *)pmm->alloc(16);
+    sprintf(name, "get_sum-%d", i);
+    kmt->create(task_alloc(), name, get_sum, NULL);
+  }
 
 #endif
 }
