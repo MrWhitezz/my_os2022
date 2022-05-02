@@ -111,6 +111,7 @@ static Context *kmt_sched(Event ev, Context *context) {
     tid = (tid + 1) % NTSK;
     if (tid == oldtid) {
       debug("no task to run on cpu %d\n", cpu_current());
+      assert(0);
     }
     assert(t != NULL);
   } while (!((t->stat == T_CREAT || t->stat == T_RUNNABLE) && t->is_run == false));
