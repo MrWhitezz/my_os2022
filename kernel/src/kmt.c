@@ -114,22 +114,23 @@ static void sem_wait(sem_t *sem) {
   // seems bug here
   // TRACE_ENTRY;
   int acquire = 0;
+
+  spin_lock(&tlk);
   spin_lock(&sem->lock);
-  assert(mycpu()->noff == 1);
+  // assert(mycpu()->noff == 1);
   assert(ienabled() == false);
   sem->value--;
   if (sem->value < 0) {
     enqueue(sem->wait_list, tcurrent);
-    spin_lock(&tlk);
     assert(tcurrent != NULL && tcurrent->stat == T_RUNNABLE);
     tcurrent->stat = T_BLOCKED;
-    spin_unlock(&tlk);
   } else {
     acquire = 1;
   }
 
   // debug("%s try to acquire(%d) on cpu %d, with sem->val: %d\n", tcurrent->name, acquire, cpu_current(), sem->value);
   spin_unlock(&sem->lock);
+  spin_unlock(&tlk);
   // iset(false);
 
   // // for debug
@@ -169,16 +170,16 @@ static void sem_signal(sem_t *sem) {
   assert(!holding(&sem->lock));
   assert(!holding(&tlk));
 
+  spin_lock(&tlk);
   spin_lock(&sem->lock);
   sem->value++;
   if (!isEmpty(sem->wait_list)) {
     task_t *t = dequeue(sem->wait_list);
-    spin_lock(&tlk);
     assert(t != NULL && t->stat == T_BLOCKED);
     t->stat = T_RUNNABLE;
-    spin_unlock(&tlk);
   }
   spin_unlock(&sem->lock);
+  spin_unlock(&tlk);
   // TRACE_EXIT;
 }
 
