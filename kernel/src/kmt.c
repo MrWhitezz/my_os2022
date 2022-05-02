@@ -83,6 +83,8 @@ static void sem_init(sem_t *sem, const char *name, int value) {
 static void sem_wait(sem_t *sem) {
   // seems bug here
   // TRACE_ENTRY;
+  assert(!holding(&sem->lock));
+  assert(!holding(&tlk));
   int acquire = 0;
   spin_lock(&sem->lock);
   assert(ienabled() == false);
@@ -114,6 +116,8 @@ static void sem_wait(sem_t *sem) {
 static void sem_signal(sem_t *sem) {
   // TRACE_ENTRY;
   // how to get thread id ?
+  assert(!holding(&sem->lock));
+  assert(!holding(&tlk));
   spin_lock(&sem->lock);
   sem->value++;
   if (!isEmpty(sem->wait_list)) {
