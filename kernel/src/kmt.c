@@ -84,7 +84,7 @@ static void sem_wait(sem_t *sem) {
   struct cpu *c1 = mycpu();
   int off1 = c1->noff;
   if (off1) {
-    debug("off1 : %d\n", off1);
+    debug("off1 : %d on cpu %d\n", off1, cpu_current());
     debug("ienabled : %d\n", ienabled());
     debug("tlk is held by %d\n", tlk.cpu);
     debug("sem %s is held by %d\n", sem->name, sem->lock.cpu);
