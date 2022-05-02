@@ -75,8 +75,8 @@ static void spin_lock(spinlock_t *lk){
 
 static void spin_unlock(spinlock_t *lk) {
   if(!holding(lk)) {
-    debug("lk %s : %d is held by %d\n", lk->name, lk->locked, lk->cpu);
-    debug("this cpu %d is trying to unlock\n", cpu_current());
+    // debug("lk %s : %d is held by %d\n", lk->name, lk->locked, lk->cpu);
+    // debug("this cpu %d is trying to unlock\n", cpu_current());
     panic("release(spin_unlock)");
   }
 
@@ -105,24 +105,12 @@ static void sem_init(sem_t *sem, const char *name, int value) {
 
 
 static void sem_wait(sem_t *sem) {
-  // for debug // struct cpu *c1 = mycpu();
-  // int off1 = c1->noff;
-  // if (off1) {
-  //   debug("off1 : %d on cpu %d\n", off1, cpu_current());
-  //   debug("ienabled : %d\n", ienabled());
-  //   debug("tlk is held by %d\n", tlk.cpu);
-  //   debug("sem fill is held by %d\n", fill.lock.cpu);
-  //   debug("sem empty is held by %d\n", empty.lock.cpu);
-  // }
   assert(!holding(&sem->lock));
   assert(!holding(&tlk));
-  // assert(c1->noff == 0);
-  // seems bug here
-  // TRACE_ENTRY;
+
   int acquire = 0;
 
   spin_lock(&sem->lock);
-  // assert(mycpu()->noff == 1);
   assert(ienabled() == false);
   sem->value--;
   if (sem->value < 0) {
@@ -135,44 +123,15 @@ static void sem_wait(sem_t *sem) {
     acquire = 1;
   }
 
-  // debug("%s try to acquire(%d) on cpu %d, with sem->val: %d\n", tcurrent->name, acquire, cpu_current(), sem->value);
   spin_unlock(&sem->lock);
-  // iset(false);
-
-  // // for debug
-  // assert(!holding(&sem->lock));
-  // assert(!holding(&tlk));
-
-  // struct cpu *c = mycpu();
-  // int off = c->noff;
-  // if (off) {
-  //   debug("off : %d on cpu %d\n", off, cpu_current());
-  //   debug("ienabled : %d\n", ienabled());
-  //   debug("tlk is held by %d\n", tlk.cpu);
-  //   debug("sem fill is held by %d\n", fill.lock.cpu);
-  //   debug("sem empty is held by %d\n", empty.lock.cpu);
-  // }
-  // assert(c->noff == 0);
-  // iset(true);
-  // //
 
   if (!acquire) { 
     yield(); 
   }
-
-  // while (sem->value < 0) {
-  //   assert(ienabled() == false);
-  //   assert(sem->value < 0);
-  //   spin_unlock(&sem->lock);
-  //   yield();
-  //   spin_lock(&sem->lock);
-  // }
-  // TRACE_EXIT;
 }
 
 static void sem_signal(sem_t *sem) {
   // TRACE_ENTRY;
-  // how to get thread id ?
   assert(!holding(&sem->lock));
   assert(!holding(&tlk));
 
@@ -211,8 +170,10 @@ static int kmt_create(task_t *task, const char *name, void (*entry)(void *arg), 
 }
 
 static void teardown(task_t *task) {
+  panic("teardown not implemented");
   assert(task->stat == T_CREAT);
   pmm->free(task->stack);
+  task->stat = T_ZOMBIE;
 }
 
 static void kmt_init() {

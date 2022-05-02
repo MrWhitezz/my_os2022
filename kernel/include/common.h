@@ -57,7 +57,6 @@ struct spinlock {
 };
 
 struct semaphore {
-  // TODO
   int value;
   spinlock_t lock;
   queue_t *wait_list;
