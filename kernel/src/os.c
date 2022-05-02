@@ -1,4 +1,7 @@
 #include <common.h>
+#include <cpu.h>
+#include <defs.h>
+
 
 
 task_t *tasks[NTSK] = {};
@@ -124,6 +127,13 @@ static Context *kmt_sched(Event ev, Context *context) {
 static Context *os_trap(Event ev, Context *context) {
   // ATTENTION: you should consider concurrency here.
   kmt->spin_lock(&tlk);
+  struct cpu *cc = mycpu();
+  int off = cc->noff;
+  if (off != 1) {
+    debug("off = %d\n", off);
+    assert(0);
+  }
+
   if (tcurrent != NULL) {
     // kmt->spin_lock(&tlk);
     tcurrent->context = context; 
