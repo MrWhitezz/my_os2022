@@ -95,12 +95,12 @@ static void sem_wait(sem_t *sem) {
   // }
   assert(!holding(&sem->lock));
   assert(!holding(&tlk));
-  assert(mycpu()->noff == 0);
   // assert(c1->noff == 0);
   // seems bug here
   // TRACE_ENTRY;
   int acquire = 0;
   spin_lock(&sem->lock);
+  assert(mycpu()->noff == 0);
   assert(ienabled() == false);
   sem->value--;
   if (sem->value < 0) {
