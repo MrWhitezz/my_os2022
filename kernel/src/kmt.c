@@ -47,7 +47,8 @@ static void spin_lock(spinlock_t *lk){
   }
 
   while(atomic_xchg(&lk->locked, 1)) {
-    debug("cpu %d spin_lock %s\n", cpu_current(), lk->name);
+    // debug("cpu %d spin_lock %s\n", cpu_current(), lk->name);
+    debug("1\n")
     ;
   }
   __sync_synchronize();
