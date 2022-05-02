@@ -119,7 +119,7 @@ static Context *kmt_sched(Event ev, Context *context) {
     }
     t = tasks[tid];
     tid = (tid + 1) % NTSK;
-    if (tid == oldtid) {
+    if (0) {
       print_tasks();
       panic_on(tid == oldtid, "tid loop forever");
     }
