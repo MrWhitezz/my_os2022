@@ -54,8 +54,11 @@ static void spin_lock(spinlock_t *lk){
     panic("acquire(spin_lock)");
   }
 
+  long long cnt = 0;
   while(atomic_xchg(&lk->locked, 1)) {
     // debug("cpu %d spin_lock %s\n", cpu_current(), lk->name);
+    cnt++;
+    assert(cnt < 100000000LL);
     ;
   }
   __sync_synchronize();
