@@ -3,6 +3,10 @@
 #include <defs.h>
 
 
+#ifdef TEST_LOCAL
+extern sem_t empty, fill;
+#endif
+
 // push_off/pop_off are like intr_off()/intr_on() except that they are matched:
 // it takes two pop_off()s to undo two push_off()s.  Also, if interrupts
 // are initially off, then push_off, pop_off leaves them off.
@@ -87,7 +91,8 @@ static void sem_wait(sem_t *sem) {
     debug("off1 : %d on cpu %d\n", off1, cpu_current());
     debug("ienabled : %d\n", ienabled());
     debug("tlk is held by %d\n", tlk.cpu);
-    debug("sem %s is held by %d\n", sem->name, sem->lock.cpu);
+    debug("sem fill is held by %d\n", fill.lock.cpu);
+    debug("sem empty is held by %d\n", empty.lock.cpu);
   }
   assert(!holding(&sem->lock));
   assert(!holding(&tlk));
