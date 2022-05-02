@@ -48,7 +48,7 @@ int sum = 0;
 void get_sum(void *arg) {
   for (int i = 0; i < 100000; i++) {
     kmt->spin_lock(&slk);
-    sum += i;
+    sum ++;
     kmt->spin_unlock(&slk);
   }
   while (1) 
