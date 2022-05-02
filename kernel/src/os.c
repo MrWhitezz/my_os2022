@@ -61,14 +61,14 @@ task_t *task_alloc() {
   return ret;
 }
 
-static void print_tasks() {
-  // should be called with tlk locked
-  for (int i = 0; i < NTSK; i++) {
-    if (tasks[i] != NULL) {
-      debug("%s: is_run: %d, stat: %d\n", tasks[i]->name, tasks[i]->is_run, tasks[i]->stat);
-    }
-  }
-}
+// static void print_tasks() {
+//   // should be called with tlk locked
+//   for (int i = 0; i < NTSK; i++) {
+//     if (tasks[i] != NULL) {
+//       debug("%s: is_run: %d, stat: %d\n", tasks[i]->name, tasks[i]->is_run, tasks[i]->stat);
+//     }
+//   }
+// }
 #endif
 
 static void os_init() {
@@ -144,7 +144,7 @@ static Context *kmt_sched(Event ev, Context *context) {
     tid = (tid + 1) % NTSK;
     tid_inc++;
     if (tid_inc > NTSK) {
-      print_tasks();  
+      // print_tasks();  
       panic("tid_inc > NTSK");
     }
     assert(t != NULL);
