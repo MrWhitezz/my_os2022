@@ -100,7 +100,7 @@ static void sem_wait(sem_t *sem) {
   // TRACE_ENTRY;
   int acquire = 0;
   spin_lock(&sem->lock);
-  assert(mycpu()->noff == 0);
+  assert(mycpu()->noff == 1);
   assert(ienabled() == false);
   sem->value--;
   if (sem->value < 0) {
