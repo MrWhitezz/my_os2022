@@ -70,7 +70,7 @@ static void os_init() {
 #ifdef TEST_LOCAL
   kmt->sem_init(&empty, "empty", 5);  // 缓冲区大小为 5
   kmt->sem_init(&fill,  "fill",  0);
-  for (int i = 0; i < 4; i++) // 4 个生产者
+  for (int i = 0; i < 2; i++) // 4 个生产者
   {
     char *name = (char *)pmm->alloc(16);
     sprintf(name, "producer-%d", i);
@@ -82,7 +82,7 @@ static void os_init() {
     sprintf(name, "consumer-%d", i);
     kmt->create(task_alloc(), name, consumer, NULL);
   }
-  for (int i = 0; i < 20; i++) // 10 个空转
+  for (int i = 0; i < 50; i++) // 10 个空转
   {
     char *name = (char *)pmm->alloc(16);
     sprintf(name, "waste-%d", i);
