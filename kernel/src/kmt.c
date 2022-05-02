@@ -87,6 +87,7 @@ static void sem_wait(sem_t *sem) {
   int off1 = c1->noff;
   if (off1) {
     debug("off1 : %d\n", off1);
+    debug("intena : %d\n", c1->intena);
   }
   assert(c1->noff == 0);
   // seems bug here
