@@ -43,6 +43,18 @@ void producer(void *arg) { while (1) { P(&empty); putch('('); V(&fill);  } }
 void consumer(void *arg) { while (1) { P(&fill);  putch(')'); V(&empty); } }
 void waste_time(void *arg) { while (1) { yield(); } }
 
+spinlock_t slk;
+int sum = 0;
+void get_sum(void *arg) {
+  for (int i = 0; i < 10000; i++) {
+    kmt->spin_lock(&slk);
+    sum += i;
+    kmt->spin_unlock(&slk);
+  }
+  while (1) 
+    debug("sum: %d, cpu: %d\n", sum, cpu_current());
+}
+
 task_t *task_alloc() { 
   task_t *ret = (task_t *)pmm->alloc(sizeof(task_t)); 
   assert(ret != NULL);
@@ -70,13 +82,13 @@ static void os_init() {
 #ifdef TEST_LOCAL
   kmt->sem_init(&empty, "empty", 5);  // 缓冲区大小为 5
   kmt->sem_init(&fill,  "fill",  0);
-  for (int i = 0; i < 1; i++) // 4 个生产者
+  for (int i = 0; i < 0; i++) // 4 个生产者
   {
     char *name = (char *)pmm->alloc(16);
     sprintf(name, "producer-%d", i);
     kmt->create(task_alloc(), name, producer, NULL);
   }
-  for (int i = 0; i < 5; i++) // 5 个消费者
+  for (int i = 0; i < 0; i++) // 5 个消费者
   {
     char *name = (char *)pmm->alloc(16);
     sprintf(name, "consumer-%d", i);
@@ -88,6 +100,14 @@ static void os_init() {
   //   sprintf(name, "waste-%d", i);
   //   kmt->create(task_alloc(), name, waste_time, NULL);
   // }
+
+  kmt->spin_init(&slk, "sum");
+  for (int i = 0; i < 10; i++) {
+    char *name = (char *)pmm->alloc(16);
+    sprintf(name, "get_sum-%d", i);
+    kmt->create(task_alloc(), name, get_sum, NULL);
+  }
+
 #endif
 }
 

@@ -11,7 +11,7 @@ size_t nextPower_2(size_t x);
 // parameters
 
 #define NCPU 8
-#define NTSK 64
+#define NTSK 128
 
 // debug
 
