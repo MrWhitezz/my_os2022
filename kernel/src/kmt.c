@@ -89,11 +89,11 @@ static void sem_wait(sem_t *sem) {
     debug("off1 : %d\n", off1);
     debug("ienabled : %d\n", ienabled());
   }
+  assert(!holding(&sem->lock));
+  assert(!holding(&tlk));
   assert(c1->noff == 0);
   // seems bug here
   // TRACE_ENTRY;
-  assert(!holding(&sem->lock));
-  assert(!holding(&tlk));
   int acquire = 0;
   spin_lock(&sem->lock);
   assert(ienabled() == false);
