@@ -102,7 +102,11 @@ static void sem_wait(sem_t *sem) {
 
   // debug("%s try to acquire(%d) on cpu %d, with sem->val: %d\n", tcurrent->name, acquire, cpu_current(), sem->value);
   spin_unlock(&sem->lock);
-  if (!acquire) { yield(); }
+  if (!acquire) { 
+    struct cpu *c = mycpu();
+    assert(c->noff == 0);
+    yield(); 
+  }
 
   // while (sem->value < 0) {
   //   assert(ienabled() == false);
