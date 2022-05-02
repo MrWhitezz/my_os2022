@@ -52,6 +52,7 @@ task_t *task_alloc() {
 static void os_init() {
   // single processor
 
+  assert(0);
   pmm->init();
   kmt->init();
   kmt->spin_init(&tlk, "tasks");
