@@ -19,8 +19,6 @@ static void push_off(void) {
 static void pop_off(void) {
   struct cpu *c = mycpu();
 
-  assert(ienabled() == false);
-  
   if(ienabled())
     panic("pop_off - interruptible");
   if(c->noff < 1)
@@ -88,6 +86,8 @@ static void sem_wait(sem_t *sem) {
   if (off1) {
     debug("off1 : %d\n", off1);
     debug("ienabled : %d\n", ienabled());
+    debug("tlk is held by %d\n", tlk.cpu);
+    debug("sem %s is held by %d\n", sem->name, sem->lock.cpu);
   }
   assert(!holding(&sem->lock));
   assert(!holding(&tlk));
