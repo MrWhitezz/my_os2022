@@ -48,6 +48,15 @@ task_t *task_alloc() {
   assert(ret != NULL);
   return ret;
 }
+
+static void print_tasks() {
+  // should be called with tlk locked
+  for (int i = 0; i < NTSK; i++) {
+    if (tasks[i] != NULL) {
+      debug("%s: is_run: %d, stat: %d\n", tasks[i]->name, tasks[i]->is_run, tasks[i]->stat);
+    }
+  }
+}
 #endif
 
 static void os_init() {
@@ -61,13 +70,13 @@ static void os_init() {
 #ifdef TEST_LOCAL
   kmt->sem_init(&empty, "empty", 5);  // 缓冲区大小为 5
   kmt->sem_init(&fill,  "fill",  0);
-  for (int i = 0; i < 10; i++) // 4 个生产者
+  for (int i = 0; i < 1; i++) // 4 个生产者
   {
     char *name = (char *)pmm->alloc(16);
     sprintf(name, "producer-%d", i);
     kmt->create(task_alloc(), name, producer, NULL);
   }
-  for (int i = 0; i < 1; i++) // 5 个消费者
+  for (int i = 0; i < 5; i++) // 5 个消费者
   {
     char *name = (char *)pmm->alloc(16);
     sprintf(name, "consumer-%d", i);
@@ -110,7 +119,10 @@ static Context *kmt_sched(Event ev, Context *context) {
     }
     t = tasks[tid];
     tid = (tid + 1) % NTSK;
-    panic_on(tid == oldtid, "tid loop forever");
+    if (tid == oldtid) {
+      print_tasks();
+      panic_on(tid == oldtid, "tid loop forever");
+    }
     assert(t != NULL);
   } while (!((t->stat == T_CREAT || t->stat == T_RUNNABLE) && t->is_run == false));
   // debug("out of sched loop on cpu %d\n", cpu_current());
