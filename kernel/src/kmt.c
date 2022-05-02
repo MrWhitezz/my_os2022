@@ -82,6 +82,13 @@ static void sem_init(sem_t *sem, const char *name, int value) {
 
 
 static void sem_wait(sem_t *sem) {
+  // for debug
+  struct cpu *c1 = mycpu();
+  int off1 = c1->noff;
+  if (off1) {
+    debug("off1 : %d\n", off1);
+  }
+  assert(c1->noff == 0);
   // seems bug here
   // TRACE_ENTRY;
   assert(!holding(&sem->lock));
@@ -102,14 +109,19 @@ static void sem_wait(sem_t *sem) {
 
   // debug("%s try to acquire(%d) on cpu %d, with sem->val: %d\n", tcurrent->name, acquire, cpu_current(), sem->value);
   spin_unlock(&sem->lock);
+
+  // for debug
   assert(!holding(&sem->lock));
   assert(!holding(&tlk));
+
   struct cpu *c = mycpu();
   int off = c->noff;
   if (off) {
     debug("off : %d\n", off);
   }
   assert(c->noff == 0);
+  //
+
   if (!acquire) { 
     yield(); 
   }
