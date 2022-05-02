@@ -60,6 +60,7 @@ static void spin_lock(spinlock_t *lk){
     // debug("cpu %d spin_lock %s\n", cpu_current(), lk->name);
     cnt++;
     if (cnt > 100000000LL && prt == 0) {
+      assert(0);
       debug("spinlk %s is held by cpu %d\n", lk->name, lk->cpu);
       debug("this cpu is %d cannot acquire\n", cpu_current());
       prt = 1;
