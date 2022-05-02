@@ -3,6 +3,7 @@
 #include <defs.h>
 
 
+queue_t *qtsks = NULL; 
 #ifdef TEST_LOCAL
 extern sem_t empty, fill;
 #endif
@@ -128,7 +129,7 @@ static void sem_wait(sem_t *sem) {
     enqueue(sem->wait_list, tcurrent);
     spin_lock(&tlk);
     assert(tcurrent != NULL && tcurrent->stat == T_RUNNABLE);
-    tcurrent->stat = T_BLOCKED;
+    tcurrent->stat = T_BLOCKED; // should be out of qtsks
     spin_unlock(&tlk);
   } else {
     acquire = 1;
@@ -181,7 +182,9 @@ static void sem_signal(sem_t *sem) {
     task_t *t = dequeue(sem->wait_list);
     spin_lock(&tlk);
     assert(t != NULL && t->stat == T_BLOCKED);
+    assert(t->is_run == false); // could trigger bug
     t->stat = T_RUNNABLE;
+    enqueue(qtsks, t);
     spin_unlock(&tlk);
   }
   spin_unlock(&sem->lock);
@@ -210,11 +213,10 @@ static int kmt_create(task_t *task, const char *name, void (*entry)(void *arg), 
 static void teardown(task_t *task) {
   assert(task->stat == T_CREAT);
   pmm->free(task->stack);
-  del_task(task);
 }
 
 static void kmt_init() {
-
+  qtsks = createQueue(NTSK);
 }
 
 MODULE_DEF(kmt) = {

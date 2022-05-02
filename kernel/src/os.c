@@ -4,7 +4,7 @@
 
 
 
-task_t *tasks[NTSK] = {};
+// task_t *tasks[NTSK] = {};
 int tid = 0;
 spinlock_t tlk;
 
@@ -12,27 +12,11 @@ task_t *currents[NCPU] = {}; // this need no lks ??
 
 void add_task(task_t *task) {
   kmt->spin_lock(&tlk);
-  int oldtid = tid;
-  while (tasks[tid] != NULL) {
-    tid = (tid + 1) % NTSK;
-    assert(tid != oldtid); // loop forever
-  }
-  assert(tasks[tid] == NULL);
-  tasks[tid] = task; 
-  tid = (tid + 1) % NTSK;
+  assert(!isFull(qtsks));
+  enqueue(qtsks, task);
   kmt->spin_unlock(&tlk);
 }
 
-void del_task(task_t *task) {
-  panic("del_task not implemented");
-  kmt->spin_lock(&tlk);
-  while (tasks[tid] != task) {
-    tid = (tid + 1) % NTSK;
-  }
-  assert(tasks[tid] == task);
-  tasks[tid] = NULL; 
-  kmt->spin_unlock(&tlk);
-}
 
 #ifdef TEST_LOCAL
 sem_t empty, fill;
@@ -133,25 +117,14 @@ static Context *kmt_sched(Event ev, Context *context) {
   // kmt->spin_lock(&tlk);
   // debug("get lock on cpu %d\n", cpu_current());
   assert(ienabled() == false); // because lock is held
-  task_t *t = NULL;
-  int tid_inc = 0;
-  do {
-    while (tasks[tid] == NULL) {
-      tid = (tid + 1) % NTSK;
-      tid_inc++;
-    }
-    t = tasks[tid];
-    tid = (tid + 1) % NTSK;
-    tid_inc++;
-    if (tid_inc > NTSK) {
-      // print_tasks();  
-      panic("tid_inc > NTSK");
-    }
-    assert(t != NULL);
-  } while (!((t->stat == T_CREAT || t->stat == T_RUNNABLE) && t->is_run == false));
-  // debug("out of sched loop on cpu %d\n", cpu_current());
-  // if (t->stat == T_CREAT) { t->stat = T_RUNNABLE; }
-  assert(t->is_run == false);
+  while (isEmpty(qtsks)) {
+    assert(0);
+  }
+  
+  task_t *t = dequeue(qtsks);
+  assert(t != NULL);
+  assert(t->is_run == false && (t->stat == T_CREAT || t->stat == T_RUNNABLE));
+  
   t->stat = T_RUNNABLE;
   t->is_run = true;
   // debug("[sched] %s -> %s on cpu %d\n", tcurrent->name, t->name, cpu_current());
@@ -166,19 +139,17 @@ static Context *kmt_sched(Event ev, Context *context) {
 static Context *os_trap(Event ev, Context *context) {
   // ATTENTION: you should consider concurrency here.
   kmt->spin_lock(&tlk);
-  // struct cpu *cc = mycpu();
-  // int off = cc->noff;
-  // if (off != 1) {
-  //   debug("off = %d\n", off);
-  //   assert(0);
-  // }
 
   if (tcurrent != NULL) {
-    // kmt->spin_lock(&tlk);
     tcurrent->context = context; 
     assert(tcurrent->is_run == true);
     tcurrent->is_run = false;
-    // kmt->spin_unlock(&tlk);
+    if (tcurrent->stat == T_RUNNABLE) {
+      enqueue(qtsks, tcurrent);
+    }
+    else {
+      assert(tcurrent->stat == T_BLOCKED); // blocked task is controlled by semaphore
+    }
   }
 
   if (ev.event == EVENT_YIELD) {

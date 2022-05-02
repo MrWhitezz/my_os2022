@@ -32,7 +32,7 @@ size_t nextPower_2(size_t x);
 // os related structs and variables
 
 #define STK_SZ (1 << 10)
-enum tstat { T_RUNNABLE, T_RUNNING, T_BLOCKED, T_CREAT, };
+enum tstat { T_RUNNABLE, T_BLOCKED, T_CREAT, T_ZOMBIE};
 
 struct task {
   // struct {
@@ -65,8 +65,9 @@ struct semaphore {
   const char *name;
 };
 
-extern task_t *tasks[NTSK];
-extern int tid;
+// extern task_t *tasks[NTSK];
+// extern int tid;
+extern queue_t *qtsks;
 extern spinlock_t tlk;
 extern task_t *currents[NCPU];
 
