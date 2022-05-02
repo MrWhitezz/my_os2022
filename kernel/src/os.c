@@ -102,7 +102,7 @@ static void os_init() {
   // }
 
   kmt->spin_init(&slk, "sum");
-  for (int i = 0; i < 20; i++) {
+  for (int i = 0; i < 100; i++) {
     char *name = (char *)pmm->alloc(16);
     sprintf(name, "get_sum-%d", i);
     kmt->create(task_alloc(), name, get_sum, NULL);
