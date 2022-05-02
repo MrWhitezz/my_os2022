@@ -10,27 +10,28 @@ extern sem_t empty, fill;
 // push_off/pop_off are like intr_off()/intr_on() except that they are matched:
 // it takes two pop_off()s to undo two push_off()s.  Also, if interrupts
 // are initially off, then push_off, pop_off leaves them off.
-static void push_off(void) {
-  int old = ienabled();
-  iset(false);
+
+// static void push_off(void) {
+//   int old = ienabled();
+//   iset(false);
   
-  struct cpu *c = mycpu();
-  if(c->noff == 0)
-    c->intena = old;
-  c->noff += 1;
-}
+//   struct cpu *c = mycpu();
+//   if(c->noff == 0)
+//     c->intena = old;
+//   c->noff += 1;
+// }
 
-static void pop_off(void) {
-  struct cpu *c = mycpu();
+// static void pop_off(void) {
+//   struct cpu *c = mycpu();
 
-  if(ienabled())
-    panic("pop_off - interruptible");
-  if(c->noff < 1)
-    panic("pop_off");
-  c->noff -= 1;
-  if(c->noff == 0 && c->intena)
-    iset(true);
-}
+//   if(ienabled())
+//     panic("pop_off - interruptible");
+//   if(c->noff < 1)
+//     panic("pop_off");
+//   c->noff -= 1;
+//   if(c->noff == 0 && c->intena)
+//     iset(true);
+// }
 
 
 // spin lock
@@ -42,7 +43,12 @@ static void spin_init(spinlock_t *lk, const char *name){
 }
 
 static void spin_lock(spinlock_t *lk){
-  push_off(); // disable interrupts to avoid deadlock.
+  // push_off(); // disable interrupts to avoid deadlock.
+  int i = ienabled();
+  iset(false);
+  struct cpu *c = mycpu();
+  if (c->noff == 0) c->intena = i;
+
   if(holding(lk)) {
     debug("cpu %d spin_lock %s\n", cpu_current(), lk->name);
     panic("acquire(spin_lock)");
@@ -54,6 +60,7 @@ static void spin_lock(spinlock_t *lk){
   }
   __sync_synchronize();
 
+  c->noff += 1;
   lk->cpu = cpu_current();
 }
 
@@ -72,7 +79,12 @@ static void spin_unlock(spinlock_t *lk) {
 
   assert(ienabled() == false);
 
-  pop_off();
+  struct cpu *c = mycpu();
+  assert(c->noff > 0);
+  c->noff -= 1;
+  if(c->noff == 0 && c->intena)
+    iset(true);
+  // pop_off();
 }
 
 static void sem_init(sem_t *sem, const char *name, int value) {
@@ -115,24 +127,24 @@ static void sem_wait(sem_t *sem) {
 
   // debug("%s try to acquire(%d) on cpu %d, with sem->val: %d\n", tcurrent->name, acquire, cpu_current(), sem->value);
   spin_unlock(&sem->lock);
-  iset(false);
+  // iset(false);
 
-  // for debug
-  assert(!holding(&sem->lock));
-  assert(!holding(&tlk));
+  // // for debug
+  // assert(!holding(&sem->lock));
+  // assert(!holding(&tlk));
 
-  struct cpu *c = mycpu();
-  int off = c->noff;
-  if (off) {
-    debug("off : %d on cpu %d\n", off, cpu_current());
-    debug("ienabled : %d\n", ienabled());
-    debug("tlk is held by %d\n", tlk.cpu);
-    debug("sem fill is held by %d\n", fill.lock.cpu);
-    debug("sem empty is held by %d\n", empty.lock.cpu);
-  }
-  assert(c->noff == 0);
-  iset(true);
-  //
+  // struct cpu *c = mycpu();
+  // int off = c->noff;
+  // if (off) {
+  //   debug("off : %d on cpu %d\n", off, cpu_current());
+  //   debug("ienabled : %d\n", ienabled());
+  //   debug("tlk is held by %d\n", tlk.cpu);
+  //   debug("sem fill is held by %d\n", fill.lock.cpu);
+  //   debug("sem empty is held by %d\n", empty.lock.cpu);
+  // }
+  // assert(c->noff == 0);
+  // iset(true);
+  // //
 
   if (!acquire) { 
     yield(); 
@@ -153,6 +165,7 @@ static void sem_signal(sem_t *sem) {
   // how to get thread id ?
   assert(!holding(&sem->lock));
   assert(!holding(&tlk));
+
   spin_lock(&sem->lock);
   sem->value++;
   if (!isEmpty(sem->wait_list)) {
