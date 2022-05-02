@@ -118,11 +118,11 @@ static Context *kmt_sched(Event ev, Context *context) {
       tid = (tid + 1) % NTSK;
     }
     t = tasks[tid];
-    tid = (tid + 1) % NTSK;
-    if (0) {
+    if (tid == oldtid) {
       print_tasks();
       panic_on(tid == oldtid, "tid loop forever");
     }
+    tid = (tid + 1) % NTSK;
     assert(t != NULL);
   } while (!((t->stat == T_CREAT || t->stat == T_RUNNABLE) && t->is_run == false));
   // debug("out of sched loop on cpu %d\n", cpu_current());
