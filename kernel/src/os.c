@@ -5,6 +5,7 @@
 spinlock_t tlk;
 
 task_t *currents[NCPU] = {}; // this need no lks ??
+task_t *tsleeps[NCPU] = {};
 
 void add_task(task_t *task) {
   kmt->spin_lock(&tlk);
@@ -121,17 +122,31 @@ static Context *kmt_sched(Event ev, Context *context) {
 static Context *os_trap(Event ev, Context *context) {
   // to be modifed, should add stat sleep
   kmt->spin_lock(&tlk);
+  task_t *tslp = tsleeps[cpu_current()];
+  if (tslp != NULL) {
+    assert(tslp->is_run == false && (tslp->stat == T_BLOCKED || tslp->stat == T_SLEEPRUN));
+    if (tslp->stat == T_SLEEPRUN) {
+      tslp->stat = T_RUNNABLE;
+      enqueue(qtsks, tslp);
+    }
+    else {
+      assert(tslp->stat == T_BLOCKED);
+      tslp->stat = T_WAKEBLK;
+    }
+    tsleeps[cpu_current()] = NULL;
+  }
 
   if (tcurrent != NULL) {
     tcurrent->context = context; 
     assert(tcurrent->is_run == true);
     tcurrent->is_run = false;
     if (tcurrent->stat == T_RUNNABLE) {
-      enqueue(qtsks, tcurrent);
+      tcurrent->stat = T_SLEEPRUN;
     }
     else {
       assert(tcurrent->stat == T_BLOCKED); // blocked task is controlled by semaphore
     }
+    tsleeps[cpu_current()] = tcurrent;
   }
 
   if (ev.event == EVENT_YIELD) {
