@@ -136,7 +136,8 @@ static Context *os_trap(Event ev, Context *context) {
   kmt->spin_lock(&tlk);
   task_t *tslp = tsleeps[cpu_current()];
   if (tslp != NULL) {
-    assert(tslp->is_run == false && (tslp->stat == T_BLOCKED || tslp->stat == T_SLEEPRUN));
+    assert(tslp->is_run == false && 
+    (tslp->stat == T_BLOCKED || tslp->stat == T_SLEEPRUN || tslp->stat == T_RUNNABLE));
     if (tslp->stat == T_SLEEPRUN) {
       tslp->stat = T_RUNNABLE;
     }
