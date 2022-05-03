@@ -124,7 +124,7 @@ static Context *kmt_sched(Event ev, Context *context) {
 }
 
 static Context *os_trap(Event ev, Context *context) {
-  // ATTENTION: you should consider concurrency here.
+  // to be modifed, should add stat sleep
   kmt->spin_lock(&tlk);
 
   if (tcurrent != NULL) {
