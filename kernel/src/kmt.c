@@ -137,6 +137,7 @@ static void sem_signal(sem_t *sem) {
       assert(t->stat == T_WAKEBLK);
       t->stat = T_RUNNABLE;
       enqueue(qtsks, t);
+      break;
     }
     spin_unlock(&tlk);
   }
