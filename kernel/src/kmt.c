@@ -51,11 +51,11 @@ static void spin_lock(spinlock_t *lk){
   if (c->noff == 0) c->intena = i;
 
   if(holding(lk)) {
-    debug("cpu %d spin_lock %s\n", cpu_current(), lk->name);
     panic("acquire(spin_lock)");
   }
 
   long long cnt = 0;
+  // int prt = 0;
   while(atomic_xchg(&lk->locked, 1)) {
     cnt++;
     panic_on(cnt > 1000000000LL, "spin_lock deadlock");
@@ -106,10 +106,10 @@ static void sem_wait(sem_t *sem) {
   sem->value--;
   if (sem->value < 0) {
     enqueue(sem->wait_list, tcurrent);
-    // spin_lock(&tlk);
+    spin_lock(&tlk);
     assert(tcurrent != NULL && tcurrent->stat == T_RUNNABLE);
     tcurrent->stat = T_BLOCKED; // should be out of qtsks
-    // spin_unlock(&tlk);
+    spin_unlock(&tlk);
   } else {
     acquire = 1;
   }
@@ -130,12 +130,12 @@ static void sem_signal(sem_t *sem) {
   sem->value++;
   if (!isEmpty(sem->wait_list)) {
     task_t *t = dequeue(sem->wait_list);
-    // spin_lock(&tlk);
+    spin_lock(&tlk);
     assert(t != NULL && t->stat == T_BLOCKED);
     assert(t->is_run == false); // could trigger bug
     t->stat = T_RUNNABLE;
     enqueue(qtsks, t);
-    // spin_unlock(&tlk);
+    spin_unlock(&tlk);
   }
   spin_unlock(&sem->lock);
   // TRACE_EXIT;
