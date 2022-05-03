@@ -122,7 +122,6 @@ static void sem_wait(sem_t *sem) {
 }
 
 static void sem_signal(sem_t *sem) {
-  // TRACE_ENTRY;
   assert(!holding(&sem->lock));
   assert(!holding(&tlk));
 
@@ -132,13 +131,13 @@ static void sem_signal(sem_t *sem) {
     task_t *t = dequeue(sem->wait_list);
     spin_lock(&tlk);
     assert(t != NULL && t->stat == T_BLOCKED);
-    assert(t->is_run == false); // could trigger bug
     t->stat = T_RUNNABLE;
-    enqueue(qtsks, t);
+    if (t->is_run == false) {
+      enqueue(qtsks, t);
+    }
     spin_unlock(&tlk);
   }
   spin_unlock(&sem->lock);
-  // TRACE_EXIT;
 }
 
 static int kmt_create(task_t *task, const char *name, void (*entry)(void *arg), void *arg) {
