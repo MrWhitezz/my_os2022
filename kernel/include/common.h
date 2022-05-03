@@ -31,7 +31,7 @@ size_t nextPower_2(size_t x);
 
 // os related structs and variables
 
-#define STK_SZ (1 << 10)
+#define STK_SZ (1 << 12)
 enum tstat { T_RUNNABLE, T_BLOCKED, T_CREAT, T_ZOMBIE};
 
 struct task {
