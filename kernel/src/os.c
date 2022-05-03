@@ -107,15 +107,27 @@ static Context *kmt_sched(Event ev, Context *context) {
   while (isEmpty(qtsks)) {
     assert(0);
   }
+
+  Context *next = NULL;
+  while (!isEmpty(qtsks)) {
   
-  task_t *t = dequeue(qtsks);
-  assert(t != NULL);
-  assert(t->is_run == false && (t->stat == T_CREAT || t->stat == T_RUNNABLE));
-  
-  t->stat = T_RUNNABLE;
-  t->is_run = true;
-  tcurrent = t;
-  Context *next = tcurrent->context;
+    task_t *t = dequeue(qtsks);
+    assert(t != NULL);
+    assert(t->is_run == false 
+    && (t->stat == T_CREAT || t->stat == T_RUNNABLE || t->stat == T_BLOCKED));
+    if (t->stat == T_BLOCKED){
+      enqueue(qtsks, t);
+      continue;
+    }
+    else {
+      t->stat = T_RUNNABLE;
+      t->is_run = true;
+      tcurrent = t;
+      next = tcurrent->context; 
+      break;
+    }
+  }
+  assert(next != NULL);
   return next;
 }
 
@@ -127,12 +139,8 @@ static Context *os_trap(Event ev, Context *context) {
     assert(tslp->is_run == false && (tslp->stat == T_BLOCKED || tslp->stat == T_SLEEPRUN));
     if (tslp->stat == T_SLEEPRUN) {
       tslp->stat = T_RUNNABLE;
-      enqueue(qtsks, tslp);
     }
-    else {
-      assert(tslp->stat == T_BLOCKED);
-      tslp->stat = T_WAKEBLK;
-    }
+    enqueue(qtsks, tslp);
     tsleeps[cpu_current()] = NULL;
   }
 

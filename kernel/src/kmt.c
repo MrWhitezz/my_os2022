@@ -127,19 +127,11 @@ static void sem_signal(sem_t *sem) {
 
   spin_lock(&sem->lock);
   sem->value++;
-  while (!isEmpty(sem->wait_list)) {
+  if (!isEmpty(sem->wait_list)) {
     task_t *t = dequeue(sem->wait_list);
     spin_lock(&tlk);
-    assert(t != NULL && (t->stat == T_BLOCKED || t->stat == T_WAKEBLK));
-    if (t->stat == T_BLOCKED) {
-      enqueue(sem->wait_list, t);
-    } else {
-      assert(t->stat == T_WAKEBLK);
-      t->stat = T_RUNNABLE;
-      enqueue(qtsks, t);
-      spin_unlock(&tlk);
-      break;
-    }
+    assert(t != NULL && t->stat == T_BLOCKED);
+    t->stat = T_RUNNABLE;
     spin_unlock(&tlk);
   }
   spin_unlock(&sem->lock);
