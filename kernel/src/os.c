@@ -67,7 +67,7 @@ static void os_init() {
     sprintf(name, "producer-%d", i);
     kmt->create(task_alloc(), name, producer, NULL);
   }
-  for (int i = 0; i < 1; i++) // 5 个消费者
+  for (int i = 0; i < 5; i++) // 5 个消费者
   {
     char *name = (char *)pmm->alloc(16);
     sprintf(name, "consumer-%d", i);
@@ -92,9 +92,9 @@ static void os_init() {
 
 
 static void os_run() {
-  for (const char *s = "Hello World from CPU #*\n"; *s; s++) {
-    putch(*s == '*' ? '0' + cpu_current() : *s);
-  }
+  // for (const char *s = "Hello World from CPU #*\n"; *s; s++) {
+  //   putch(*s == '*' ? '0' + cpu_current() : *s);
+  // }
   iset(true);
   yield();
 }
@@ -105,7 +105,6 @@ static void os_run() {
 // }
 
 static Context *kmt_sched(Event ev, Context *context) {
-  // TRACE_ENTRY;
   assert(ienabled() == false); // because lock is held
   while (isEmpty(qtsks)) {
     assert(0);
@@ -119,7 +118,6 @@ static Context *kmt_sched(Event ev, Context *context) {
   t->is_run = true;
   tcurrent = t;
   Context *next = tcurrent->context;
-  // TRACE_EXIT;
   return next;
 }
 
