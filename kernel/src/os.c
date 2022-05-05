@@ -48,6 +48,7 @@ void get_sum(void *arg) {
 #endif
 
 static Context *input_notify(Event ev, Context *context) {
+  putstr("input_notify\n");
   // kmt->sem_signal(&sem_kbdirq); // 在IO设备中断到来时，执行V操作唤醒一个线程
   return NULL;
 }
