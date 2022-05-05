@@ -12,6 +12,7 @@ size_t nextPower_2(size_t x);
 
 #define NCPU 8
 #define NTSK 128
+#define NHANDLER 256
 
 // debug
 

@@ -8,6 +8,9 @@ task_t *currents[NCPU] = {};
 task_t *tsleeps[NCPU] = {};
 task_t *idles[NCPU] = {}; // need no lks, only visible by current cpu
 
+handler_t trap_handlers[NHANDLER] = {};
+int nhandler = 0;
+
 void add_task(task_t *task) {
   kmt->spin_lock(&tlk);
   assert(!isFull(qtsks));
@@ -44,12 +47,18 @@ void get_sum(void *arg) {
 
 #endif
 
+static Context *input_notify(Event ev, Context *context) {
+  // kmt->sem_signal(&sem_kbdirq); // 在IO设备中断到来时，执行V操作唤醒一个线程
+  return NULL;
+}
+
 static void os_init() {
   // single processor
 
   pmm->init();
   kmt->init();
   kmt->spin_init(&tlk, "tasks");
+  os->on_irq(100, EVENT_IRQ_IODEV, input_notify);
 
 #ifdef TEST_LOCAL
   kmt->sem_init(&empty, "empty", 2);  // 缓冲区大小为 5
@@ -92,10 +101,6 @@ static void os_run() {
   }
 }
 
-// static Context *input_notify(Event ev, Context *context) {
-//   // kmt->sem_signal(&sem_kbdirq); // 在IO设备中断到来时，执行V操作唤醒一个线程
-//   return NULL;
-// }
 
 static Context *kmt_sched(Event ev, Context *context) {
   assert(ienabled() == false); // because lock is held
@@ -168,8 +173,8 @@ static Context *os_trap(Event ev, Context *context) {
   kmt->spin_unlock(&tlk);
   assert(ienabled() == false);
   // ensure when enter irq_handler, tlk is unlocked
-  if (ev.event == EVENT_YIELD) {
-
+  for (int i = 0; i < nhandler; i++) {
+    (*trap_handlers[i])(ev, context);
   }
 
   kmt->spin_lock(&tlk);
@@ -180,8 +185,11 @@ static Context *os_trap(Event ev, Context *context) {
 
 
 
+
 static void os_irq(int seq, int event, handler_t handler) {
-  assert(0);
+  // handler should be added in order of seq
+  assert(nhandler < NHANDLER);
+  trap_handlers[nhandler++] = handler;
 }
 
 MODULE_DEF(os) = {
