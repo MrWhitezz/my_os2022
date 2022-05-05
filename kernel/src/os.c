@@ -67,7 +67,7 @@ static void os_init() {
   pmm->init();
   kmt->init();
   kmt->spin_init(&tlk, "tasks");
-  dev->init();
+  // dev->init();
 
 #ifdef TEST_LOCAL
   kmt->sem_init(&empty, "empty", 2);  // 缓冲区大小为 5
