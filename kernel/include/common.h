@@ -69,6 +69,7 @@ struct semaphore {
 extern queue_t *qtsks;
 extern spinlock_t tlk;
 extern task_t *currents[NCPU];
+extern task_t *idles[NCPU];
 
 #define tcurrent currents[cpu_current()]
 

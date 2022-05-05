@@ -4,6 +4,7 @@ int           holding(spinlock_t *lk);
 
 // os.c
 void          add_task(task_t *task);
+task_t       *task_alloc();
 // void          del_task(task_t *task);
 
 // dsa.c

@@ -6,6 +6,7 @@ spinlock_t tlk;
 
 task_t *currents[NCPU] = {}; // this need no lks ??
 task_t *tsleeps[NCPU] = {};
+task_t *idles[NCPU] = {};
 
 void add_task(task_t *task) {
   kmt->spin_lock(&tlk);
@@ -109,13 +110,22 @@ static Context *kmt_sched(Event ev, Context *context) {
   assert(!isEmpty(qtsks));
   Context *next = NULL;
 
+  int ntry = 0;
   while (!isEmpty(qtsks)) {
+    // switch to idle if no task is ready
+    if (ntry > qtsks->size) {
+      tcurrent = NULL;
+      next = idles[cpu_current()]->context;
+      break;
+    }
+
     task_t *t = dequeue(qtsks);
     assert(t != NULL);
     assert(t->is_run == false 
     && (t->stat == T_CREAT || t->stat == T_RUNNABLE || t->stat == T_BLOCKED));
     if (t->stat == T_BLOCKED){
       enqueue(qtsks, t);
+      ntry++;
       continue;
     }
     else {
@@ -131,8 +141,8 @@ static Context *kmt_sched(Event ev, Context *context) {
 }
 
 static Context *os_trap(Event ev, Context *context) {
-  // to be modifed, should add stat sleep
   kmt->spin_lock(&tlk);
+  // add sleep task to queue
   task_t *tslp = tsleeps[cpu_current()];
   if (tslp != NULL) {
     assert(tslp->is_run == false && 
@@ -144,10 +154,11 @@ static Context *os_trap(Event ev, Context *context) {
     tsleeps[cpu_current()] = NULL;
   }
 
+  // save current task and sleep it
   if (tcurrent != NULL) {
-    tcurrent->context = context; 
     assert(tcurrent->is_run == true);
     tcurrent->is_run = false;
+    tcurrent->context = context; 
     if (tcurrent->stat == T_RUNNABLE) {
       tcurrent->stat = T_SLEEPRUN;
     }
@@ -155,6 +166,11 @@ static Context *os_trap(Event ev, Context *context) {
       assert(tcurrent->stat == T_BLOCKED); // blocked task is controlled by semaphore
     }
     tsleeps[cpu_current()] = tcurrent;
+  }
+  else {
+    // save idle task
+    int cpu = cpu_current();
+    idles[cpu]->context = context;
   }
 
   kmt->spin_unlock(&tlk);
