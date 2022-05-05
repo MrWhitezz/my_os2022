@@ -104,13 +104,10 @@ static void os_run() {
 
 static Context *kmt_sched(Event ev, Context *context) {
   assert(ienabled() == false); // because lock is held
-  while (isEmpty(qtsks)) {
-    assert(0);
-  }
-
+  assert(!isEmpty(qtsks));
   Context *next = NULL;
+
   while (!isEmpty(qtsks)) {
-  
     task_t *t = dequeue(qtsks);
     assert(t != NULL);
     assert(t->is_run == false 
@@ -158,10 +155,13 @@ static Context *os_trap(Event ev, Context *context) {
     tsleeps[cpu_current()] = tcurrent;
   }
 
+  kmt->spin_unlock(&tlk);
+  // ensure when enter irq_handler, tlk is unlocked
   if (ev.event == EVENT_YIELD) {
 
   }
 
+  kmt->spin_lock(&tlk);
   Context *c = kmt_sched(ev, context);
   kmt->spin_unlock(&tlk);
   return c;
