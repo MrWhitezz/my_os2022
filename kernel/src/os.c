@@ -91,9 +91,9 @@ static void os_init() {
 
 static void os_run() {
   // multi processor
-  iset(true);
+  // iset(true);
   while (1) {
-    yield();
+    // yield();
   }
 }
 
