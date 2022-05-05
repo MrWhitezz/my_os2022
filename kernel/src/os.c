@@ -99,7 +99,7 @@ static void os_run() {
   // multi processor
   // iset(true);
   while (1) {
-    // yield();
+    yield();
   }
 }
 
