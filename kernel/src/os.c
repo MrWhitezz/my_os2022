@@ -15,6 +15,11 @@ void add_task(task_t *task) {
   kmt->spin_unlock(&tlk);
 }
 
+task_t *os_tsk_alloc() { 
+  task_t *ret = (task_t *)pmm->alloc(sizeof(task_t)); 
+  assert(ret != NULL);
+  return ret;
+}
 
 #ifdef TEST_LOCAL
 sem_t empty, fill;
@@ -37,20 +42,6 @@ void get_sum(void *arg) {
     debug("sum: %d, cpu: %d\n", sum, cpu_current());
 }
 
-task_t *task_alloc() { 
-  task_t *ret = (task_t *)pmm->alloc(sizeof(task_t)); 
-  assert(ret != NULL);
-  return ret;
-}
-
-// static void print_tasks() {
-//   // should be called with tlk locked
-//   for (int i = 0; i < NTSK; i++) {
-//     if (tasks[i] != NULL) {
-//       debug("%s: is_run: %d, stat: %d\n", tasks[i]->name, tasks[i]->is_run, tasks[i]->stat);
-//     }
-//   }
-// }
 #endif
 
 static void os_init() {
@@ -67,19 +58,19 @@ static void os_init() {
   {
     char *name = (char *)pmm->alloc(16);
     sprintf(name, "producer-%d", i);
-    kmt->create(task_alloc(), name, producer, NULL);
+    kmt->create(os_tsk_alloc(), name, producer, NULL);
   }
   for (int i = 0; i < 5; i++) // 5 个消费者
   {
     char *name = (char *)pmm->alloc(16);
     sprintf(name, "consumer-%d", i);
-    kmt->create(task_alloc(), name, consumer, NULL);
+    kmt->create(os_tsk_alloc(), name, consumer, NULL);
   }
   for (int i = 0; i < 10; i++) // 10 个空转
   {
     char *name = (char *)pmm->alloc(16);
     sprintf(name, "waste-%d", i);
-    kmt->create(task_alloc(), name, waste_time, NULL);
+    kmt->create(os_tsk_alloc(), name, waste_time, NULL);
   }
 
   // kmt->spin_init(&slk, "sum");

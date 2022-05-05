@@ -166,7 +166,7 @@ static void teardown(task_t *task) {
 static void kmt_init() {
   qtsks = createQueue(NTSK);
   for (int i = 0; i < cpu_count(); ++i) {
-    idles[i] = task_alloc();
+    idles[i] = os_tsk_alloc();
   }
 }
 
