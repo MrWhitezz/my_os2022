@@ -4,9 +4,9 @@
 
 spinlock_t tlk;
 
-task_t *currents[NCPU] = {}; // this need no lks ??
+task_t *currents[NCPU] = {}; 
 task_t *tsleeps[NCPU] = {};
-task_t *idles[NCPU] = {};
+task_t *idles[NCPU] = {}; // need no lks, only visible by current cpu
 
 void add_task(task_t *task) {
   kmt->spin_lock(&tlk);
@@ -85,6 +85,7 @@ static void os_init() {
 
 
 static void os_run() {
+  // multi processor
   iset(true);
   while (1) {
     yield();
@@ -165,6 +166,7 @@ static Context *os_trap(Event ev, Context *context) {
   }
 
   kmt->spin_unlock(&tlk);
+  assert(ienabled() == false);
   // ensure when enter irq_handler, tlk is unlocked
   if (ev.event == EVENT_YIELD) {
 

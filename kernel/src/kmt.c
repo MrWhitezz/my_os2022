@@ -12,29 +12,6 @@ extern sem_t empty, fill;
 // it takes two pop_off()s to undo two push_off()s.  Also, if interrupts
 // are initially off, then push_off, pop_off leaves them off.
 
-// static void push_off(void) {
-//   int old = ienabled();
-//   iset(false);
-  
-//   struct cpu *c = mycpu();
-//   if(c->noff == 0)
-//     c->intena = old;
-//   c->noff += 1;
-// }
-
-// static void pop_off(void) {
-//   struct cpu *c = mycpu();
-
-//   if(ienabled())
-//     panic("pop_off - interruptible");
-//   if(c->noff < 1)
-//     panic("pop_off");
-//   c->noff -= 1;
-//   if(c->noff == 0 && c->intena)
-//     iset(true);
-// }
-
-
 // spin lock
 
 static void spin_init(spinlock_t *lk, const char *name){
@@ -55,7 +32,6 @@ static void spin_lock(spinlock_t *lk){
   }
 
   long long cnt = 0;
-  // int prt = 0;
   while(atomic_xchg(&lk->locked, 1)) {
     cnt++;
     panic_on(cnt > 1000000000LL, "spin_lock deadlock");
@@ -73,7 +49,6 @@ static void spin_unlock(spinlock_t *lk) {
 
   lk->cpu = -1;
 
-  // Release the lock, and restore interrupts.
   atomic_xchg(&lk->locked, 0);
   __sync_synchronize();
 
@@ -84,7 +59,6 @@ static void spin_unlock(spinlock_t *lk) {
   c->noff -= 1;
   if(c->noff == 0 && c->intena)
     iset(true);
-  // pop_off();
 }
 
 static void sem_init(sem_t *sem, const char *name, int value) {
