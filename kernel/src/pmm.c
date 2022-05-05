@@ -8,18 +8,18 @@
 #include <common.h>
 #include <pmm.h>
 
-// Spin lock
+// pmm spin lock
 
-void spin_lock(spinlock_t *lk) { while (atomic_xchg(lk, 1))  ; }
-void spin_unlock(spinlock_t *lk) { atomic_xchg(lk, 0); }
+static void pmm_lock(spinlock_nt *lk) { while (atomic_xchg(lk, 1))  ; }
+static void pmm_unlock(spinlock_nt *lk) { atomic_xchg(lk, 0); }
 
 enum slab_index{ _16B, _32B, _64B, _128B, _256B, _512B, _1KB, _2KB, _4KB, SLAB_SIZE };
 
-S_header_t *Slab[8][SLAB_SIZE];
+S_header_t *Slab[NCPU][SLAB_SIZE];
 int n_slab = 0;
 
 void      *G_start;
-spinlock_t G_lock;
+spinlock_nt G_lock;
 meta_t    *Meta;
 int        n_meta = 0;
 
@@ -110,24 +110,24 @@ static void S_init() {
 
 static S_header_t *add_slab(S_header_t *slab){
   assert(slab != NULL);
-  spinlock_t *lk = &(slab->lk);
-  spin_lock(lk);
+  spinlock_nt *lk = &(slab->lk);
+  pmm_lock(lk);
   S_header_t *ret = G_alloc(1, true);
   if (ret == NULL) {
-    spin_unlock(lk);
+    pmm_unlock(lk);
     return NULL;
   }
   slab_init(ret, slab->sz);
   assert(slab->next == NULL);
   slab->next = ret;
-  spin_unlock(lk);
+  pmm_unlock(lk);
   return ret;
 }
 
 static void *slab_alloc(S_header_t *slab, size_t size){
-  spinlock_t *lk   = &slab->lk;
+  spinlock_nt *lk   = &slab->lk;
 
-  spin_lock(lk);
+  pmm_lock(lk);
   S_node_t *node = slab->n_head;
 
   if (node != NULL) {
@@ -142,7 +142,7 @@ static void *slab_alloc(S_header_t *slab, size_t size){
     }
   }
 
-  spin_unlock(lk);
+  pmm_unlock(lk);
   assert((ROUNDDOWN((uintptr_t)node, size)) == (uintptr_t)node);
 
   return (void *)node;
@@ -161,11 +161,11 @@ static void *S_alloc(size_t size){
   while (slab != NULL){
     void *ret = slab_alloc(slab, size);
     if (ret != NULL) return ret;
-    spinlock_t *lk = &(slab->lk);
-    spin_lock(lk);
+    spinlock_nt *lk = &(slab->lk);
+    pmm_lock(lk);
     prev = slab;
     slab = slab->next;
-    spin_unlock(lk);
+    pmm_unlock(lk);
   }
   assert(prev != NULL && slab == NULL);
   S_header_t *new_slab = add_slab(prev);
@@ -180,8 +180,8 @@ static void *S_alloc(size_t size){
 static void S_free(void *ptr){
   assert(sizeof(S_node_t) <= 16);
   S_header_t *slab = (S_header_t *)(ROUNDDOWN((uintptr_t)ptr, GPAGE_SZ));
-  spinlock_t *lk = &slab->lk;
-  spin_lock(lk);
+  spinlock_nt *lk = &slab->lk;
+  pmm_lock(lk);
   S_node_t *node = (S_node_t *)ptr;
   node->size = slab->sz;
   node->next = NULL;
@@ -189,7 +189,7 @@ static void S_free(void *ptr){
   S_node_t *prev = NULL;
   if (node_head == NULL) {
     slab->n_head = node; 
-    spin_unlock(lk);
+    pmm_unlock(lk);
     return;
   }
   assert(node_head != NULL);
@@ -206,7 +206,7 @@ static void S_free(void *ptr){
   }
   // end of list
   if (node_head == NULL) { node->next = NULL; prev->next = node; }
-  spin_unlock(lk);
+  pmm_unlock(lk);
 }
 
 static bool try_alloc(void *ret, size_t sz, bool is_slab){
@@ -243,23 +243,23 @@ static void* slow_alloc(void *ret, size_t sz, bool is_slab){
 }
 
 static void *G_alloc(size_t npage, bool is_slab) {
-  spin_lock(&G_lock);
+  pmm_lock(&G_lock);
   size_t sz = npage * GPAGE_SZ;
   void *try_ret = (void *)ROUNDUP(G_start, sz);
   for (; is_valid_ret(try_ret); try_ret += sz){
     if (try_alloc(try_ret, sz, is_slab) == true) {
       slow_alloc(try_ret, sz, is_slab);
-      spin_unlock(&G_lock);
+      pmm_unlock(&G_lock);
       assert(ROUNDDOWN(try_ret, sz) == (uintptr_t)try_ret);
       return try_ret;
     }
   }
-  spin_unlock(&G_lock);
+  pmm_unlock(&G_lock);
   return NULL;
 }
 
 static void G_free(void *ptr){
-  spin_lock(&G_lock);
+  pmm_lock(&G_lock);
   assert(ROUNDDOWN(ptr, GPAGE_SZ) == (uintptr_t)ptr);
   int id = get_meta_index(ptr);
   assert(id >= 0 && id < n_meta);
@@ -277,7 +277,7 @@ static void G_free(void *ptr){
     meta[i].is_alloc = false;
     meta[i].end      = NULL;
   }
-  spin_unlock(&G_lock);
+  pmm_unlock(&G_lock);
 }
 
 static void *kalloc(size_t size) {
@@ -332,8 +332,23 @@ static void pmm_init() {
 }
 #endif
 
+static void *kalloc_safe(size_t size) {
+  bool i = ienabled();
+  iset(false);
+  void *ret = kalloc(size);
+  if (i) iset(true);
+  return ret;
+}
+
+static void kfree_safe(void *ptr) {
+  int i = ienabled();
+  iset(false);
+  kfree(ptr);
+  if (i) iset(true);
+}
+
 MODULE_DEF(pmm) = {
   .init  = pmm_init,
-  .alloc = kalloc,
-  .free  = kfree,
+  .alloc = kalloc_safe,
+  .free  = kfree_safe,
 };

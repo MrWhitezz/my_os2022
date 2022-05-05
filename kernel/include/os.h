@@ -1,13 +1,6 @@
+#ifndef __OS_H__
+#define __OS_H__
+
 #include <common.h>
 
-struct task {
-  // TODO
-};
-
-struct spinlock {
-  // TODO
-};
-
-struct semaphore {
-  // TODO
-};
+#endif
