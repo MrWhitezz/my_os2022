@@ -47,10 +47,6 @@ void get_sum(void *arg) {
 
 #endif
 
-static Context *input_notify(Event ev, Context *context) {
-  // kmt->sem_signal(&sem_kbdirq); // 在IO设备中断到来时，执行V操作唤醒一个线程
-  return NULL;
-}
 
 static void os_init() {
   // single processor
@@ -59,8 +55,6 @@ static void os_init() {
   kmt->init();
   kmt->spin_init(&tlk, "tasks");
   dev->init();
-  // seqs should be in order
-  os->on_irq(100, EVENT_IRQ_IODEV, input_notify);
 
 #ifdef TEST_LOCAL
   kmt->sem_init(&empty, "empty", 2);  // 缓冲区大小为 5
@@ -97,7 +91,7 @@ static void os_init() {
 
 static void os_run() {
   // multi processor
-  // iset(true);
+  iset(true);
   while (1) {
     yield();
   }
@@ -190,6 +184,7 @@ static Context *os_trap(Event ev, Context *context) {
 
 static void os_irq(int seq, int event, handler_t handler) {
   // handler should be added in order of seq
+  debug("add handler %d with tot %d\n", seq, nhandler);
   assert(nhandler < NHANDLER);
   trap_handlers[nhandler++] = handler;
 }
