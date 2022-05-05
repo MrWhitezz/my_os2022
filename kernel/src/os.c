@@ -91,9 +91,9 @@ static void os_init() {
 
 static void os_run() {
   // multi processor
-  // iset(true);
+  iset(true);
   while (1) {
-    // yield();
+    yield();
   }
 }
 
@@ -170,7 +170,8 @@ static Context *os_trap(Event ev, Context *context) {
   assert(ienabled() == false);
   // ensure when enter irq_handler, tlk is unlocked
   for (int i = 0; i < nhandler; i++) {
-    (*trap_handlers[i])(ev, context);
+    Context *ctx = (*trap_handlers[i])(ev, context);
+    assert(ctx == NULL);
   }
 
   kmt->spin_lock(&tlk);
