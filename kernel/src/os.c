@@ -49,7 +49,7 @@ void get_sum(void *arg) {
 static void tty_reader(void *arg) {
   device_t *tty = dev->lookup(arg);
   char cmd[128], resp[128], ps[16];
-  snprintf(ps, 16, "(%s) $ ", arg);
+  sprintf(ps, "(%s) $ ", arg);
   while (1) {
     tty->ops->write(tty, 0, ps, strlen(ps));
     int nread = tty->ops->read(tty, 0, cmd, sizeof(cmd) - 1);
