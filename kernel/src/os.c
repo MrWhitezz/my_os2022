@@ -94,7 +94,9 @@ static void os_init() {
 
 static void os_run() {
   iset(true);
-  yield();
+  while (1) {
+    yield();
+  }
 }
 
 // static Context *input_notify(Event ev, Context *context) {
