@@ -48,7 +48,6 @@ void get_sum(void *arg) {
 #endif
 
 static Context *input_notify(Event ev, Context *context) {
-  putstr("input_notify\n");
   // kmt->sem_signal(&sem_kbdirq); // 在IO设备中断到来时，执行V操作唤醒一个线程
   return NULL;
 }
@@ -59,6 +58,8 @@ static void os_init() {
   pmm->init();
   kmt->init();
   kmt->spin_init(&tlk, "tasks");
+  dev->init();
+  // seqs should be in order
   os->on_irq(100, EVENT_IRQ_IODEV, input_notify);
 
 #ifdef TEST_LOCAL
