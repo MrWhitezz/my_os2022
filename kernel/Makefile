@@ -1,7 +1,9 @@
 NAME           := kernel
 SRCS           := framework/main.c $(shell find -L ./src/ -name "*.c")
 INC_PATH       := include/ framework/
+CFLAGS		   += -DTEST_LOCAL -DLOCAL_DEBUG -DTRACE_F
 
+export MODULE  := L2
 export AM_HOME := $(PWD)/../abstract-machine
 ifeq ($(ARCH),)
 export ARCH    := x86_64-qemu
@@ -10,3 +12,13 @@ endif
 include $(AM_HOME)/Makefile
 include ../Makefile.lab
 image: git
+
+test: git
+	@gcc $(shell find src/ -name "*.c")  \
+          $(shell find test/ -name "*.c") \
+          -Iframework -Itest -DTEST -lpthread \
+          -o build/test
+	@build/test 1
+	@build/test 2
+	@build/test 3
+
