@@ -17,3 +17,6 @@ void          enqueue    (struct Queue* queue, void *item);
 void         *dequeue    (struct Queue* queue);
 void         *front      (struct Queue* queue);
 void         *rear       (struct Queue* queue);
+
+// irq.c
+void          irq_init();
