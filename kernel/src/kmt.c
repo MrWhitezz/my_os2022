@@ -137,19 +137,12 @@ static void teardown(task_t *task) {
   task->stat = T_ZOMBIE;
 }
 
-static Context *pagefault(Event ev, Context *ctx) {
-  if (ev.event != EVENT_PAGEFAULT) return NULL;
-  assert(ev.event == EVENT_PAGEFAULT);
-  panic("pagefault not implemented");
-  return NULL;
-}
 
 static void kmt_init() {
   qtsks = createQueue(NTSK);
   for (int i = 0; i < cpu_count(); ++i) {
     idles[i] = os_tsk_alloc();
   }
-  os->on_irq(100, EVENT_PAGEFAULT, pagefault);
 }
 
 
