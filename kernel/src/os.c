@@ -67,6 +67,7 @@ static void os_init() {
   pmm->init();
   kmt->init();
   kmt->spin_init(&tlk, "tasks");
+  uproc->init();
   dev->init();
 
 #ifdef TEST_LOCAL
