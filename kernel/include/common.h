@@ -37,7 +37,7 @@ enum tstat { T_RUNNABLE, T_BLOCKED, T_CREAT, T_ZOMBIE, T_SLEEPRUN };
 
 struct task {
   // struct {
-    // int id; // temprorarily useless
+    int id; // temprorarily useless
     // task_t *next; // in thread-os.c to schedule, useless here
     enum tstat stat;
     bool is_run;
