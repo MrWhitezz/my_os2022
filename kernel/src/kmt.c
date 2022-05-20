@@ -138,6 +138,8 @@ static void teardown(task_t *task) {
 }
 
 static Context *pagefault(Event ev, Context *ctx) {
+  if (ev.event != EVENT_PAGEFAULT) return NULL;
+  assert(ev.event == EVENT_PAGEFAULT);
   panic("pagefault not implemented");
   return NULL;
 }
