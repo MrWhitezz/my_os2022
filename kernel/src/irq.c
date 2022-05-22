@@ -6,6 +6,7 @@
 static Context *pagefault(Event ev, Context *ctx) {
   if (ev.event != EVENT_PAGEFAULT) return NULL;
   assert(ev.event == EVENT_PAGEFAULT);
+	printf("pf: %p by %p\n", ev.ref, ctx->rip);
   panic("pagefault not implemented");
   return NULL;
 }
