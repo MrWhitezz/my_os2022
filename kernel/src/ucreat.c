@@ -3,6 +3,7 @@
 
 int *ucreate_(task_t *task, const char *name) {
   assert(task != NULL);
+  kmt->spin_lock(&tlk);
   AddrSpace *as = &task->as;
   debug("[as] st: %p ed: %p\n", as->area.start, as->area.end);
   debug("[as] pgsz: %d\n", as->pgsize);
@@ -20,6 +21,7 @@ int *ucreate_(task_t *task, const char *name) {
   Context *c    = ucontext(&task->as, tstack, task->as.area.start);
   task->context = c;
   
+  kmt->spin_unlock(&tlk);
   add_task(task);
 
   return 0;

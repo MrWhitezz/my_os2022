@@ -69,7 +69,7 @@ static void os_init() {
   kmt->spin_init(&tlk, "tasks");
   uproc->init();
   // dev->init();
-  irq_init();
+  irq_init(); // irq_handlers
 
 #ifdef TEST_LOCAL
   kmt->sem_init(&empty, "empty", 2);  // 缓冲区大小为 5
