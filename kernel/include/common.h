@@ -44,6 +44,7 @@ struct task {
     const char *name;
     void (*entry)(void *arg);
     void *arg;
+    AddrSpace as;
     Context *context;
   // };
   uint8_t *stack;

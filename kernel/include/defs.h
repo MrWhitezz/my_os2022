@@ -20,3 +20,6 @@ void         *rear       (struct Queue* queue);
 
 // irq.c
 void          irq_init();
+
+// ucreat.c
+int          *ucreate_(task_t *task, const char *name);
