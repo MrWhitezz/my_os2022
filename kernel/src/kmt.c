@@ -116,7 +116,7 @@ static int kmt_create(task_t *task, const char *name, void (*entry)(void *arg), 
 
   task->stack   = (uint8_t *)pmm->alloc(STK_SZ);
   task->name    = name;
-  // task->entry   = 0;
+  // task->entry   = entry;
   // task->arg     = arg;
   task->stat    = T_CREAT;
   task->is_run  = false;
