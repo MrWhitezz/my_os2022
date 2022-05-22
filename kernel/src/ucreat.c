@@ -1,4 +1,5 @@
 #include <common.h>
+#include <defs.h>
 
 int *ucreate_(task_t *task, const char *name) {
   assert(task != NULL);
@@ -13,6 +14,8 @@ int *ucreate_(task_t *task, const char *name) {
   Area tstack   = RANGE(task->stack, (void *)task->stack + STK_SZ);
   Context *c    = ucontext(&task->as, tstack, task->as.area.start);
   task->context = c;
+  
+  add_task(task);
 
   return 0;
 }
