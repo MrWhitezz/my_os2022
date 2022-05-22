@@ -42,8 +42,8 @@ struct task {
     enum tstat stat;
     bool is_run;
     const char *name;
-    void (*entry)(void *arg);
-    void *arg;
+    // void (*entry)(void *arg);
+    // void *arg;
     AddrSpace as;
     Context *context;
   // };
