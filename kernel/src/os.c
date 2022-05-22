@@ -93,6 +93,10 @@ static void os_init() {
     kmt->create(os_tsk_alloc(), name, waste_time, NULL);
   }
 
+  char *name = (char *)pmm->alloc(16);
+  sprintf(name, "user_proc");
+  ucreate_(os_tsk_alloc(), name);
+
   // kmt->create(os_tsk_alloc(), "tty_reader", tty_reader, "tty1");
   // kmt->create(os_tsk_alloc(), "tty_reader", tty_reader, "tty2");
 
