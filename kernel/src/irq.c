@@ -4,12 +4,18 @@
 // the first line of each function ensures 
 // the event is matched when actually executing
 static void pgmap(task_t *t, void *va, void *pa){
-
+	t->va[t->np] = va;
+	t->pa[t->np] = pa;
+	t->np++;
+	assert(t->np < NPG);
+	map(&t->as, va, pa, MMAP_READ | MMAP_WRITE);
+	debug("%s: va: %p, pa: %p\n", __func__, va, pa);
 }
 
 static Context *pagefault(Event ev, Context *ctx) {
   if (ev.event != EVENT_PAGEFAULT) return NULL;
   assert(ev.event == EVENT_PAGEFAULT);
+	// to be attention, I think no lock is needed here
 	AddrSpace *as = &(tcurrent->as);
 	void *va = (void *)ROUNDDOWN(ev.ref, as->pgsize);
 	void *pa = pmm->alloc(as->pgsize);

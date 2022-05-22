@@ -13,6 +13,7 @@ size_t nextPower_2(size_t x);
 #define NCPU 8
 #define NTSK 128
 #define NHANDLER 256
+#define NPG  64
 
 // debug
 
@@ -42,8 +43,9 @@ struct task {
     enum tstat stat;
     bool is_run;
     const char *name;
-    // void (*entry)(void *arg);
-    // void *arg;
+    void *va[NPG];
+    void *pa[NPG];
+    int   np;
     AddrSpace as;
     Context *context;
   // };
