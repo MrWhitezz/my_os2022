@@ -1,7 +1,7 @@
 #include <os.h>
 #include <syscall.h>
 
-#include "initcode.inc"
+// #include "initcode.inc"
 
 static void *pgalloc(int n) {
   return pmm->alloc(n);

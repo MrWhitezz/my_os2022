@@ -1,8 +1,9 @@
 #include <common.h>
-
+#include "initcode.inc"
 // every irq_handler will be called
 // the first line of each function ensures 
 // the event is matched when actually executing
+
 static void pgmap(task_t *t, void *va, void *pa){
 	t->va[t->np] = va;
 	t->pa[t->np] = pa;
@@ -23,8 +24,11 @@ static Context *pagefault(Event ev, Context *ctx) {
 	debug("va: %p%p, as->area.start: %p%p\n", (uintptr_t)va >> 32, va, (uintptr_t)as->area.start >> 32, as->area.start);
 	assert(va >= as->area.start);
 	assert(va < as->area.end);
+
+	if (va == as->area.start) {
+		memcpy(pa, _init, _init_len);
+	}
 	pgmap(tcurrent, va, pa);
-	printf("pf: %p by %p\n", ev.ref, ctx->rip);
   // panic("pagefault not implemented");
   return NULL;
 }
