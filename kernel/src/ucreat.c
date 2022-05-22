@@ -1,15 +1,16 @@
 #include <common.h>
 #include <defs.h>
 
+static void printl(void *ptr) {
+  printf("%p%p\n", (uintptr_t)ptr >> 32, ptr);
+}
+
 int *ucreate_(task_t *task, const char *name) {
   assert(task != NULL);
   kmt->spin_lock(&tlk);
   AddrSpace *as = &task->as;
-  debug("[as] st: %p ed: %p\n", as->area.start, as->area.end);
-  debug("[as] pgsz: %d\n", as->pgsize);
   protect(&task->as);
-  debug("[as] st: %p ed: %p\n", as->area.start, as->area.end);
-  debug("[as] pgsz: %d\n", as->pgsize);
+  printl(as->area.start);
 
   task->stack   = (uint8_t *)pmm->alloc(STK_SZ);
   task->name    = name;
