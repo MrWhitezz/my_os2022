@@ -3,8 +3,10 @@
 
 int *ucreate_(task_t *task, const char *name) {
   assert(task != NULL);
-  protect(&task->as);
   AddrSpace *as = &task->as;
+  debug("[as] st: %p ed: %p\n", as->area.start, as->area.end);
+  debug("[as] pgsz: %d\n", as->pgsize);
+  protect(&task->as);
   debug("[as] st: %p ed: %p\n", as->area.start, as->area.end);
   debug("[as] pgsz: %d\n", as->pgsize);
 
