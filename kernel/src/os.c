@@ -68,7 +68,7 @@ static void os_init() {
   kmt->init();
   kmt->spin_init(&tlk, "tasks");
   uproc->init();
-  dev->init();
+  // dev->init();
   irq_init();
 
 #ifdef TEST_LOCAL
