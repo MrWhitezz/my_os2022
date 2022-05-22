@@ -20,6 +20,7 @@ static Context *pagefault(Event ev, Context *ctx) {
 	AddrSpace *as = &(tcurrent->as);
 	void *va = (void *)ROUNDDOWN(ev.ref, as->pgsize);
 	void *pa = pmm->alloc(as->pgsize);
+	debug("va: %p%p, as->area.start: %p%p\n", (uintptr_t)va >> 32, va, (uintptr_t)as->area.start >> 32, as->area.start);
 	assert(va >= as->area.start);
 	assert(va < as->area.end);
 	pgmap(tcurrent, va, pa);
