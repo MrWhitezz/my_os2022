@@ -14,6 +14,7 @@ static Context *syscall(Event ev, Context *ctx) {
   if (ev.event != EVENT_SYSCALL) return NULL;
   assert(ev.event == EVENT_SYSCALL);
 	assert(tcurrent->context == ctx);
+	// ctx->GPRx = return value;
   panic("syscall not implemented");
   return NULL;
 }
@@ -24,7 +25,7 @@ static Context *irq_yield(Event ev, Context *ctx) {
   return NULL;
 }
 
-static Context *error(Event ev, Context *ctx) {
+static Context *irq_error(Event ev, Context *ctx) {
 	if (ev.event != EVENT_ERROR) return NULL;
 	panic("error not implemented");
 	return NULL;
@@ -34,5 +35,5 @@ void irq_init() {
   os->on_irq(100, EVENT_PAGEFAULT, pagefault);
   os->on_irq(200, EVENT_SYSCALL, syscall);
 	os->on_irq(300, EVENT_YIELD, irq_yield);
-	os->on_irq(400, EVENT_ERROR, error);
+	os->on_irq(400, EVENT_ERROR, irq_error);
 }
