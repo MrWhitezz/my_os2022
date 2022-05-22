@@ -21,7 +21,6 @@ static Context *syscall(Event ev, Context *ctx) {
 
 static Context *irq_yield(Event ev, Context *ctx) {
 	if (ev.event != EVENT_YIELD) return NULL;
-  panic("yield not implemented");
   return NULL;
 }
 
