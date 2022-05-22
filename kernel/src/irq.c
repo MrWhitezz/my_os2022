@@ -20,7 +20,8 @@ static Context *pagefault(Event ev, Context *ctx) {
 	AddrSpace *as = &(tcurrent->as);
 	void *va = (void *)ROUNDDOWN(ev.ref, as->pgsize);
 	void *pa = pmm->alloc(as->pgsize);
-	assert(va >= as->area.start && va < as->area.end);
+	assert(va >= as->area.start);
+	assert(va < as->area.end);
 	pgmap(tcurrent, va, pa);
 	printf("pf: %p by %p\n", ev.ref, ctx->rip);
   // panic("pagefault not implemented");
