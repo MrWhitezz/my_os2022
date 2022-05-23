@@ -89,12 +89,12 @@ static void os_init() {
   //   sprintf(name, "consumer-%d", i);
   //   kmt->create(os_tsk_alloc(), name, consumer, NULL);
   // }
-  // for (int i = 0; i < 10; i++) // 10 个空转
-  // {
-  //   char *name = (char *)pmm->alloc(16);
-  //   sprintf(name, "waste-%d", i);
-  //   kmt->create(os_tsk_alloc(), name, waste_time, NULL);
-  // }
+  for (int i = 0; i < 10; i++) // 10 个空转
+  {
+    char *name = (char *)pmm->alloc(16);
+    sprintf(name, "waste-%d", i);
+    kmt->create(os_tsk_alloc(), name, waste_time, NULL);
+  }
 
 
   // kmt->create(os_tsk_alloc(), "tty_reader", tty_reader, "tty1");
