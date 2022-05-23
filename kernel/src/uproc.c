@@ -13,12 +13,18 @@ static void uproc_init() {
   // need to init vme
 }
 
-static int u_kputc(task_t *task, char ch) {
+static int u_kputc(task_t *t, char ch) {
   putch(ch);
+  return 0;
+}
+
+static int u_fork(task_t *t) {
+  panic("fork not implemented");
   return 0;
 }
 
 MODULE_DEF(uproc) = {
   .init = uproc_init,
   .kputc = u_kputc,
+  .fork = u_fork,
 };
