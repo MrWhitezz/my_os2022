@@ -104,7 +104,7 @@ static void os_init() {
   // the first user process
   char *name = (char *)pmm->alloc(16);
   sprintf(name, "user_proc");
-  ucreate_(os_tsk_alloc(), name);
+  ucreate_(os_tsk_alloc(), name, NULL);
 }
 
 

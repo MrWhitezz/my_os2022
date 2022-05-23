@@ -33,9 +33,6 @@ static Context *pagefault(Event ev, Context *ctx) {
 		}
 		memcpy(pa, _init, len);
 	}
-	// if (va == as->area.start) {
-	// 	memcpy(pa, _init, _init_len);
-	// }
 	pgmap(tcurrent, va, pa);
   return NULL;
 }
