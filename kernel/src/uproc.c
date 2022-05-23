@@ -48,7 +48,10 @@ static int u_getpid(task_t *t) {
 }
 
 static int u_sleep(task_t *t, int seconds) {
-  panic("sleep not implemented");
+  uint64_t wakeup = io_read(AM_TIMER_UPTIME).us + seconds * 1000000L;
+  while (io_read(AM_TIMER_UPTIME).us < wakeup) {
+    yield();
+  }
   return 0;
 }
 
