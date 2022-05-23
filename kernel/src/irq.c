@@ -44,7 +44,7 @@ static Context *syscall(Event ev, Context *ctx) {
 	switch (ctx->GPRx) {
 		case SYS_kputc  : {ret = uproc->kputc(t, (char)ctx->GPR1); break;}
 		case SYS_fork   : {ret = uproc->fork(t); 									 break;}
-		case SYS_exit   :
+		case SYS_exit   : {ret = uproc->exit(t, ctx->GPR1); 			 break;}
 		case SYS_wait   :
 		case SYS_pipe   :
 		case SYS_read   :
