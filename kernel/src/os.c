@@ -154,11 +154,14 @@ static Context *os_trap(Event ev, Context *context) {
   task_t *tslp = tsleeps[cpu_current()];
   if (tslp != NULL) {
     assert(tslp->is_run == false && 
-    (tslp->stat == T_BLOCKED || tslp->stat == T_SLEEPRUN || tslp->stat == T_RUNNABLE));
+    (tslp->stat == T_BLOCKED || tslp->stat == T_SLEEPRUN || tslp->stat == T_RUNNABLE || tslp->stat == T_ZOMBIE));
+    // tslp->stat can be T_BLOCKED(after P), T_SLEEPRUN(after sched), T_RUNNABLE(after V), T_ZOMBIE(after SYS_exit)
     if (tslp->stat == T_SLEEPRUN) {
       tslp->stat = T_RUNNABLE;
     }
-    enqueue(qtsks, tslp);
+    if (tslp-> stat != T_ZOMBIE) {
+      enqueue(qtsks, tslp);
+    }
     tsleeps[cpu_current()] = NULL;
   }
 

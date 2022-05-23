@@ -29,8 +29,8 @@ static int u_wait (task_t *t, int *status) {
 }
 
 static int u_exit(task_t *t, int status) {
-  panic("exit not implemented");
-  return 0;
+  t->stat = T_ZOMBIE;
+  return status;
 }
 
 static int u_kill(task_t *t, int pid) {
