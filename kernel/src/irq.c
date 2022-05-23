@@ -41,6 +41,7 @@ static Context *syscall(Event ev, Context *ctx) {
 	uint64_t ret = 0;
 	task_t *t = tcurrent;
 	assert(t->context == ctx);
+	debug("task %s: syscall %d\n", t->name, ctx->GPR1);
 	switch (ctx->GPRx) {
 		case SYS_kputc  : {ret = uproc->kputc(t, (char)ctx->GPR1); break;}
 		case SYS_fork   : {ret = uproc->fork(t); 									 break;}
