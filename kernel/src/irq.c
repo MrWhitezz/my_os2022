@@ -70,6 +70,9 @@ static Context *syscall(Event ev, Context *ctx) {
 	// ctx->GPRx = return value;
 	assert(ienabled());
 	iset(false);
+	if (ctx->GPRx == SYS_wait) {
+		debug("wait return %d\n", ret);
+	}
 	assert(tcurrent == t);
 	tcurrent->context->GPRx = ret; // need no lock because other cpus cannot access this tcurrent
   return NULL;
