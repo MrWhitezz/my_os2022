@@ -46,18 +46,18 @@ static Context *syscall(Event ev, Context *ctx) {
 		case SYS_kputc  : {ret = uproc->kputc(t, (char)ctx->GPR1); break;}
 		case SYS_fork   : {ret = uproc->fork(t); 									 break;}
 		case SYS_exit   : {ret = uproc->exit(t, ctx->GPR1); 			 break;}
-		case SYS_wait   :
+		case SYS_wait   : {ret = uproc->wait(t, (int *)ctx->GPR1); break;}
 		case SYS_pipe   :
 		case SYS_read   :
-		case SYS_kill   :
-		case SYS_exec   :
+		case SYS_kill   : {ret = uproc->kill(t, ctx->GPR1); 			 break;}
+		case SYS_exec   : 
 		case SYS_fstat  :
 		case SYS_chdir  :
 		case SYS_dup    :
-		case SYS_getpid : {ret = uproc->getpid(t); 									 break;}
+		case SYS_getpid : {ret = uproc->getpid(t); 								 break;}
 		case SYS_mmap   : {ret = (uint64_t)uproc->mmap(t, (void *)ctx->GPR1, ctx->GPR2, ctx->GPR3, ctx->GPR4); break;}
-		case SYS_sleep  :
-		case SYS_uptime :
+		case SYS_sleep  : {ret = uproc->sleep(t, ctx->GPR1); 			 break;}
+		case SYS_uptime : {ret = uproc->uptime(t); 								 break;}
 		case SYS_open   :
 		case SYS_write  :
 		case SYS_unlink :

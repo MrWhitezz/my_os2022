@@ -5,6 +5,9 @@
 
 spinlock_t tlk;
 
+// tsks are distributed in currents, tsleeps, qtsks and sems without repeatness
+// tlk protects 
+queue_t *qtsks = NULL; 
 task_t *currents[NCPU] = {}; 
 task_t *tsleeps[NCPU] = {};
 task_t *idles[NCPU] = {}; // need no lks, only visible by current cpu
