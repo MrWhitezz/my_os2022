@@ -50,6 +50,7 @@ static int u_getpid(task_t *t) {
 static int u_sleep(task_t *t, int seconds) {
   uint64_t wakeup = io_read(AM_TIMER_UPTIME).us + seconds * 1000000L;
   while (io_read(AM_TIMER_UPTIME).us < wakeup) {
+    debug("%d us left\n", wakeup - io_read(AM_TIMER_UPTIME).us);
     yield();
   }
   return 0;
