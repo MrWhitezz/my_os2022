@@ -69,7 +69,6 @@ static Context *syscall(Event ev, Context *ctx) {
 	iset(false);
 	assert(tcurrent->context == ctx);
 	ctx->GPRx = ret;
-  panic("syscall not implemented");
   return NULL;
 }
 
