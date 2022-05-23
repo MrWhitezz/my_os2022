@@ -222,6 +222,7 @@ static Context *os_trap(Event ev, Context *context) {
 		t->is_run = false;
     t->stat = T_SLEEPRUN;
     debug("task %s has been waken up\n", t->name);
+    debug("task %s has been sleeping\n", tslp2->name);
 	}
   Context *c = kmt_sched(ev, context);
   kmt->spin_unlock(&tlk);
