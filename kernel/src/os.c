@@ -216,7 +216,7 @@ static Context *os_trap(Event ev, Context *context) {
   kmt->spin_lock(&tlk);
   task_t *t = tcurrent;
   task_t *tslp2 = tsleeps[cpu_current()];
-	if (tslp2 != t) {
+	if (t != NULL && tslp2 != t) {
     sleep2queue(tslp2, t);
     assert(t->stat == T_RUNNABLE);
 		t->is_run = false;
