@@ -71,12 +71,16 @@ static Context *syscall(Event ev, Context *ctx) {
 	// ctx->GPRx = return value;
 	assert(ienabled());
 	iset(false);
-	if (ctx->GPRx == SYS_sleep) {
-		debug("sleep return %d\n", ret);
-	}
+	kmt->spin_lock(&tlk);
+	// if (ctx->GPRx == SYS_sleep) {
+	// 	debug("sleep return %d\n", ret);
+	// }
 	assert(tcurrent == t);
-	assert(tsleeps[cpu_current()] == t);
+	if (tsleeps[cpu_current()] != t) {
+		enqueue(qtsks, t);
+	}
 	tcurrent->context->GPRx = ret; // need no lock because other cpus cannot access this tcurrent
+	kmt->spin_unlock(&tlk);
   return NULL;
 }
 
