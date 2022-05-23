@@ -157,7 +157,7 @@ static Context *os_trap(Event ev, Context *context) {
   kmt->spin_lock(&tlk);
   // add sleep task to queue
   task_t *tslp = tsleeps[cpu_current()];
-  if (tcurrent->is_run == false) {
+  if (tcurrent != NULL && tcurrent->is_run == false) {
     panic_on(tcurrent != tslp, "interrupted task is not tsleep");
     panic_on(!(ev.event == EVENT_IRQ_TIMER || ev.event == EVENT_YIELD),
       "interrupted task is not tsleep");
@@ -169,7 +169,8 @@ static Context *os_trap(Event ev, Context *context) {
     if (tslp->stat == T_SLEEPRUN) {
       tslp->stat = T_RUNNABLE;
     }
-    if (tslp-> stat != T_ZOMBIE) {
+    if (tslp-> stat != T_ZOMBIE && tslp != tcurrent) {
+      // ensure that zombie tsk, interrupted nested tsk will not be added to queue
       enqueue(qtsks, tslp);
     }
     tsleeps[cpu_current()] = NULL;
