@@ -88,7 +88,9 @@ static Context *irq_yield(Event ev, Context *ctx) {
 
 static Context *irq_error(Event ev, Context *ctx) {
 	if (ev.event != EVENT_ERROR) return NULL;
-	panic("error not implemented");
+	debug("irq_error: %d\n", ev.ref);
+	debug("error msg: %s\n", ev.msg);
+	// panic("error not implemented");
 	return NULL;
 }
 
