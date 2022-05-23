@@ -174,8 +174,10 @@ int flag = 0;
 
 static Context *os_trap(Event ev, Context *context) {
   kmt->spin_lock(&tlk);
-  if (flag)
+  if (flag) {
     debug("current tsk: %s\n", tcurrent->name);
+    debug("ev.event: %d\n", ev.event);
+  }
   // add sleep task to queue
   task_t *tslp = tsleeps[cpu_current()];
   if (tcurrent != NULL && tcurrent->is_run == false) {
