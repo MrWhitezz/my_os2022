@@ -174,10 +174,9 @@ int flag = 0;
 
 static Context *os_trap(Event ev, Context *context) {
   kmt->spin_lock(&tlk);
-  if (flag) {
-    debug("current tsk: %s\n", tcurrent->name);
-    debug("ev.event: %d\n", ev.event);
-  }
+  // if (flag) {
+  //   debug("current tsk: %s\n", tcurrent->name);
+  // }
   // add sleep task to queue
   task_t *tslp = tsleeps[cpu_current()];
   if (tcurrent != NULL && tcurrent->is_run == false) {
@@ -228,6 +227,7 @@ static Context *os_trap(Event ev, Context *context) {
     assert(t->stat == T_RUNNABLE);
 		t->is_run = false;
     t->stat = T_SLEEPRUN;
+    context = t->context;
     debug("task %s has been waken up\n", t->name);
     debug("task %s has been sleeping\n", tslp2->name);
     flag = 1;
