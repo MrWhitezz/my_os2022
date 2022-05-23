@@ -38,12 +38,12 @@ static Context *syscall(Event ev, Context *ctx) {
 	assert(mycpu()->noff == 0);
 	assert(!ienabled());
 	iset(true);
-	int ret = 0;
+	uint64_t ret = 0;
 	task_t *t = tcurrent;
 	assert(t->context == ctx);
 	switch (ctx->GPRx) {
-		case SYS_kputc  : {uproc->kputc(t, (char)ctx->GPR1); break;}
-		case SYS_fork   : {uproc->fork(t); 									 break;}
+		case SYS_kputc  : {ret = uproc->kputc(t, (char)ctx->GPR1); break;}
+		case SYS_fork   : {ret = uproc->fork(t); 									 break;}
 		case SYS_exit   :
 		case SYS_wait   :
 		case SYS_pipe   :
@@ -53,8 +53,8 @@ static Context *syscall(Event ev, Context *ctx) {
 		case SYS_fstat  :
 		case SYS_chdir  :
 		case SYS_dup    :
-		case SYS_getpid :
-		case SYS_mmap   :
+		case SYS_getpid : {ret = uproc->getpid(t); 									 break;}
+		case SYS_mmap   : {ret = (uint64_t)uproc->mmap(t, (void *)ctx->GPR1, ctx->GPR2, ctx->GPR3, ctx->GPR4); break;}
 		case SYS_sleep  :
 		case SYS_uptime :
 		case SYS_open   :
