@@ -58,8 +58,8 @@ static int u_sleep(task_t *t, int seconds) {
 }
 
 static int64_t u_uptime(task_t *t) {
-  panic("uptime not implemented");
-  return 0;
+  uint64_t ms = io_read(AM_TIMER_UPTIME).us / 1000L;
+  return ms;
 }
 
 MODULE_DEF(uproc) = {
