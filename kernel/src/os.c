@@ -227,7 +227,7 @@ static Context *os_trap(Event ev, Context *context) {
     assert(t->stat == T_RUNNABLE);
 		t->is_run = false;
     t->stat = T_SLEEPRUN;
-    context = t->context;
+    t->context = context;
     debug("task %s has been waken up\n", t->name);
     debug("task %s has been sleeping\n", tslp2->name);
     flag = 1;
