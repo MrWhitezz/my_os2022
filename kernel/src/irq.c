@@ -42,6 +42,7 @@ static Context *syscall(Event ev, Context *ctx) {
 	task_t *t = tcurrent;
 	// debug("t->context: %p, ctx: %p\n", t->context, ctx);
 	assert(t->context == ctx);
+	assert(tsleeps[cpu_current()] == t);
 	// debug("task %s: syscall %d\n", t->name, ctx->GPRx);
 	switch (ctx->GPRx) {
 		case SYS_kputc  : {ret = uproc->kputc(t, (char)ctx->GPR1); break;}
@@ -74,6 +75,7 @@ static Context *syscall(Event ev, Context *ctx) {
 		debug("sleep return %d\n", ret);
 	}
 	assert(tcurrent == t);
+	assert(tsleeps[cpu_current()] == t);
 	tcurrent->context->GPRx = ret; // need no lock because other cpus cannot access this tcurrent
   return NULL;
 }
