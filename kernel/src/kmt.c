@@ -72,6 +72,7 @@ static void sem_init(sem_t *sem, const char *name, int value) {
   sem->wait_list = createQueue(NTSK); // 32 to be modified
   spin_lock(&slk);
   sems[nsem++] = sem;
+  panic_on(nsem > NSEM, "too many semaphores");
   spin_unlock(&slk);
 }
 
