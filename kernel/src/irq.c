@@ -66,6 +66,7 @@ static Context *syscall(Event ev, Context *ctx) {
 	}
   
 	// ctx->GPRx = return value;
+	assert(ienabled());
 	iset(false);
 	assert(tcurrent->context == ctx);
 	ctx->GPRx = ret;
