@@ -9,8 +9,7 @@ static void *pgalloc(int n) {
 
 static void uproc_init() {
 	vme_init(pgalloc, pmm->free);	
-  printf("uproc_init\n");
-  // need to init vme
+  printf("uproc_init: vme_init finished\n");
 }
 
 static int u_kputc(task_t *t, char ch) {

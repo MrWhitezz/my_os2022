@@ -141,6 +141,7 @@ static void kmt_init() {
   for (int i = 0; i < cpu_count(); ++i) {
     idles[i] = os_tsk_alloc();
   }
+  debug("kmt_init: idles created");
 }
 
 
