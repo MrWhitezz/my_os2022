@@ -40,7 +40,7 @@ static Context *syscall(Event ev, Context *ctx) {
 	iset(true);
 	uint64_t ret = 0;
 	task_t *t = tcurrent;
-	debug("t->context: %p, ctx: %p\n", t->context, ctx);
+	// debug("t->context: %p, ctx: %p\n", t->context, ctx);
 	assert(t->context == ctx);
 	// debug("task %s: syscall %d\n", t->name, ctx->GPRx);
 	switch (ctx->GPRx) {
@@ -71,9 +71,7 @@ static Context *syscall(Event ev, Context *ctx) {
 	assert(ienabled());
 	iset(false);
 	assert(tcurrent == t);
-	debug("t->context: %p, ctx: %p\n", t->context, ctx);
-	assert(tcurrent->context == ctx);
-	ctx->GPRx = ret;
+	tcurrent->context->GPRx = ret; // need no lock because other cpus cannot access this tcurrent
   return NULL;
 }
 
