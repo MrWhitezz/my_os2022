@@ -26,16 +26,16 @@ static Context *pagefault(Event ev, Context *ctx) {
 	void *pa = pmm->alloc(as->pgsize);
 	assert(va >= as->area.start && va < as->area.end);
 
-	// if (IN_RANGE(va, RANGE(as->area.start, as->area.start + _init_len))) {
-	// 	int len = as->pgsize;
-	// 	if (va + len > as->area.start + _init_len) {
-	// 		len = as->area.start + _init_len - va;
-	// 	}
-	// 	memcpy(pa, va, len);
-	// }
-	if (va == as->area.start) {
-		memcpy(pa, _init, _init_len);
+	if (IN_RANGE(va, RANGE(as->area.start, as->area.start + _init_len))) {
+		int len = as->pgsize;
+		if (va + len > as->area.start + _init_len) {
+			len = as->area.start + _init_len - va;
+		}
+		memcpy(pa, _init, len);
 	}
+	// if (va == as->area.start) {
+	// 	memcpy(pa, _init, _init_len);
+	// }
 	pgmap(tcurrent, va, pa);
   return NULL;
 }
