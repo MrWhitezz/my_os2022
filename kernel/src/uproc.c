@@ -43,8 +43,7 @@ static void *u_mmap(task_t *t, void *addr, int length, int prot, int flags) {
 }
 
 static int u_getpid(task_t *t) {
-  panic("getpid not implemented");
-  return 0;
+  return t->id;
 }
 
 static int u_sleep(task_t *t, int seconds) {
