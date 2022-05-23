@@ -152,15 +152,8 @@ static Context *kmt_sched(Event ev, Context *context) {
   return next;
 }
 
-static Context *os_trap(Event ev, Context *context) {
-  kmt->spin_lock(&tlk);
-  // add sleep task to queue
-  task_t *tslp = tsleeps[cpu_current()];
-  if (tcurrent != NULL && tcurrent->is_run == false) {
-    panic_on(tcurrent != tslp, "interrupted task is not tsleep");
-    panic_on(!(ev.event == EVENT_IRQ_TIMER || ev.event == EVENT_YIELD),
-      "interrupted task is not tsleep");
-  }
+static void sleep2queue(task_t *tslp, task_t *new) {
+  assert(holding(&tlk));
   if (tslp != NULL) {
     assert(tslp->is_run == false && 
     (tslp->stat == T_BLOCKED || tslp->stat == T_SLEEPRUN || tslp->stat == T_RUNNABLE || tslp->stat == T_ZOMBIE));
@@ -172,8 +165,20 @@ static Context *os_trap(Event ev, Context *context) {
       // ensure that zombie tsk, interrupted nested tsk will not be added to queue
       enqueue(qtsks, tslp);
     }
-    tsleeps[cpu_current()] = NULL;
+    tsleeps[cpu_current()] = new;
   }
+}
+
+static Context *os_trap(Event ev, Context *context) {
+  kmt->spin_lock(&tlk);
+  // add sleep task to queue
+  task_t *tslp = tsleeps[cpu_current()];
+  if (tcurrent != NULL && tcurrent->is_run == false) {
+    panic_on(tcurrent != tslp, "interrupted task is not tsleep");
+    panic_on(!(ev.event == EVENT_IRQ_TIMER || ev.event == EVENT_YIELD),
+      "interrupted task is not tsleep");
+  }
+  sleep2queue(tslp, NULL);
 
   // save current task and label it as sleep
   if (tcurrent != NULL) {
@@ -210,10 +215,12 @@ static Context *os_trap(Event ev, Context *context) {
 
   kmt->spin_lock(&tlk);
   task_t *t = tcurrent;
-	if (tsleeps[cpu_current()] != t) {
+  task_t *tslp2 = tsleeps[cpu_current()];
+	if (tslp2 != t) {
+    sleep2queue(tslp2, t);
+    assert(t->stat == T_RUNNABLE);
 		t->is_run = false;
-		enqueue(qtsks, tsleeps[cpu_current()]);
-    tsleeps[cpu_current()] = t;
+    t->stat = T_SLEEPRUN;
 	}
   Context *c = kmt_sched(ev, context);
   kmt->spin_unlock(&tlk);
