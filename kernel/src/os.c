@@ -209,6 +209,12 @@ static Context *os_trap(Event ev, Context *context) {
   }
 
   kmt->spin_lock(&tlk);
+  task_t *t = tcurrent;
+	if (tsleeps[cpu_current()] != t) {
+		t->is_run = false;
+		enqueue(qtsks, tsleeps[cpu_current()]);
+    tsleeps[cpu_current()] = t;
+	}
   Context *c = kmt_sched(ev, context);
   kmt->spin_unlock(&tlk);
   return c;
