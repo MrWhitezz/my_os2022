@@ -164,6 +164,10 @@ static Context *os_trap(Event ev, Context *context) {
 
   // save current task and label it as sleep
   if (tcurrent != NULL) {
+    if (tcurrent->is_run == false) {
+      debug("task %s is not runnable\n", tcurrent->name);
+      assert(0);
+    }
     assert(tcurrent->is_run == true);
     tcurrent->is_run = false;
     tcurrent->context = context; 
