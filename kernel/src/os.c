@@ -170,9 +170,12 @@ static void sleep2queue(task_t *tslp, task_t *new) {
     tsleeps[cpu_current()] = new;
   }
 }
+int flag = 0;
 
 static Context *os_trap(Event ev, Context *context) {
   kmt->spin_lock(&tlk);
+  if (flag)
+    debug("current tsk: %s\n", tcurrent->name);
   // add sleep task to queue
   task_t *tslp = tsleeps[cpu_current()];
   if (tcurrent != NULL && tcurrent->is_run == false) {
@@ -225,6 +228,7 @@ static Context *os_trap(Event ev, Context *context) {
     t->stat = T_SLEEPRUN;
     debug("task %s has been waken up\n", t->name);
     debug("task %s has been sleeping\n", tslp2->name);
+    flag = 1;
 	}
   Context *c = kmt_sched(ev, context);
   kmt->spin_unlock(&tlk);
