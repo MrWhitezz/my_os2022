@@ -36,8 +36,8 @@ static Context *pagefault(Event ev, Context *ctx) {
 static Context *syscall(Event ev, Context *ctx) {
   if (ev.event != EVENT_SYSCALL) return NULL;
 	assert(mycpu()->noff == 0);
-	assert(!ienabled());
-	iset(true);
+	// assert(!ienabled());
+	// iset(true);
 	uint64_t ret = 0;
 	task_t *t = tcurrent;
 	// debug("t->context: %p, ctx: %p\n", t->context, ctx);
@@ -69,15 +69,10 @@ static Context *syscall(Event ev, Context *ctx) {
 	}
   
 	// ctx->GPRx = return value;
-	assert(ienabled());
-	iset(false);
-	// kmt->spin_lock(&tlk);
-	// if (ctx->GPRx == SYS_sleep) {
-	// 	debug("sleep return %d\n", ret);
-	// }
+	// assert(ienabled());
+	// iset(false);
 	assert(tcurrent == t);
 	tcurrent->context->GPRx = ret; // need no lock because other cpus cannot access this tcurrent
-	// kmt->spin_unlock(&tlk);
   return NULL;
 }
 
@@ -90,7 +85,7 @@ static Context *irq_error(Event ev, Context *ctx) {
 	if (ev.event != EVENT_ERROR) return NULL;
 	debug("irq_error: %d\n", ev.ref);
 	debug("error msg: %s\n", ev.msg);
-	// panic("error not implemented");
+	panic("error not implemented");
 	return NULL;
 }
 
