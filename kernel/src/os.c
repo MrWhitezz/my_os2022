@@ -133,7 +133,6 @@ static Context *kmt_sched(Event ev, Context *context) {
 
     task_t *t = dequeue(qtsks);
     assert(t != NULL);
-    assert(t->is_run == false);
     assert(t->is_run == false 
     && (t->stat == T_CREAT || t->stat == T_RUNNABLE || t->stat == T_BLOCKED));
     if (t->stat == T_BLOCKED){

@@ -77,6 +77,7 @@ static Context *syscall(Event ev, Context *ctx) {
 	// }
 	assert(tcurrent == t);
 	if (tsleeps[cpu_current()] != t) {
+		t->is_run = false;
 		enqueue(qtsks, t);
 	}
 	tcurrent->context->GPRx = ret; // need no lock because other cpus cannot access this tcurrent
