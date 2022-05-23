@@ -53,6 +53,7 @@ static int u_sleep(task_t *t, int seconds) {
     debug("%d us left\n", wakeup - io_read(AM_TIMER_UPTIME).us);
     yield();
   }
+  debug("wakeup\n");
   return 0;
 }
 
