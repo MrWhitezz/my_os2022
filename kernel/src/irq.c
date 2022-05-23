@@ -1,4 +1,6 @@
 #include <common.h>
+#include <cpu.h>
+#include <defs.h>
 #include "initcode.inc"
 // every irq_handler will be called
 // the first line of each function ensures 
@@ -32,9 +34,18 @@ static Context *pagefault(Event ev, Context *ctx) {
 
 static Context *syscall(Event ev, Context *ctx) {
   if (ev.event != EVENT_SYSCALL) return NULL;
-  assert(ev.event == EVENT_SYSCALL);
-	assert(tcurrent->context == ctx);
+	assert(mycpu()->noff == 0);
+	assert(!ienabled());
+	iset(true);
+	int ret = 0;
+	switch (ctx->GPRx) {
+
+	}
+  
 	// ctx->GPRx = return value;
+	iset(false);
+	assert(tcurrent->context == ctx);
+	ctx->GPRx = ret;
   panic("syscall not implemented");
   return NULL;
 }
