@@ -12,6 +12,28 @@ spinlock_t slk;
 sem_t *sems[NSEM];
 int nsem = 0;
 
+spinlock_t idlk;
+bool pids[NPID];
+int  npid = 1;
+
+int get_new_pid() {
+  kmt->spin_lock(&idlk);
+  while (1) {
+    if (!pids[npid]) {
+      pids[npid] = true;
+      npid ++;
+      assert(npid >= 1 && npid <= 32767);
+      int ret = npid;
+      kmt->spin_unlock(&idlk);
+      return ret;
+    }
+    npid++;
+    if (npid >= NPID) npid = 1;
+  }
+  kmt->spin_unlock(&idlk);
+  return -1;
+}
+
 // push_off/pop_off are like intr_off()/intr_on() except that they are matched:
 // it takes two pop_off()s to undo two push_off()s.  Also, if interrupts
 // are initially off, then push_off, pop_off leaves them off.
@@ -126,6 +148,7 @@ static int kmt_create(task_t *task, const char *name, void (*entry)(void *arg), 
   task->name    = name;
   task->stat    = T_CREAT;
   task->is_run  = false;
+  task->id      = get_new_pid();
 
   // must be called after task->stack is set
   assert(task->stack != NULL);
@@ -146,6 +169,7 @@ static void teardown(task_t *task) {
 
 static void kmt_init() {
   spin_init(&slk, "slk");
+  spin_init(&idlk, "idlk");
   qtsks = createQueue(NTSK);
   for (int i = 0; i < cpu_count(); ++i) {
     idles[i] = os_tsk_alloc();

@@ -7,6 +7,9 @@ void          add_task(task_t *task);
 task_t       *os_tsk_alloc();
 // void          del_task(task_t *task);
 
+// kmt.c
+int           get_new_pid();
+
 // dsa.c
 #include <dsa.h>
 

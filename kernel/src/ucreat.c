@@ -11,6 +11,7 @@ int *ucreate_(task_t *task, const char *name) {
   task->name    = name;
   task->stat    = T_CREAT;
   task->is_run  = false;
+  task->id      = get_new_pid();
   
   assert(task->stack != NULL);
   Area tstack   = RANGE(task->stack, (void *)task->stack + STK_SZ);

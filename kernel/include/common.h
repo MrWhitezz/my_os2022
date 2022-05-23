@@ -15,6 +15,7 @@ size_t nextPower_2(size_t x);
 #define NHANDLER 256
 #define NPG  64
 #define NSEM 64
+#define NPID (32767 + 1)
 
 // debug
 
@@ -39,7 +40,7 @@ enum tstat { T_RUNNABLE, T_BLOCKED, T_CREAT, T_ZOMBIE, T_SLEEPRUN };
 
 struct task {
   // struct {
-    int id; // temprorarily useless
+    int id; // process id
     // task_t *next; // in thread-os.c to schedule, useless here
     enum tstat stat;
     bool is_run;
