@@ -36,12 +36,12 @@ static Context *pagefault(Event ev, Context *ctx) {
 static Context *syscall(Event ev, Context *ctx) {
   if (ev.event != EVENT_SYSCALL) return NULL;
 	assert(mycpu()->noff == 0);
-	// assert(!ienabled());
-	// iset(true);
+	assert(!ienabled());
+	iset(true);
 	uint64_t ret = 0;
 	task_t *t = tcurrent;
 	assert(t->context == ctx);
-	debug("task %s: syscall %d\n", t->name, ctx->GPRx);
+	// debug("task %s: syscall %d\n", t->name, ctx->GPRx);
 	switch (ctx->GPRx) {
 		case SYS_kputc  : {ret = uproc->kputc(t, (char)ctx->GPR1); break;}
 		case SYS_fork   : {ret = uproc->fork(t); 									 break;}
@@ -67,8 +67,8 @@ static Context *syscall(Event ev, Context *ctx) {
 	}
   
 	// ctx->GPRx = return value;
-	// assert(ienabled());
-	// iset(false);
+	assert(ienabled());
+	iset(false);
 	assert(tcurrent->context == ctx);
 	ctx->GPRx = ret;
   return NULL;
