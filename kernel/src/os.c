@@ -6,7 +6,7 @@
 spinlock_t tlk;
 
 // tsks are distributed in currents, tsleeps, qtsks and sems without repeatness
-// tlk protects 
+// tlk protects currents, tsleeps, qtsks
 queue_t *qtsks = NULL; 
 task_t *currents[NCPU] = {}; 
 task_t *tsleeps[NCPU] = {};
@@ -37,13 +37,13 @@ void producer(void *arg) { while (1) { P(&empty); putch('('); V(&fill);  } }
 void consumer(void *arg) { while (1) { P(&fill);  putch(')'); V(&empty); } }
 void waste_time(void *arg) { while (1) { yield(); } }
 
-spinlock_t slk;
+spinlock_t sumlk;
 int sum = 0;
 void get_sum(void *arg) {
   for (int i = 0; i < 100000; i++) {
-    kmt->spin_lock(&slk);
+    kmt->spin_lock(&sumlk);
     sum ++;
-    kmt->spin_unlock(&slk);
+    kmt->spin_unlock(&sumlk);
   }
   while (1) 
     debug("sum: %d, cpu: %d\n", sum, cpu_current());

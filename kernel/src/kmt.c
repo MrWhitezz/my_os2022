@@ -7,6 +7,11 @@
 extern sem_t empty, fill;
 #endif
 
+// sems maintain all the semaphores, slk protects the pointers of sems
+spinlock_t slk;
+sem_t *sems[NSEM];
+int nsem = 0;
+
 // push_off/pop_off are like intr_off()/intr_on() except that they are matched:
 // it takes two pop_off()s to undo two push_off()s.  Also, if interrupts
 // are initially off, then push_off, pop_off leaves them off.
@@ -65,6 +70,9 @@ static void sem_init(sem_t *sem, const char *name, int value) {
   sem->name = name;
   spin_init(&sem->lock, name);
   sem->wait_list = createQueue(NTSK); // 32 to be modified
+  spin_lock(&slk);
+  sems[nsem++] = sem;
+  spin_unlock(&slk);
 }
 
 
@@ -136,11 +144,12 @@ static void teardown(task_t *task) {
 
 
 static void kmt_init() {
+  spin_init(&slk, "slk");
   qtsks = createQueue(NTSK);
   for (int i = 0; i < cpu_count(); ++i) {
     idles[i] = os_tsk_alloc();
   }
-  debug("kmt_init: qtsks init, idles created\n");
+  debug("kmt_init: qtsks init, slk init, idles created\n");
 }
 
 

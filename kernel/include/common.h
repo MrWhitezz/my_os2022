@@ -14,6 +14,7 @@ size_t nextPower_2(size_t x);
 #define NTSK 128
 #define NHANDLER 256
 #define NPG  64
+#define NSEM 64
 
 // debug
 
