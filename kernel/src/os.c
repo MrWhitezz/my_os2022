@@ -154,7 +154,9 @@ static Context *kmt_sched(Event ev, Context *context) {
 
 static void sleep2queue(task_t *tslp, task_t *new) {
   assert(holding(&tlk));
+  assert(tsleeps[cpu_current()] == tslp);
   if (tslp != NULL) {
+    assert(tslp != new);
     assert(tslp->is_run == false && 
     (tslp->stat == T_BLOCKED || tslp->stat == T_SLEEPRUN || tslp->stat == T_RUNNABLE || tslp->stat == T_ZOMBIE));
     // tslp->stat can be T_BLOCKED(after P), T_SLEEPRUN(after sched), T_RUNNABLE(after V), T_ZOMBIE(after SYS_exit)
