@@ -170,13 +170,9 @@ static void sleep2queue(task_t *tslp, task_t *new) {
     tsleeps[cpu_current()] = new;
   }
 }
-int flag = 0;
 
 static Context *os_trap(Event ev, Context *context) {
   kmt->spin_lock(&tlk);
-  // if (flag) {
-  //   debug("current tsk: %s\n", tcurrent->name);
-  // }
   // add sleep task to queue
   task_t *tslp = tsleeps[cpu_current()];
   if (tcurrent != NULL && tcurrent->is_run == false) {
@@ -188,13 +184,6 @@ static Context *os_trap(Event ev, Context *context) {
 
   // save current task and label it as sleep
   if (tcurrent != NULL) {
-    // debug("current task: %s\n", tcurrent->name);
-
-    // if (tcurrent->is_run == false) {
-    //   debug("task %s is not runnable\n", tcurrent->name);
-    //   assert(0);
-    // }
-    // assert(tcurrent->is_run == true);
     tcurrent->is_run = false;
     tcurrent->context = context; 
     if (tcurrent->stat == T_RUNNABLE) {
@@ -227,10 +216,7 @@ static Context *os_trap(Event ev, Context *context) {
     assert(t->stat == T_RUNNABLE);
 		t->is_run = false;
     t->stat = T_SLEEPRUN;
-    t->context = context;
-    // debug("task %s has been waken up\n", t->name);
-    // debug("task %s has been sleeping\n", tslp2->name);
-    flag = 1;
+    t->context = context; // important!!!
 	}
   Context *c = kmt_sched(ev, context);
   kmt->spin_unlock(&tlk);
