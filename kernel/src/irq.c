@@ -1,6 +1,7 @@
 #include <common.h>
 #include <cpu.h>
 #include <defs.h>
+#include <syscall.h>
 #include "initcode.inc"
 // every irq_handler will be called
 // the first line of each function ensures 
@@ -38,8 +39,30 @@ static Context *syscall(Event ev, Context *ctx) {
 	assert(!ienabled());
 	iset(true);
 	int ret = 0;
+	task_t *t = tcurrent;
+	assert(t->context == ctx);
 	switch (ctx->GPRx) {
-
+		case SYS_kputc  : {uproc->kputc(t, (char)ctx->GPR1); break;}
+		case SYS_fork   : {uproc->fork(t); 									 break;}
+		case SYS_exit   :
+		case SYS_wait   :
+		case SYS_pipe   :
+		case SYS_read   :
+		case SYS_kill   :
+		case SYS_exec   :
+		case SYS_fstat  :
+		case SYS_chdir  :
+		case SYS_dup    :
+		case SYS_getpid :
+		case SYS_mmap   :
+		case SYS_sleep  :
+		case SYS_uptime :
+		case SYS_open   :
+		case SYS_write  :
+		case SYS_unlink :
+		case SYS_link   :
+		case SYS_mkdir  :
+		case SYS_close  : {break;}
 	}
   
 	// ctx->GPRx = return value;

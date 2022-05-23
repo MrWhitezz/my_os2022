@@ -162,7 +162,7 @@ static Context *os_trap(Event ev, Context *context) {
     tsleeps[cpu_current()] = NULL;
   }
 
-  // save current task and sleep it
+  // save current task and label it as sleep
   if (tcurrent != NULL) {
     assert(tcurrent->is_run == true);
     tcurrent->is_run = false;
