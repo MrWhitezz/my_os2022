@@ -72,6 +72,7 @@ static Context *syscall(Event ev, Context *ctx) {
 	// assert(ienabled());
 	// iset(false);
 	assert(tcurrent == t);
+	ctx->GPRx = ret;
 	tcurrent->context->GPRx = ret; // need no lock because other cpus cannot access this tcurrent
   return NULL;
 }

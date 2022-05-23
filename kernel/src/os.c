@@ -75,26 +75,26 @@ static void os_init() {
   irq_init(); // irq_handlers
 
 #ifdef TEST_LOCAL
-  kmt->sem_init(&empty, "empty", 2);  // 缓冲区大小为 5
-  kmt->sem_init(&fill,  "fill",  0);
-  for (int i = 0; i < 20; i++) // 4 个生产者
-  {
-    char *name = (char *)pmm->alloc(16);
-    sprintf(name, "producer-%d", i);
-    kmt->create(os_tsk_alloc(), name, producer, NULL);
-  }
-  for (int i = 0; i < 20; i++) // 5 个消费者
-  {
-    char *name = (char *)pmm->alloc(16);
-    sprintf(name, "consumer-%d", i);
-    kmt->create(os_tsk_alloc(), name, consumer, NULL);
-  }
-  for (int i = 0; i < 10; i++) // 10 个空转
-  {
-    char *name = (char *)pmm->alloc(16);
-    sprintf(name, "waste-%d", i);
-    kmt->create(os_tsk_alloc(), name, waste_time, NULL);
-  }
+  // kmt->sem_init(&empty, "empty", 2);  // 缓冲区大小为 5
+  // kmt->sem_init(&fill,  "fill",  0);
+  // for (int i = 0; i < 20; i++) // 4 个生产者
+  // {
+  //   char *name = (char *)pmm->alloc(16);
+  //   sprintf(name, "producer-%d", i);
+  //   kmt->create(os_tsk_alloc(), name, producer, NULL);
+  // }
+  // for (int i = 0; i < 20; i++) // 5 个消费者
+  // {
+  //   char *name = (char *)pmm->alloc(16);
+  //   sprintf(name, "consumer-%d", i);
+  //   kmt->create(os_tsk_alloc(), name, consumer, NULL);
+  // }
+  // for (int i = 0; i < 10; i++) // 10 个空转
+  // {
+  //   char *name = (char *)pmm->alloc(16);
+  //   sprintf(name, "waste-%d", i);
+  //   kmt->create(os_tsk_alloc(), name, waste_time, NULL);
+  // }
 
 
   // kmt->create(os_tsk_alloc(), "tty_reader", tty_reader, "tty1");
@@ -228,8 +228,8 @@ static Context *os_trap(Event ev, Context *context) {
 		t->is_run = false;
     t->stat = T_SLEEPRUN;
     t->context = context;
-    debug("task %s has been waken up\n", t->name);
-    debug("task %s has been sleeping\n", tslp2->name);
+    // debug("task %s has been waken up\n", t->name);
+    // debug("task %s has been sleeping\n", tslp2->name);
     flag = 1;
 	}
   Context *c = kmt_sched(ev, context);
