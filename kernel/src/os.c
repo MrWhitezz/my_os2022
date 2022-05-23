@@ -89,7 +89,7 @@ static void os_init() {
   //   sprintf(name, "consumer-%d", i);
   //   kmt->create(os_tsk_alloc(), name, consumer, NULL);
   // }
-  for (int i = 0; i < 10; i++) // 10 个空转
+  for (int i = 0; i < 20; i++) // 10 个空转
   {
     char *name = (char *)pmm->alloc(16);
     sprintf(name, "waste-%d", i);
